@@ -1,14 +1,24 @@
 package com.example.blooddonationapp.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
+import com.example.blooddonationapp.Adapters.FeedAdapter;
+import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
+import com.example.blooddonationapp.databinding.FragmentFeedBinding;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +26,8 @@ import com.example.blooddonationapp.R;
  * create an instance of this fragment.
  */
 public class FeedFragment extends Fragment {
+    RecyclerView feedRv;
+    ArrayList<Feed> feedList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +73,32 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed, container, false);
+
+        feedList = new ArrayList<>();
+
+        feedRv = view.findViewById(R.id.feedRV);
+        feedRv.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList);
+        feedRv.setAdapter(feedAdapter);
+
+        feedList.add(new Feed("hello just a check", R.drawable.background, ""));
+        feedList.add(new Feed("again just a check 😉", R.drawable.pic1, ""));
+
+        return view;
     }
+
+//    private void layoutAnimation(RecyclerView recyclerView)
+//    {
+//        Context context = recyclerView.getContext();
+//        LayoutAnimationController layoutAnimationController =
+//                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_fall_down);
+//
+//        recyclerView.setLayoutAnimation(layoutAnimationController);
+//
+//        recyclerView.getAdapter().notifyDataSetChanged();
+//        recyclerView.scheduleLayoutAnimation();
+//    }
+
 }
