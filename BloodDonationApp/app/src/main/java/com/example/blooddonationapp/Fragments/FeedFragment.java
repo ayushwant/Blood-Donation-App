@@ -1,6 +1,6 @@
 package com.example.blooddonationapp.Fragments;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,13 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 
+import com.example.blooddonationapp.Activities.WebViewActivity;
 import com.example.blooddonationapp.Adapters.FeedAdapter;
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
-import com.example.blooddonationapp.databinding.FragmentFeedBinding;
 
 import java.util.ArrayList;
 
@@ -28,6 +26,7 @@ import java.util.ArrayList;
 public class FeedFragment extends Fragment {
     RecyclerView feedRv;
     ArrayList<Feed> feedList;
+    FeedAdapter.RvClickListener clickListener;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -78,15 +77,28 @@ public class FeedFragment extends Fragment {
         feedList = new ArrayList<>();
 
         feedRv = view.findViewById(R.id.feedRV);
+
+        setRvOnClickListener();
         feedRv.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList);
+        FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList, clickListener);
         feedRv.setAdapter(feedAdapter);
 
-        feedList.add(new Feed("hello just a check", R.drawable.background, ""));
-        feedList.add(new Feed("again just a check 😉", R.drawable.pic1, ""));
+        feedList.add(new Feed("hello just a check", R.drawable.background, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
+        feedList.add(new Feed("again just a check 😉", R.drawable.pic1, "https://www.google.com/search?q=hello"));
 
         return view;
+    }
+
+    private void setRvOnClickListener() {
+        clickListener = new FeedAdapter.RvClickListener() {
+            @Override
+            public void onClick(View v, int position) {
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra("link", feedList.get(position).getLink());
+                startActivity(intent);
+            }
+        };
     }
 
 //    private void layoutAnimation(RecyclerView recyclerView)

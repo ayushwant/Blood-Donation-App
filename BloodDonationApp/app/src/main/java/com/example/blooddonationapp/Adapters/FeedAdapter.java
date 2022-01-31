@@ -12,18 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
-import com.example.blooddonationapp.databinding.FeedSampleRowBinding;
 
+import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder>
 {
     Context context;
     ArrayList<Feed> feedArrayList;
+    RvClickListener clickListener;
 
-    public FeedAdapter(Context context, ArrayList<Feed> feedArrayList) {
+    public FeedAdapter(Context context, ArrayList<Feed> feedArrayList, RvClickListener listener) {
         this.context = context;
         this.feedArrayList = feedArrayList;
+        this.clickListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -53,6 +55,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.shareBtn.setImageResource(R.drawable.ic_baseline_share_24);
 
 
+        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(feed.isLiked()){
+                    feed.setLiked(false);
+                    holder.likeBtn.setImageResource(R.drawable.unliked);
+                }
+                else{
+                    feed.setLiked(true);
+                    holder.likeBtn.setImageResource(R.drawable.liked);
+                }
+            }
+        });
     }
 
     @Override
@@ -61,7 +76,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     //here: our nested view holder class. It holds the view of each item/row in our RV
-    public static class FeedViewHolder extends RecyclerView.ViewHolder
+    public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         ImageView feedImg;
         ImageView likeBtn;
@@ -77,6 +92,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             likeBtn = itemView.findViewById(R.id.likeBtn);
             shareBtn = itemView.findViewById(R.id.shareBtn);
             saveBtn = itemView.findViewById(R.id.saveBtn);
+
+            feedImg.setOnClickListener(this);
+            likeBtn.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            clickListener.onClick(view, getAdapterPosition());
         }
 
 //        private  FeedSampleRowBinding binding;
@@ -86,6 +109,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 //            this.binding = binding;
 //        }
 
+    }
+
+    public interface RvClickListener {
+        void onClick(View v, int position);
     }
 
 }
