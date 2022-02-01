@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/feedRowCard"
@@ -48,14 +51,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedImg" />
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/likeBtn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
-                app:srcCompat="@drawable/unliked" />
+
+                app:lottie_autoPlay = "true"
+                app:lottie_rawRes = "@raw/like_animation"/>
 
             <ImageView
                 android:id="@+id/saveBtn"
@@ -65,7 +70,8 @@
                 android:layout_marginRight="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
-                app:srcCompat="@android:drawable/ic_menu_save" />
+                app:srcCompat="@android:drawable/ic_menu_save"
+/>
 
             <ImageView
                 android:id="@+id/shareBtn"

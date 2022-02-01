@@ -1,5 +1,6 @@
 package com.example.blooddonationapp.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
 
@@ -58,12 +60,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                holder.likeBtn.clearAnimation();
                 if(feed.isLiked()){
                     feed.setLiked(false);
                     holder.likeBtn.setImageResource(R.drawable.unliked);
                 }
                 else{
                     feed.setLiked(true);
+//                    holder.likeBtn.setAnimation(R.raw.like_animation);
+//                    holder.likeBtn.playAnimation();
+//                    holder.likeBtn.animate().setDuration(1000);
+
                     holder.likeBtn.setImageResource(R.drawable.liked);
                 }
             }
@@ -79,7 +86,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     public class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         ImageView feedImg;
-        ImageView likeBtn;
+        LottieAnimationView likeBtn;
         ImageView shareBtn;
         ImageView saveBtn;
 
