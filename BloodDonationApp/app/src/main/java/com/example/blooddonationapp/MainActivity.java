@@ -15,23 +15,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
 import com.example.blooddonationapp.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     ActivityMainBinding binding;
     private View hView;
     private TextView edit;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // getting current user from firebase authentication
+        auth=FirebaseAuth.getInstance();
+        currentUser=auth.getCurrentUser();
 
         hView=binding.navViewSide.getHeaderView(0);
         edit=hView.findViewById(R.id.edit_profile);
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         binding.profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.container.openDrawer(GravityCompat.START);
+                  binding.container.openDrawer(GravityCompat.START);
             }
         });
 
@@ -94,5 +104,39 @@ public class MainActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragment)
                 .commit();
+    }
+
+
+    // For side navigation menu items
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.log_out:
+                Toast.makeText(MainActivity.this,"999",Toast.LENGTH_LONG).show();
+                auth.signOut();
+                sendToLogin();
+                break;
+        }
+        return true;
+    }
+
+    private void sendToLogin()
+    {
+        Intent i=new Intent(MainActivity.this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(currentUser==null)
+        {
+            sendToLogin();
+        }
     }
 }

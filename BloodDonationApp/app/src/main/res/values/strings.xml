@@ -9,4 +9,15 @@
     <string name="log_out">Log out</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="sign_in">Sign in</string>
+    <string name="or">OR</string>
+    <string name="new_here_sign_up_instead">New here? Sign-Up instead</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_email_id">Enter Email Id</string>
+    <string name="hello_there_welcome_back">Hello there,welcome back</string>
+    <string name="get_on_board">Get on board</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="enter_code">Enter Code</string>
+    <string name="verify">Verify</string>
 </resources>
