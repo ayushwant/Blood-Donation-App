@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activities.LoginActivity">
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="35dp"
+      android:paddingEnd="50dp"
+      android:layout_marginTop="100dp"
+      android:textColor="@color/grey"
+      android:layout_marginRight="35dp"
+      android:textSize="30dp"
+      android:text="@string/hello_there_welcome_back"
+      android:layout_marginBottom="80dp"
+      />
+
+
+  <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/login_no_txt_input"
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="35dp"
+      android:layout_marginTop="60sp"
+      android:layout_marginRight="35dp"
+      android:hint="@string/enter_phone_number"
+      app:prefixText="+91"
+      >
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/phone_number"
+        android:layout_width="match_parent"
+        android:inputType="number"
+        android:layout_height="wrap_content" />
+  </com.google.android.material.textfield.TextInputLayout>
+  <TextView
+      android:id="@+id/error_msg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="35dp"
+      android:textColor="#DF0A11"
+      android:layout_marginRight="35dp"
+      android:padding="3dp"
+      android:textSize="15dp"
+  />
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:elevation="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="@string/sign_in"
+        android:background="@drawable/button_style"
+        android:textSize="12sp" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+  </FrameLayout>
+
+<LinearLayout
+    android:layout_marginTop="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="35dp"
+    android:layout_marginLeft="35dp"
+    android:gravity="center"
+    android:layout_margin="40dp"
+    android:orientation="horizontal">
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1sp"
+      android:background="@color/grey"
+      android:layout_weight="1"/>
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textColor="@color/grey"
+      android:textAlignment="center"
+      android:layout_weight="1.7"
+      android:textSize="12dp"
+      android:text="@string/or"
+      />
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1sp"
+      android:background="@color/grey"
+      android:layout_weight="1"/>
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginRight="35dp"
+    android:layout_marginLeft="35dp"
+    android:gravity="center"
+  >
+  <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/google"
+      android:layout_width="31dp"
+      android:layout_height="31dp"
+      android:layout_margin="12dp"
+      android:background="@drawable/google"/>
+  <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/fb"
+      android:layout_width="35dp"
+      android:layout_height="35dp"
+      android:layout_margin="12dp"
+      android:background="@drawable/fb"/>
+  <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/yahoo"
+      android:layout_width="38dp"
+      android:layout_margin="12dp"
+      android:layout_height="36dp"
+      android:background="@drawable/yahoo"/>
+</LinearLayout>
+  <TextView
+      android:id="@+id/sign_up_txt"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="35dp"
+      android:layout_marginTop="30dp"
+      android:textColor="@color/grey"
+      android:layout_marginRight="35dp"
+      android:textAlignment="center"
+      android:text="@string/new_here_sign_up_instead"
+      android:textColorLink="@color/grey"
+      />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

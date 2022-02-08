@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "5324236952",
+    "project_id": "rotaract-blood-donation-app",
+    "storage_bucket": "rotaract-blood-donation-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5324236952:android:d3a3fb021bc66e6fec88ed",
+        "android_client_info": {
+          "package_name": "com.example.blooddonationapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5324236952-ijco3d01a4cqp2ngoot8d5blt2re0f60.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blooddonationapp",
+            "certificate_hash": "4db0515c135f5aafadbeddbb0d64fd2a23d79f1a"
+          }
+        },
+        {
+          "client_id": "5324236952-mtcp4lr6kbl83vi2romm83gfbo3g58sg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT1YiskJEcKI2ypooRpbAVsANA4JV1ENw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5324236952-mtcp4lr6kbl83vi2romm83gfbo3g58sg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
