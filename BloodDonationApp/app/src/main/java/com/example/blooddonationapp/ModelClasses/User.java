@@ -1,4 +1,4 @@
-package com.example.blooddonationapp.ModelClass;
+package com.example.blooddonationapp.ModelClasses;
 
 public class User {
     private String name;

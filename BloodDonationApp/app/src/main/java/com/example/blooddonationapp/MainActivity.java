@@ -24,6 +24,13 @@ import com.example.blooddonationapp.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firestore.v1.WriteResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -32,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView edit;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    private FirebaseFirestore db;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +50,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // getting current user from firebase authentication
         auth=FirebaseAuth.getInstance();
+        db= FirebaseFirestore.getInstance();
         currentUser=auth.getCurrentUser();
+
+        // updating uid of user in fireStore upon successful login
+        if(currentUser!=null) {
+            uid = currentUser.getUid();
+            Map<String, Object> data = new HashMap<>();
+            data.put("uid", uid);
+            db.collection("Users").document(currentUser.getPhoneNumber())
+                    .set(data, SetOptions.merge());
+        }
 
         hView=binding.navViewSide.getHeaderView(0);
         edit=hView.findViewById(R.id.edit_profile);
