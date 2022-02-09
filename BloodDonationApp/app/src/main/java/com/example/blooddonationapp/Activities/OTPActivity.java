@@ -9,10 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivity;
-import com.example.blooddonationapp.ModelClass.User;
-import com.example.blooddonationapp.R;
+import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.databinding.ActivityOtpactivityBinding;
-import com.example.blooddonationapp.databinding.ActivitySignUpBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -38,15 +36,18 @@ public class OTPActivity extends AppCompatActivity {
         binding = ActivityOtpactivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // get Firebase instances
         db= FirebaseFirestore.getInstance();
         auth=FirebaseAuth.getInstance();
+
+        // Get entered data from SingUp
         Intent i= getIntent();
         mAuthCredentials=i.getStringExtra("Authcredentials");
         name=i.getStringExtra("name");
         phone=i.getStringExtra("phone");
         email=i.getStringExtra("email");
         activity=i.getStringExtra("activity");
-        uid=i.getStringExtra("uid");
+//        uid=i.getStringExtra("uid");
         phone="+91"+phone;
 
         binding.verify.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +58,7 @@ public class OTPActivity extends AppCompatActivity {
                 {
                     Toast.makeText(OTPActivity.this,"Enter OTP",Toast.LENGTH_LONG).show();
                 }
-                else if(mCode.length()<6||mCode.length()>6)
+                else if(mCode.length() != 6)
                 {
                     Toast.makeText(OTPActivity.this,"Enter valid 6-digit OTP",Toast.LENGTH_LONG).show();
                 }
@@ -67,12 +68,11 @@ public class OTPActivity extends AppCompatActivity {
                     signInWithPhoneAuthCredential(credential);
                     if(activity.equals("SignUp"))
                     {
-                         User user = new User();
+                        User user = new User();
                          user.setName(name);
                          user.setPhone(phone);
                          user.setEmail(email);
-                         user.setUid(uid);
-                         //Saving in firestore in +91... format
+                        //Saving in firestore in +91... format
                          db.collection("Users").document(phone).set(user)
                                  .addOnSuccessListener(new OnSuccessListener<Void>() {
                                      @Override

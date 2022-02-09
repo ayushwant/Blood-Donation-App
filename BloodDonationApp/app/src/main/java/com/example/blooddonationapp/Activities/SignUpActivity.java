@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivity;
 import com.example.blooddonationapp.R;
@@ -26,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SignUpActivity extends AppCompatActivity
 {
-    String name,phone,email,uid;
+    String name,phone,email;
     ActivitySignUpBinding binding;
     FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -39,7 +41,6 @@ public class SignUpActivity extends AppCompatActivity
         setContentView(binding.getRoot());
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
-        uid=currentUser.getUid();
 
         binding.userName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity
                 finish();
             }
         });
+
         //On clicking on sign-up button
         binding.signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +136,6 @@ public class SignUpActivity extends AppCompatActivity
                                 otpIntent.putExtra("name",name);
                                 otpIntent.putExtra("email",email);
                                 otpIntent.putExtra("phone",phone);
-                                otpIntent.putExtra("uid",uid);
                                 startActivity(otpIntent);
                             }
                         },1000);

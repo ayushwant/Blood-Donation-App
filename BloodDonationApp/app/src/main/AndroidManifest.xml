@@ -21,9 +21,8 @@
 
             android:name=".Activities.WebViewActivity"
             android:exported="false" />
-        <activity
-            android:name=".Activities.ProfileActivity"
 
+        <activity
             android:name=".Activities.OTPActivity"
 
             android:exported="false" />
