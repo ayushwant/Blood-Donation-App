@@ -13,6 +13,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivity;
 import com.example.blooddonationapp.R;
@@ -114,7 +115,6 @@ public class LoginActivity extends AppCompatActivity
                             }
                         }
                     });
-
                 }
             }
         });
@@ -153,21 +153,46 @@ public class LoginActivity extends AppCompatActivity
             }
         };
 
+        //Google sign in
+        binding.google.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+        //FB sign in
+        binding.fb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        //Yahoo sign in
+        binding.yahoo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
+
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
         if(currentUser!=null)
         {
             sendUserToHome();
         }
     }
+
     //For sending user to main activity
-    public void sendUserToHome() {
+    public void sendUserToHome()
+    {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
         startActivity(i);
     }
+
 }

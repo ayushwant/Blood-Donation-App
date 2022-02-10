@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.LoginActivity;
+import com.example.blooddonationapp.Activities.MyRequest;
 import com.example.blooddonationapp.Activities.ProfileActivity;
+import com.example.blooddonationapp.Activities.RaisedRequests;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
+    private NavigationView navigationView;
     String uid;
 
     @Override
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         auth=FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
         currentUser=auth.getCurrentUser();
+        navigationView=findViewById(R.id.nav_view_side);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // updating uid of user in fireStore upon successful login
         if(currentUser!=null) {
@@ -128,15 +133,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // For side navigation menu items
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+    public boolean onNavigationItemSelected(@NonNull MenuItem item)
+    {
         switch (item.getItemId())
         {
-            case R.id.log_out:
-                Toast.makeText(MainActivity.this,"999",Toast.LENGTH_LONG).show();
-                auth.signOut();
-                sendToLogin();
-                break;
+            case R.id.log_out: auth.signOut();
+                               sendToLogin();
+                               break;
+            case R.id.raised_request:
+                               Intent i=new Intent(MainActivity.this, RaisedRequests.class);
+                               startActivity(i);
+                               break;
+            case R.id.my_request:
+                               Intent i1=new Intent(MainActivity.this, MyRequest.class);
+                               startActivity(i1);
+                               break;
+            case R.id.settings:
+                               break;
+            case R.id.about_us:
+                               break;
+
         }
         return true;
     }
