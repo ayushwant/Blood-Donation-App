@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Map<String, Object> data = new HashMap<>();
             data.put("uid", uid);
             db.collection("Users").document(currentUser.getPhoneNumber())
-                    .set(data, SetOptions.merge());
+                    .update("uid", uid);
+//                    .set(data, SetOptions.merge());
         }
 
         hView=binding.navViewSide.getHeaderView(0);
@@ -119,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        // initiating chat
+        binding.menuChatBtn.setOnClickListener(view -> {
+            Intent i = new Intent(MainActivity.this, Chats.class);
+            startActivity(i);
+        });
+
     }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,fragment)
