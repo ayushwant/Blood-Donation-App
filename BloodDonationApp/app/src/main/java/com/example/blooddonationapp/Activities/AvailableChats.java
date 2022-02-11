@@ -6,26 +6,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.Adapters.AvailableChatsAdapter;
 import com.example.blooddonationapp.ModelClasses.User;
-import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityAvailableChatsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AvailableChats extends AppCompatActivity {
 
@@ -34,9 +31,9 @@ public class AvailableChats extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<User> usersList;
 
-    private FirebaseFirestore db;
+    private FirebaseFirestore firestoreDb;
     private FirebaseAuth auth;
-    private FirebaseDatabase firebaseDatabase;
+    private FirebaseDatabase realtimeDb;
     private FirebaseUser currentUser;
 
 
@@ -55,11 +52,10 @@ public class AvailableChats extends AppCompatActivity {
         AvailableChatsAdapter rvAdapter = new AvailableChatsAdapter(this, usersList);
         recyclerView.setAdapter(rvAdapter);
 
-        db=FirebaseFirestore.getInstance();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        auth=FirebaseAuth.getInstance();
-        currentUser=auth.getCurrentUser();
-        String senderPhone=currentUser.getPhoneNumber().substring(3);
+        firestoreDb = FirebaseFirestore.getInstance();
+        realtimeDb = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
 
         User testUser = new User();
         testUser.setName("Test wala");
@@ -68,6 +64,7 @@ public class AvailableChats extends AppCompatActivity {
 //        usersList.add(testUser);
 
         //HERE: create/fetch the data here
+        // this was for realtime database
 //        firebaseDatabase.getReference().child("Users").addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -90,7 +87,7 @@ public class AvailableChats extends AppCompatActivity {
 //            }
 //        });
 
-        db.collection("Users")
+        firestoreDb.collection("Users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -99,9 +96,14 @@ public class AvailableChats extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult())
                             {
                                 User user = document.toObject(User.class);
+
+                                if(!user.getPhone().equals(currentUser.getPhoneNumber())  )
                                 usersList.add(user);
                             }
 
+                            // sort the list by name
+                            Collections.sort(usersList, (a,b) -> a.getName().compareTo(b.getName()) );
+//                            usersList.sort(Comparator.comparing(User::getName));
                             rvAdapter.notifyDataSetChanged();
                         } else {
                             Toast.makeText(AvailableChats.this, "Can't get users list from firestore",

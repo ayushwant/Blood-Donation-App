@@ -1,6 +1,7 @@
 package com.example.blooddonationapp.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.blooddonationapp.Activities.MessageRoomActivity;
 import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ import java.util.ArrayList;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder>
 {
 
-    private FirebaseFirestore db;
+    private FirebaseFirestore firestoreDb;
     private DocumentReference ref;
     String str;
     Context context;
@@ -55,7 +60,40 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         User user = usersList.get(position);
 
-//        holder.chatProfilePic.setImageResource(user.getImgUri());
+        // get name and image uri from firestore
+        firestoreDb = FirebaseFirestore.getInstance();
+        ref = firestoreDb.collection("Users").document(user.getPhone());
+
+        ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(@NonNull DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists())
+                {
+                    {
+                        holder.chatName.setText(documentSnapshot.getString("name"));
+                        str=documentSnapshot.getString("imgUri");
+                        Glide.with(context).load(str)
+                                .placeholder(R.drawable.ic_baseline_account_circle_24).into(holder.chatProfilePic);
+                    }
+                }
+            }
+        });
+
+        // get last msg and its time from realtime database
+
+        // start messaging now
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, MessageRoomActivity.class);
+                i.putExtra("name", user.getName());
+                i.putExtra("phone", user.getPhone());
+                i.putExtra("uri", user.getImgUri());
+                i.putExtra("uid", user.getUid());
+
+                context.startActivity(i);
+            }
+        });
 
     }
 

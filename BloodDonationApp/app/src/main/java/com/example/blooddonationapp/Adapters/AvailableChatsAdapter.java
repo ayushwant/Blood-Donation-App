@@ -67,9 +67,9 @@ public class AvailableChatsAdapter  extends RecyclerView.Adapter<AvailableChatsA
 //        if(user.getName()!=null)
 //        holder.availableChatsName.setText(user.getName());
 
-        // get image uri from firestore
-        db=FirebaseFirestore.getInstance();
-        ref=db.collection("Users").document(user.getPhone());
+        // get name and image uri from firestore
+        db = FirebaseFirestore.getInstance();
+        ref = db.collection("Users").document(user.getPhone());
 
         ref.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -120,7 +120,8 @@ public class AvailableChatsAdapter  extends RecyclerView.Adapter<AvailableChatsA
                 Intent i = new Intent(context, MessageRoomActivity.class);
                 i.putExtra("name", user.getName());
                 i.putExtra("phone", user.getPhone());
-                i.putExtra("uri", user.getName());
+                i.putExtra("uri", user.getImgUri());
+                i.putExtra("uid", user.getUid());
 
                 context.startActivity(i);
             }
