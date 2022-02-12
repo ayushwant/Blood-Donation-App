@@ -79,6 +79,7 @@ public class Chats extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult())
                             {
+                                usersList.clear();
                                 User user = document.toObject(User.class);
 
                                 String neededRoom = currentUser.getUid()+ "__" +user.getUid();
