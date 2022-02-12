@@ -9,11 +9,22 @@
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/liked.xml" value="0.2105" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/unliked.xml" value="0.2105" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/unsaved.xml" value="0.2105" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout-v23/feed_sample_row.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout-v23/sample_row_msged_users.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_available_chats.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_chats.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_message_room.xml" value="0.25416666666666665" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_web_view.xml" value="0.23278985507246377" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/feed_sample_row.xml" value="0.4" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/fragment_feed.xml" value="0.2115036231884058" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/nav_header.xml" value="0.2" />
         <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/navigation_action.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/received_message.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/sample_row_available_chats.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/sample_row_msged_users.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/sent_message.xml" value="0.25416666666666665" />
+        <entry key="..\:/My Projects/Blood-Donation-App/BloodDonationApp/app/src/main/res/mipmap-anydpi-v26/chatBg_round.xml" value="0.237" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/2/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/button_style.xml" value="0.248" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/2/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/ic_baseline_notifications_24.xml" value="0.208" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/2/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/ic_blood.xml" value="0.208" />

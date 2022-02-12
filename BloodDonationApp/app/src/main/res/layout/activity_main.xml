@@ -81,7 +81,7 @@
                             android:background="@drawable/ic_baseline_notifications_24"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/chat"
+                            android:id="@+id/menu_chatBtn"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_marginLeft="10dp"

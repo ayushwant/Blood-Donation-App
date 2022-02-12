@@ -18,6 +18,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BloodDonationApp">
         <activity
+            android:name=".Activities.MessageRoomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.AvailableChats"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.Chats"
+            android:exported="false"/>
+      
+        <activity
             android:name=".Activities.MyRequest"
             android:exported="false" />
         <activity
