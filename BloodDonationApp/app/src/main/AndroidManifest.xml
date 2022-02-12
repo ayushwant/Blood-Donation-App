@@ -11,6 +11,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -24,6 +25,13 @@
             android:exported="false" />
         <activity
             android:name=".Activities.Chats"
+            android:exported="false"/>
+      
+        <activity
+            android:name=".Activities.MyRequest"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.RaisedRequests"
             android:exported="false" />
         <activity
             android:name=".Activities.WebViewActivity"
