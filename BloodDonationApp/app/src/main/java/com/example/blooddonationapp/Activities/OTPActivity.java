@@ -117,5 +117,6 @@ public class OTPActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
         startActivity(i);
+        finish();
     }
 }

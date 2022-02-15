@@ -147,6 +147,7 @@ public class LoginActivity extends AppCompatActivity
                                 otpIntent.putExtra("activity","Login");
                                 otpIntent.putExtra("phone",phone);
                                 startActivity(otpIntent);
+                                finish();
                             }
                         },1000);
 
