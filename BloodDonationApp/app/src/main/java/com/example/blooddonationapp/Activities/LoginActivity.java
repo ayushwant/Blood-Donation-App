@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity
 {
     ActivityLoginBinding binding;
     FirebaseAuth mAuth;
+    private boolean isAdmin=false;
     private FirebaseUser currentUser;
     private String phone;
     FirebaseFirestore db;
@@ -89,6 +90,17 @@ public class LoginActivity extends AppCompatActivity
                 else
                 {
                     phone=binding.phoneNumber.getText().toString().trim();
+                    db.collection("Admin").document("+91"+phone)
+                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.getResult().exists())
+                            {
+                                isAdmin=true;
+                            }
+                        }
+                    });
+
                     // Checking if already registered
                     db.collection("Users").document("+91"+phone)
                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -115,6 +127,7 @@ public class LoginActivity extends AppCompatActivity
                             }
                         }
                     });
+
                 }
             }
         });
@@ -144,6 +157,9 @@ public class LoginActivity extends AppCompatActivity
 
                                 Intent otpIntent=new Intent(LoginActivity.this, OTPActivity.class);
                                 otpIntent.putExtra("Authcredentials",s);
+                                if(isAdmin)
+                                otpIntent.putExtra("activity","Admin");
+                                else
                                 otpIntent.putExtra("activity","Login");
                                 otpIntent.putExtra("phone",phone);
                                 startActivity(otpIntent);

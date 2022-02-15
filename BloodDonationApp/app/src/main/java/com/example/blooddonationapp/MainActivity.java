@@ -1,10 +1,8 @@
 package com.example.blooddonationapp;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
@@ -12,14 +10,12 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
 import com.example.blooddonationapp.Activities.ProfileActivity;
-import com.example.blooddonationapp.Activities.RaisedRequests;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
@@ -27,10 +23,7 @@ import com.example.blooddonationapp.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firestore.v1.WriteResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,10 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.log_out: auth.signOut();
                                sendToLogin();
                                break;
-            case R.id.raised_request:
-                               Intent i=new Intent(MainActivity.this, RaisedRequests.class);
-                               startActivity(i);
-                               break;
+
             case R.id.my_request:
                                Intent i1=new Intent(MainActivity.this, MyRequest.class);
                                startActivity(i1);
