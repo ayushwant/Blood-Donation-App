@@ -102,17 +102,18 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment and bind
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
         getLocationPermission();
-        initMap();
+//        initMap();
 
         return view;
     }
 
+    // initializes the map after getting permissions properly
     private void initMap() {
         mMapView.onResume(); // needed to get the map to display immediately
         try {
@@ -127,18 +128,15 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
             public void onMapReady(@NonNull GoogleMap googleMap) {
                 mMap = googleMap;
 
-                // For showing a move to my location button
-//                googleMap.setMyLocationEnabled(true);
-
                 // Add a marker in Sydney and move the camera
                 LatLng sydney = new LatLng(-34, 151);
                 mMap.addMarker(new MarkerOptions()
                         .position(sydney)
                         .title("Marker in Sydney"));
 
-                getDeviceLocation();
 
-                if(mLocationPermissionsGranted){
+                if(mLocationPermissionsGranted)
+                {
                     getDeviceLocation();
                     if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
@@ -146,7 +144,7 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
                         return;
                     }
                     mMap.setMyLocationEnabled(true);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }
 
             }
@@ -154,26 +152,31 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
 
     }
 
+    // Gets called after map is initialized properly
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         try{
-            if(mLocationPermissionsGranted){
+            if(mLocationPermissionsGranted)
+            {
 
                 @SuppressLint("MissingPermission") final Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
-                    public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
+                    public void onComplete(@NonNull Task task)
+                    {
+                        if(task.isSuccessful())
+                        {
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM);
 
-                        }else{
+                        }
+                        else{
                             Log.d(TAG, "onComplete: current location is null");
                             Toast.makeText(getContext(), "unable to get current location", Toast.LENGTH_SHORT).show();
                         }
@@ -192,37 +195,40 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    // this is the 1st method that gets called after createView. It checks if the permission has been provided by the user,
+    // and asks for permission if not granted. It then calls onRequestPermissionsResult to check if the needed permissions
+    // were granted. If they were already granted, then it calls initMap()
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permissions");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION};
 
-        if(ContextCompat.checkSelfPermission(getContext(),
-                FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(ContextCompat.checkSelfPermission(getContext(),
-                    COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(getContext(), FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(),
+                COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
+        {
                 mLocationPermissionsGranted = true;
                 initMap();
-            }else{
-                ActivityCompat.requestPermissions(getActivity(),
-                        permissions,
-                        LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else{
-            ActivityCompat.requestPermissions(getActivity(),
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
+
         }
+        else // request for permission
+            ActivityCompat.requestPermissions(getActivity(),
+                    permissions, LOCATION_PERMISSION_REQUEST_CODE);
+
+
     }
 
 
+    // checks if the needed permissions were granted
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         mLocationPermissionsGranted = false;
 
-        switch(requestCode){
+        switch(requestCode)
+        {
             case LOCATION_PERMISSION_REQUEST_CODE:{
-                if(grantResults.length > 0){
+                if(grantResults.length > 0)
+                {
                     for(int i = 0; i < grantResults.length; i++){
                         if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
                             mLocationPermissionsGranted = false;
