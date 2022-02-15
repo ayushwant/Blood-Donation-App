@@ -2,8 +2,13 @@ package com.example.blooddonationapp.Fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +54,8 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
     private GoogleMap mMap;
     MapView mMapView;
     FusedLocationProviderClient mFusedLocationProviderClient;
+    AlertDialog.Builder builder = null;
+    AlertDialog alert = null;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -107,8 +114,15 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
+        //check and ask to enable GPS
+        //https://stackoverflow.com/questions/843675/how-do-i-find-out-if-the-gps-of-an-android-device-is-enabled
+//        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+//
+//        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+//            buildAlertMessageNoGps();
+//        }
+//        else
         getLocationPermission();
-//        initMap();
 
         return view;
     }
@@ -245,6 +259,25 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
         }
     }
 
+    // Ask to enable GPS
+    private void buildAlertMessageNoGps() {
+        builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+    }
+
 
     @Override
     public void onResume() {
@@ -256,18 +289,22 @@ public class MapFragment extends Fragment{ //implements OnMapReadyCallback {
     public void onPause() {
         super.onPause();
         mMapView.onPause();
+        if(alert!=null) alert.dismiss();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        if(alert!=null) alert.dismiss();
+
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+        if(alert!=null) alert.dismiss();
     }
 
 
