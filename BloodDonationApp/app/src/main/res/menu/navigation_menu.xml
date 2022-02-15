@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/raised_request"
-        android:icon="@drawable/ic_blood"
-        android:title="@string/raised_requests"/>
-
     <item android:id="@+id/my_request"
         android:icon="@drawable/ic_baseline_emoji_people_24"
         android:title="@string/my_requests"/>
