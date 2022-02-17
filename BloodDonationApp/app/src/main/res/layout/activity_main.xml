@@ -111,6 +111,9 @@
             app:mbn_countTextColor="@color/design_default_color_on_secondary"
             app:mbn_defaultIconColor="@color/grey"
             app:mbn_selectedIconColor="@color/white" />
+
+
+
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

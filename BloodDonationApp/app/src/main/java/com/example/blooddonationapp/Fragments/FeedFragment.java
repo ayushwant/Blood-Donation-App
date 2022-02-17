@@ -84,7 +84,7 @@ public class FeedFragment extends Fragment {
         FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList, clickListener);
         feedRv.setAdapter(feedAdapter);
 
-        feedList.add(new Feed("hello just a check", R.drawable.background, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
+        feedList.add(new Feed("hello just a check", R.drawable.background_1, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
         feedList.add(new Feed("again just a check 😉", R.drawable.pic1, "https://www.google.com/search?q=hello"));
 
         return view;
