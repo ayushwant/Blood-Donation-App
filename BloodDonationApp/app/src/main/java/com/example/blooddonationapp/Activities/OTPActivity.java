@@ -48,7 +48,7 @@ public class OTPActivity extends AppCompatActivity {
         email=i.getStringExtra("email");
         activity=i.getStringExtra("activity");
 //        uid=i.getStringExtra("uid");
-        phone="+91"+phone;
+
 
         binding.verify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,11 +86,17 @@ public class OTPActivity extends AppCompatActivity {
                              }
                          });
                     }
+                    else if(activity.equals("Admin"))
+                    {
+                        Intent i=new Intent(OTPActivity.this,AdminLogin.class);
+                        i.putExtra("phone",phone);
+                        startActivity(i);
+                    }
                     else
                     {
-                        Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
                         sendUserToHome();
                     }
+
                 }
             }
         });
@@ -117,5 +123,6 @@ public class OTPActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
         startActivity(i);
+        finish();
     }
 }

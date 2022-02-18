@@ -18,6 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BloodDonationApp">
         <activity
+            android:name=".Activities.AdminLogin"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivityAdmin"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.RegisteredMsg"
+            android:exported="false" />
+        <activity
             android:name=".Activities.MessageRoomActivity"
             android:exported="false" />
         <activity
@@ -25,13 +34,9 @@
             android:exported="false" />
         <activity
             android:name=".Activities.Chats"
-            android:exported="false"/>
-      
-        <activity
-            android:name=".Activities.MyRequest"
             android:exported="false" />
         <activity
-            android:name=".Activities.RaisedRequests"
+            android:name=".Activities.MyRequest"
             android:exported="false" />
         <activity
             android:name=".Activities.WebViewActivity"
