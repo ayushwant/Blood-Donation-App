@@ -102,7 +102,7 @@ public class AvailableChats extends AppCompatActivity {
                             }
 
                             // sort the list by name
-                            Collections.sort(usersList, (a,b) -> a.getName().compareTo(b.getName()) );
+//                            Collections.sort(usersList, (a,b) -> a.getName().compareTo(b.getName()) );
 //                            usersList.sort(Comparator.comparing(User::getName));
                             rvAdapter.notifyDataSetChanged();
                         } else {
