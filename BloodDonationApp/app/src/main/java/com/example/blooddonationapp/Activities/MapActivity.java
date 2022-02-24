@@ -38,6 +38,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity {
@@ -70,34 +71,7 @@ public class MapActivity extends AppCompatActivity {
             Places.initialize(getApplicationContext(), MAPS_API_KEY);
         }
 
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                if(place.getLatLng()!=null) {
-                    Log.i(TAG, "Place: " + place.getLatLng().toString());
-                    moveCamera(place.getLatLng(), DEFAULT_ZOOM);
-                }
-            }
-
-
-            @Override
-            public void onError(@NonNull Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
-
+        initAutocomplete();
 
         // Inflate the layout for this fragment and bind
         mMapView = findViewById(R.id.mapView);
@@ -296,15 +270,44 @@ public class MapActivity extends AppCompatActivity {
         if(alert!=null) alert.dismiss();
     }
 
+    // --------Autocomplete
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     *
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    private void initAutocomplete()
+    {
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        List<Place.Field> placeInfo = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        autocompleteFragment.setPlaceFields(placeInfo);
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                LatLng placeLatLng = place.getLatLng();
+                if(placeLatLng!=null) {
+                    Log.i(TAG, "Place: " + placeLatLng);
+                    moveCamera(placeLatLng, DEFAULT_ZOOM);
+
+                    //addMarker
+                    mMap.addMarker(new MarkerOptions()
+                            .position(placeLatLng)
+                            .title(place.getName()));
+                }
+            }
+
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+    }
+
 }
