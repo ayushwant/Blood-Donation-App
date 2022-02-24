@@ -43,6 +43,7 @@
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/3/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_main.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/3/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_otpactivity.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/3/Blood-Donation-App/BloodDonationApp/app/src/main/res/menu/navigation_menu.xml" value="0.2421875" />
+        <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/background.xml" value="0.1665" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/drawable/dialog_box.xml" value="0.248" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_admin_login.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_login.xml" value="0.11144883485309018" />
@@ -51,6 +52,7 @@
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_raised_requests.xml" value="0.10104166666666667" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_registered_msg.xml" value="0.228125" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/bottom_sheet_donor_detail.xml" value="0.2421875" />
+        <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/bottom_sheet_donor_registration.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.264" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/bottom_sheet_request_detail.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/fragment_donor_list.xml" value="0.228125" />
@@ -60,8 +62,6 @@
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/item_request.xml" value="0.2421875" />
         <entry key="..\:/Users/Asmita Yadav/Desktop/New folder/4/Blood-Donation-App/BloodDonationApp/app/src/main/res/menu/navigation_menu.xml" value="0.2421875" />
         <entry key="..\:/Users/hp/AndroidStudioProjects/BloodDonationApp/app/src/main/res/layout/activity_main.xml" value="0.10144927536231885" />
-        <entry key="..\:/Users/hp/Desktop/firstapp/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_profile.xml" value="0.22" />
-        <entry key="..\:/Users/hp/Desktop/software/firstapp/Blood-Donation-App/BloodDonationApp/app/src/main/res/layout/activity_profile.xml" value="0.1796875" />
       </map>
     </option>
   </component>
