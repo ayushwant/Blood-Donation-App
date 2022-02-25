@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
@@ -62,6 +63,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
 
     public static final String MAPS_API_KEY = BuildConfig.MAPS_API_KEY;
 
+    PlacesClient placesClient;
+
+    // Specify the types of place data to return.
+    final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), MAPS_API_KEY);
         }
+        placesClient = Places.createClient(this);
 
         initAutocomplete();
 
@@ -127,21 +134,56 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
         }
 
+        // Set a listener for long map click and drop marker there
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(@NonNull LatLng latLng) {
+                Marker dropMarker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng) );
+
+                dropMarker.setTitle( dropMarker.getTitle() );
+            }
+        });
+
         // Set a listener for marker click.
         googleMap.setOnMarkerClickListener(this);
     }
 
-    // --------Autocomplete-----------
+    /** Called when the user clicks a marker.
+     * https://developers.google.com/maps/documentation/android-sdk/marker#add_a_marker */
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
 
+        Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
+//        marker.showInfoWindow();
+
+        // Retrieve the data from the marker.
+        Integer clickCount = (Integer) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this,
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + " times.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
+    // --------Autocomplete-----------
     private void initAutocomplete()
     {
         // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        // Specify the types of place data to return.
-        List<Place.Field> placeInfo = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-        autocompleteFragment.setPlaceFields(placeInfo);
+        autocompleteFragment.setPlaceFields(placeFields);
 
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -170,35 +212,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         });
 
     }
-
     // --------Autocomplete-----------
-
-
-    /** Called when the user clicks a marker.
-     * https://developers.google.com/maps/documentation/android-sdk/marker#add_a_marker */
-    @Override
-    public boolean onMarkerClick(@NonNull Marker marker) {
-
-        Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
-
-        // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
-
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(this,
-                    marker.getTitle() +
-                            " has been clicked " + clickCount + " times.",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;
-    }
 
     private void moveCamera(LatLng loc, float level)
     {
