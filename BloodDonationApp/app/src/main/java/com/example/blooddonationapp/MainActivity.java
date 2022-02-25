@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
+import com.example.blooddonationapp.Activities.MapActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
@@ -86,14 +87,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Fragment fragment = null;
                 switch(item.getId())
                 {
-                    case 1: fragment = new FeedFragment();
+                    case 1: loadFragment(new FeedFragment());
                         break;
-                    case 2: fragment = new RequestFragment();
+                    case 2: loadFragment( new RequestFragment() );
                         break;
-                    case 3: fragment = new MapFragment();
+                    case 3: startActivity( new Intent(MainActivity.this, MapActivity.class) );
                         break;
                 }
-                loadFragment(fragment);
+
             }
 
 
