@@ -2,6 +2,7 @@ package com.example.blooddonationapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -15,6 +16,7 @@ import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
+import com.example.blooddonationapp.Activities.NotificationActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
@@ -95,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 loadFragment(fragment);
             }
-
-
         });
 
         binding.profileImg.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +124,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.menuChatBtn.setOnClickListener(view -> {
             Intent i = new Intent(MainActivity.this, Chats.class);
             startActivity(i);
+        });
+
+        //Notication
+        binding.notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String notification="In app notification";
+                NotificationCompat.Builder builder=new NotificationCompat.Builder
+                        (MainActivity.this).setSmallIcon(R.drawable.ic_baseline_notifications_24)
+                        .setContentTitle("New Notification")
+                        .setContentText(notification)
+                        .setAutoCancel(true);
+
+
+                Intent i=new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(i);
+            }
         });
 
     }
