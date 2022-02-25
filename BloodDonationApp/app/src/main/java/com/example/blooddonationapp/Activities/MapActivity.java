@@ -11,6 +11,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,8 +41,10 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
@@ -141,7 +145,28 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                 Marker dropMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng) );
 
-                dropMarker.setTitle( dropMarker.getTitle() );
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.ENGLISH);
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+
+                    if (addresses.size() > 0)
+                    {
+                        Address fetchedAddress = addresses.get(0);
+
+                        StringBuilder addressInfo = new StringBuilder("");
+                        if(fetchedAddress.getSubLocality()!=null)
+                        addressInfo.append( fetchedAddress.getSubLocality() +", " +fetchedAddress.getSubAdminArea() );
+
+                        dropMarker.setTitle(String.valueOf(addressInfo));
+                    }
+
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
 
@@ -155,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     public boolean onMarkerClick(@NonNull Marker marker) {
 
         Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
-//        marker.showInfoWindow();
+        marker.showInfoWindow();
 
         // Retrieve the data from the marker.
         Integer clickCount = (Integer) marker.getTag();
