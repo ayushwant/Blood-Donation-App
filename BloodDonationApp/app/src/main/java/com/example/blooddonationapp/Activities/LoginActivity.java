@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity
     private String phone;
     FirebaseFirestore db;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -18,72 +18,77 @@
             android:layout_gravity="center"
             android:layout_height="5dp"
             android:background="@color/red"></View>
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:textColor="@color/white"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="35dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:textSize="15dp"
-        android:textColor="@color/white"
-        android:layout_marginLeft="35dp"
-        android:layout_marginRight="35dp"
-        android:text="@string/patient_details" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:text="@string/donor_registration" />
 
-    <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/patient_name"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:inputType="textPersonName"
             android:layout_marginLeft="35dp"
             android:layout_marginTop="10sp"
             android:layout_marginRight="35dp"
-        android:textColor="@color/white"
+            android:editable="false"
             android:textSize="15dp"
             android:hint="@string/name"
+            android:textColor="@color/white"
             android:layout_height="wrap_content" />
 
-    <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phone"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="35dp"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:editable="false"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:hint="Contact Number"
+            android:layout_height="wrap_content" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="35dp"
+            android:editable="false"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:textSize="15dp"
+            android:textColor="@color/white"
+            android:hint="Email"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/age"
             android:layout_marginLeft="35dp"
             android:layout_marginTop="10sp"
             android:layout_marginRight="35dp"
             android:layout_width="match_parent"
             android:inputType="number"
-            android:textColor="@color/white"
             android:textSize="15dp"
             android:hint="Age"
+            android:textColor="@color/white"
             android:layout_height="wrap_content" />
 
-         <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blood_group"
             android:layout_width="match_parent"
             android:textSize="15dp"
             android:layout_marginLeft="35dp"
             android:layout_marginTop="10sp"
-            android:textColor="@color/white"
             android:layout_marginRight="35dp"
             android:layout_height="wrap_content"
-            android:hint="@string/blood_group"/>
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/required_units"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="10sp"
-            android:layout_marginRight="35dp"
-            android:layout_width="match_parent"
-            android:inputType="number"
             android:textColor="@color/white"
-            android:textSize="15dp"
-            android:hint="@string/required_units"
-            android:layout_height="wrap_content" />
+            android:hint="@string/blood_group"/>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/location"
@@ -108,24 +113,23 @@
             android:layout_height="wrap_content" />
 
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/details"
-            android:textSize="15dp"
+        <CheckBox
+            android:id="@+id/isPublic"
             android:layout_marginLeft="35dp"
+            android:layout_marginRight="45dp"
             android:layout_marginTop="10sp"
-            android:layout_marginRight="35dp"
             android:textColor="@color/white"
-            android:hint="@string/details_additional"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Want to be publicly visible to all users." />
 
-    <Button
-        android:id="@+id/post_request"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="35dp"
-        android:layout_marginTop="20sp"
-        android:layout_marginRight="35dp"
-        android:text="@string/post_request" />
+        <Button
+            android:id="@+id/register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="20sp"
+            android:layout_marginRight="35dp"
+            android:text="@string/register" />
     </LinearLayout>
 </ScrollView>
