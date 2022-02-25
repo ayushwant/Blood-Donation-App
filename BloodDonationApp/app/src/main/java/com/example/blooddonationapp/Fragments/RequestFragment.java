@@ -132,31 +132,61 @@ public class RequestFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                if(patient_name.length()==0)
+                {
+                    patient_name.setError("Required");
+                }
+                if(age.length()==0)
+                {
+                    age.setError("Required");
+                }
+                if(blood_group.length()==0)
+                {
+                    blood_group.setError("Required");
+                }
+                if(required_units.length()==0)
+                {
+                    required_units.setError("Required");
+                }
+                if(location.length()==0)
+                {
+                    location.setError("Required");
+                }
+                if(documents.length()==0)
+                {
+                    documents.setError("Required");
+                }
 
-                patient.setUserName(user.getName());
-                patient.setUserPhone(user.getPhone());
-                patient.setPatientName(patient_name.getText().toString());
-                patient.setAge(age.getText().toString());
-                patient.setBloodGrp(blood_group.getText().toString());
-                patient.setRequiredUnits(required_units.getText().toString());
-                patient.setLocation(location.getText().toString());
-                patient.setPdfUri(documents.getText().toString());
-                patient.setAdditionalDetails(details.getText().toString());
+                else
+                {
 
-                db.collection("Raised Requests").document(currentUser.getPhoneNumber())
-                        .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Intent intent=new Intent(getContext(),RegisteredMsg.class);
-                        startActivity(intent);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    patient.setUserName(user.getName());
+                    patient.setUserPhone(user.getPhone());
+                    patient.setPatientName(patient_name.getText().toString());
+                    patient.setAge(age.getText().toString());
+                    patient.setBloodGrp(blood_group.getText().toString());
+                    patient.setRequiredUnits(required_units.getText().toString());
+                    patient.setLocation(location.getText().toString());
+                    patient.setPdfUri(documents.getText().toString());
+                    patient.setAdditionalDetails(details.getText().toString());
 
-                      Toast.makeText(getContext(),"Error in posting request, try after sometime",Toast.LENGTH_LONG).show();
-                    }
-                });
+                    db.collection("Raised Requests").document(currentUser.getPhoneNumber())
+                            .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Intent intent=new Intent(getContext(),RegisteredMsg.class);
+                            startActivity(intent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Toast.makeText(getContext(),"Error in posting request, try after sometime",Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+
 
             }
         });

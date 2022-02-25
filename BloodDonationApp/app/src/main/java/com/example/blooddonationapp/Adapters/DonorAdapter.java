@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,17 +59,38 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.DonorViewHol
                 dialog.setContentView(R.layout.bottom_sheet_donor_detail);
 
                 TextView donorName,donorAge,donorBloodGrp,donorEmail,donorLocation;
+                ImageView donorCall,donorShare;
+                donorCall=dialog.findViewById(R.id.call);
+                donorShare=dialog.findViewById(R.id.share);
                 donorName=dialog.findViewById(R.id.name);
                 donorAge=dialog.findViewById(R.id.age);
                 donorBloodGrp=dialog.findViewById(R.id.blood_group);
                 donorEmail=dialog.findViewById(R.id.email);
                 donorLocation=dialog.findViewById(R.id.location);
 
+
                 donorName.setText(donor.getName());
                 donorAge.setText(donor.getAge());
                 donorBloodGrp.setText(donor.getBloodGrp());
                 donorEmail.setText(donor.getEmail());
                 donorLocation.setText(donor.getLocation());
+
+                //Calling Donor
+                donorCall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(holder.itemView.getContext(),"Call",Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                //Share Feature
+                donorShare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(holder.itemView.getContext(),"Share",Toast.LENGTH_LONG).show();
+                    }
+                });
+
 
                 dialog.show();
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);

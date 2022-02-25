@@ -83,7 +83,7 @@ public class DonorList extends Fragment {
 
     private void EventChangeListener() {
 
-        db.collection("Donor Requests").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("Registered Donors").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
@@ -93,11 +93,10 @@ public class DonorList extends Fragment {
                 }
                 for(DocumentChange dc : value.getDocumentChanges())
                 {
-                    String isValid=dc.getDocument().getString("isValid");
-                    String isPublic=dc.getDocument().getString("isPublic");
                     if(dc.getType() == DocumentChange.Type.ADDED)
                     {
-                        if(isValid.equals("true") && isPublic.equals("true"))
+                        String isPublic=dc.getDocument().getString("isPublic");
+                        if(isPublic.equals("true"))
                         donorArrayList.add(dc.getDocument().toObject(Donor.class));
                         if(progressDialog.isShowing())
                             progressDialog.dismiss();
