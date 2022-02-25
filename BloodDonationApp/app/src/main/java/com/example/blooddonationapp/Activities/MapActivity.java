@@ -29,6 +29,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,7 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
+        OnMapReadyCallback {
 
     private GoogleMap mMap;
     MapView mMapView;
@@ -97,34 +99,115 @@ public class MapActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @SuppressLint("MissingPermission")
+        mMapView.getMapAsync(this);
+    }
+
+    /** Called when the map is ready. */
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions()
+                .position(sydney)
+                .title("Marker in Sydney"));
+
+
+        if(mLocationPermissionsGranted)
+        {
+            getDeviceLocation();
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        }
+
+        // Set a listener for marker click.
+        googleMap.setOnMarkerClickListener(this);
+    }
+
+    // --------Autocomplete-----------
+
+    private void initAutocomplete()
+    {
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Specify the types of place data to return.
+        List<Place.Field> placeInfo = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        autocompleteFragment.setPlaceFields(placeInfo);
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onMapReady(@NonNull GoogleMap googleMap) {
-                mMap = googleMap;
+            public void onPlaceSelected(@NonNull Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                LatLng placeLatLng = place.getLatLng();
+                if(placeLatLng!=null) {
+                    Log.i(TAG, "Place: " + placeLatLng);
+                    moveCamera(placeLatLng, DEFAULT_ZOOM);
 
-                // Add a marker in Sydney and move the camera
-                LatLng sydney = new LatLng(-34, 151);
-                mMap.addMarker(new MarkerOptions()
-                        .position(sydney)
-                        .title("Marker in Sydney"));
-
-
-                if(mLocationPermissionsGranted)
-                {
-                    getDeviceLocation();
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    mMap.setMyLocationEnabled(true);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                    //addMarker
+                    mMap.addMarker(new MarkerOptions()
+                            .position(placeLatLng)
+                            .title(place.getName()));
                 }
+            }
 
+
+            @Override
+            public void onError(@NonNull Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
             }
         });
 
+    }
+
+    // --------Autocomplete-----------
+
+
+    /** Called when the user clicks a marker.
+     * https://developers.google.com/maps/documentation/android-sdk/marker#add_a_marker */
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+
+        Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
+
+        // Retrieve the data from the marker.
+        Integer clickCount = (Integer) marker.getTag();
+
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this,
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + " times.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
+    private void moveCamera(LatLng loc, float level)
+    {
+        // For zooming automatically to the location
+        CameraPosition cameraPosition;
+        if (loc != null) {
+            cameraPosition = new CameraPosition.Builder().target(loc).zoom(level).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 
     // Gets called after map is initialized properly
@@ -160,16 +243,6 @@ public class MapActivity extends AppCompatActivity {
             }
         }catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
-        }
-    }
-
-    private void moveCamera(LatLng loc, float level)
-    {
-        // For zooming automatically to the location
-        CameraPosition cameraPosition;
-        if (loc != null) {
-            cameraPosition = new CameraPosition.Builder().target(loc).zoom(level).build();
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
     }
 
@@ -270,44 +343,6 @@ public class MapActivity extends AppCompatActivity {
         if(alert!=null) alert.dismiss();
     }
 
-    // --------Autocomplete
 
-    private void initAutocomplete()
-    {
-        // Initialize the AutocompleteSupportFragment.
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // Specify the types of place data to return.
-        List<Place.Field> placeInfo = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-        autocompleteFragment.setPlaceFields(placeInfo);
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                LatLng placeLatLng = place.getLatLng();
-                if(placeLatLng!=null) {
-                    Log.i(TAG, "Place: " + placeLatLng);
-                    moveCamera(placeLatLng, DEFAULT_ZOOM);
-
-                    //addMarker
-                    mMap.addMarker(new MarkerOptions()
-                            .position(placeLatLng)
-                            .title(place.getName()));
-                }
-            }
-
-
-            @Override
-            public void onError(@NonNull Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
-    }
 
 }
