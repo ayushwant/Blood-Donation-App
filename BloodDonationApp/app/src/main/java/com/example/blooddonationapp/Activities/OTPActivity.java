@@ -73,7 +73,7 @@ public class OTPActivity extends AppCompatActivity {
                          user.setPhone(phone);
                          user.setEmail(email);
                         //Saving in firestore in +91... format
-                         db.collection("Users").document(phone).set(user)
+                         db.collection("Users").document("+91"+phone).set(user)
                                  .addOnSuccessListener(new OnSuccessListener<Void>() {
                                      @Override
                                      public void onSuccess(Void unused) {

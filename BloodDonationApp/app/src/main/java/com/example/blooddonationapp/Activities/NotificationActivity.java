@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.blooddonationapp.Adapters.NotificationAdapter;
 import com.example.blooddonationapp.ModelClasses.Notification;
@@ -39,6 +40,14 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityNotificationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //Back button
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //Progress Bar while loading notifications
         progressDialog = new ProgressDialog(NotificationActivity.this);
