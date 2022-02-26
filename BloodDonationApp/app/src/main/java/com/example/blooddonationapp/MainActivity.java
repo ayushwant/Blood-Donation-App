@@ -2,17 +2,10 @@ package com.example.blooddonationapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +16,6 @@ import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.MapActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
-import com.example.blooddonationapp.Activities.NotificationActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
@@ -104,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
             }
+
+
         });
 
         binding.profileImg.setOnClickListener(new View.OnClickListener() {
@@ -131,49 +125,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.menuChatBtn.setOnClickListener(view -> {
             Intent i = new Intent(MainActivity.this, Chats.class);
             startActivity(i);
-        });
-
-
-        //In app notification
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationChannel channel = new NotificationChannel("My Notification",
-                    "My Notification",NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager =getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-
-        //Notication
-        binding.notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-               //In app notification
-                String notification="In app notification";
-                NotificationCompat.Builder builder=new NotificationCompat.Builder
-                        (MainActivity.this,"My Notification").setSmallIcon(R.drawable.ic_baseline_notifications_24)
-                        .setContentTitle("New Notification")
-                        .setContentText(notification)
-                        .setAutoCancel(true);
-
-                Intent intent=new Intent(MainActivity.this,NotificationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //intent.putExtra("message",notification);
-
-                PendingIntent pendingIntent=PendingIntent.getActivity(MainActivity.this,0,
-                        intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                builder.setContentIntent(pendingIntent);
-
-                NotificationManager notificationManager = (NotificationManager)getSystemService(
-                        Context.NOTIFICATION_SERVICE
-                );
-
-                notificationManager.notify(0,builder.build());
-
-               //Intent i=new Intent(MainActivity.this, NotificationActivity.class);
-               // startActivity(i);
-            }
         });
 
     }
