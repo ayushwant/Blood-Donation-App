@@ -8,15 +8,23 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.BuildConfig;
@@ -84,20 +92,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         }
         placesClient = Places.createClient(this);
 
-        initAutocomplete();
-
         // Inflate the layout for this fragment and bind
         mMapView = findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        //check and ask to enable GPS
-        //https://stackoverflow.com/questions/843675/how-do-i-find-out-if-the-gps-of-an-android-device-is-enabled
-//        final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-//
-//        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-//            buildAlertMessageNoGps();
-//        }
-//        else
+        initAutocomplete();
         getLocationPermission();
     }
 
@@ -182,22 +181,31 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
         marker.showInfoWindow();
 
-        // Retrieve the data from the marker.
-        Integer clickCount = (Integer) marker.getTag();
+        //showDialog();
+        final Dialog placeDetailsDialog;
+        placeDetailsDialog = new Dialog(this);
+        placeDetailsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        placeDetailsDialog.setContentView(R.layout.bottom_sheet_map_places);
 
-        // Check if a click count was set, then display the click count.
-        if (clickCount != null) {
-            clickCount = clickCount + 1;
-            marker.setTag(clickCount);
-            Toast.makeText(this,
-                    marker.getTitle() +
-                            " has been clicked " + clickCount + " times.",
-                    Toast.LENGTH_SHORT).show();
-        }
+        // get and bind the views
+        TextView name, rating, totalRatings, type, openStatus, address;
+        ImageView starImg, getDirectionsBtn;
 
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
+        name = findViewById(R.id.bs_placeName);
+        rating = findViewById(R.id.bs_placeRating);
+        totalRatings = findViewById(R.id.bs_totalRatings);
+        type = findViewById(R.id.bs_placeType);
+        openStatus = findViewById(R.id.bs_openStatus);
+        address = findViewById(R.id.bs_fullAddress);
+        starImg = findViewById(R.id.bs_starImage);
+        getDirectionsBtn = findViewById(R.id.bs_getDirectionsBtn);
+
+        placeDetailsDialog.show();
+        placeDetailsDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        placeDetailsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        placeDetailsDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        placeDetailsDialog.getWindow().setGravity(Gravity.BOTTOM);
+
         return false;
     }
 
