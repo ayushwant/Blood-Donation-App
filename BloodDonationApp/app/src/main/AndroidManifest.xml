@@ -18,9 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BloodDonationApp">
         <activity
+<<<<<<< HEAD
             android:name=".Activities.MapActivity"
             android:exported="false" />
         <activity
+=======
+>>>>>>> parent of c50b901... misc file
             android:name=".Activities.AdminLogin"
             android:exported="false" />
         <activity
