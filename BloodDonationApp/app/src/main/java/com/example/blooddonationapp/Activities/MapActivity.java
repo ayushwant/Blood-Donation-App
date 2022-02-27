@@ -17,6 +17,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,6 +30,8 @@ import android.widget.Toast;
 
 import com.example.blooddonationapp.BuildConfig;
 import com.example.blooddonationapp.R;
+import com.example.blooddonationapp.Utilities.NearbyPlacesSearch;
+import com.example.blooddonationapp.Utilities.asyncResponse;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -50,7 +53,9 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -174,39 +179,94 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     }
 
     /** Called when the user clicks a marker.
-     * https://developers.google.com/maps/documentation/android-sdk/marker#add_a_marker */
+     * https://developers.google.com/maps/documentation/android-sdk/marker#add_a_marker
+     *
+     * Show the details of the place where the marker was clicked
+     * */
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
 
         Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
         marker.showInfoWindow();
 
-        //showDialog();
-        final Dialog placeDetailsDialog;
-        placeDetailsDialog = new Dialog(this);
-        placeDetailsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        placeDetailsDialog.setContentView(R.layout.bottom_sheet_map_places);
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+                //showDialog();
 
-        // get and bind the views
-        TextView name, rating, totalRatings, type, openStatus, address;
-        ImageView starImg, getDirectionsBtn;
 
-        name = findViewById(R.id.bs_placeName);
-        rating = findViewById(R.id.bs_placeRating);
-        totalRatings = findViewById(R.id.bs_totalRatings);
-        type = findViewById(R.id.bs_placeType);
-        openStatus = findViewById(R.id.bs_openStatus);
-        address = findViewById(R.id.bs_fullAddress);
-        starImg = findViewById(R.id.bs_starImage);
-        getDirectionsBtn = findViewById(R.id.bs_getDirectionsBtn);
 
-        placeDetailsDialog.show();
-        placeDetailsDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        placeDetailsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        placeDetailsDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        placeDetailsDialog.getWindow().setGravity(Gravity.BOTTOM);
+                new nearbySearchTask(new asyncResponse() {
+                    @Override
+                    public void processFinish(List<HashMap<String, String>> results) {
+                        if (results != null && results.size()>0)
+                        {
+                            final Dialog dialog;
+                            dialog = new Dialog(MapActivity.this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.bottom_sheet_map_places);
+
+                            // get and bind the views
+                            TextView placeName, placeRating, totalRatings, placeType, openStatus, fullAddress;
+                            ImageView starImg, getDirectionsBtn;
+
+                            placeName = dialog.findViewById(R.id.bs_placeName);
+                            placeRating = dialog.findViewById(R.id.bs_placeRating);
+                            totalRatings = dialog.findViewById(R.id.bs_totalRatings);
+                            placeType = dialog.findViewById(R.id.bs_placeType);
+                            openStatus = dialog.findViewById(R.id.bs_openStatus);
+                            fullAddress = dialog.findViewById(R.id.bs_fullAddress);
+                            starImg = dialog.findViewById(R.id.bs_starImage);
+                            getDirectionsBtn = dialog.findViewById(R.id.bs_getDirectionsBtn);
+
+                            placeName.setText(results.get(0).get("placeName"));
+                            placeRating.setText(results.get(0).get("placeRating"));
+                            totalRatings.setText(results.get(0).get("totalRatings"));
+                            placeType.setText(results.get(0).get("placeType"));
+                            openStatus.setText(results.get(0).get("openStatus"));
+                            fullAddress.setText(results.get(0).get("fullAddress"));
+
+                            dialog.show();
+                            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                            dialog.getWindow().setGravity(Gravity.BOTTOM);
+                        }
+                    }
+                }).execute(marker.getPosition());
+//            }
+//        });
+
+
 
         return false;
+    }
+
+    public class nearbySearchTask extends AsyncTask<LatLng, Void, List<HashMap<String, String>> >
+    {
+        @Override
+        protected List<HashMap<String, String>> doInBackground(LatLng... latLngs)
+        {
+            NearbyPlacesSearch nearbyPlacesSearch = new NearbyPlacesSearch();
+            try {
+                List<HashMap<String, String>> results = nearbyPlacesSearch.search(latLngs[0], null, null);
+
+                return results;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public asyncResponse outputFromAsync = null;
+        public nearbySearchTask(asyncResponse delegate){
+            this.outputFromAsync = delegate;
+        }
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> results) {
+            outputFromAsync.processFinish(results);
+        }
+
     }
 
     // --------Autocomplete-----------
