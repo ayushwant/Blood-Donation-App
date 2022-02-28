@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.BuildConfig;
+import com.example.blooddonationapp.ModelClasses.PolylineData;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.Utilities.NearbyPlacesSearch;
 import com.example.blooddonationapp.Utilities.asyncResponse;
@@ -70,10 +71,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
 
     private GoogleMap mMap;
     MapView mMapView;
@@ -99,6 +101,9 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
 
     // Specify the types of place data to return.
     final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+
+    // list of polyLines
+    private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
 
     @Override
@@ -201,6 +206,9 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         // Set a listener for marker click.
         googleMap.setOnMarkerClickListener(this);
 
+        // Set a listener for polyline click
+        googleMap.setOnPolylineClickListener(this);
+
         buttonListeners(googleMap);
     }
 
@@ -249,6 +257,15 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
+                //prevent duplication and extra addition of lines
+                if(mPolyLinesData.size() > 0){
+                    for(PolylineData polylineData: mPolyLinesData){
+                        polylineData.getPolyline().remove();
+                    }
+                    mPolyLinesData.clear();
+                    mPolyLinesData = new ArrayList<>();
+                }
+
                 for(DirectionsRoute route: result.routes){
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     // sum up all the routes
@@ -271,10 +288,35 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath));
                     polyline.setColor(ContextCompat.getColor(MapActivity.this, R.color.grey));
                     polyline.setClickable(true);
-
+                    // store all lines to AL
+                    mPolyLinesData.add(new PolylineData(polyline, route.legs[0]));
                 }
             }
         });
+    }
+
+
+    @Override
+    public void onPolylineClick(@NonNull Polyline polyline)
+    {
+        // loop through all lines and only make the clicked one blue, rest grey
+        for(PolylineData polylineData: mPolyLinesData)
+        {
+            Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
+
+            // if this polyLinesData references the clicked polyline, make it blue
+            if(polylineData.getPolyline().getId().equals( polyline.getId() ))
+            {
+                polylineData.getPolyline().setColor(ContextCompat.getColor(MapActivity.this, R.color.quantum_vanillablueA700));
+                polylineData.getPolyline().setZIndex(1);
+            }
+            else
+            {
+                polylineData.getPolyline().setColor(ContextCompat.getColor(MapActivity.this, R.color.grey));
+                polylineData.getPolyline().setZIndex(0);
+            }
+        }
+
     }
 
     private void buttonListeners(GoogleMap googleMap)
