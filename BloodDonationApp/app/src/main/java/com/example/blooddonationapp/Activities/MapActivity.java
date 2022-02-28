@@ -19,6 +19,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -45,6 +47,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -52,9 +56,16 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.internal.PolylineEncoding;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +87,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
+    private Location mUserPosition;  // the current user position
 
     //vars
     private Boolean mLocationPermissionsGranted = false;
@@ -83,6 +95,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     public static final String MAPS_API_KEY = BuildConfig.MAPS_API_KEY;
 
     PlacesClient placesClient;
+    private GeoApiContext mGeoApiContext = null;
 
     // Specify the types of place data to return.
     final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
@@ -120,6 +133,12 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         }
 
         mMapView.getMapAsync(this);
+
+        if(mGeoApiContext == null){
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey(MAPS_API_KEY)
+                    .build();
+        }
     }
 
     /** Called when the map is ready. */
@@ -185,6 +204,79 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         buttonListeners(googleMap);
     }
 
+    private void calculateDirections(Marker marker){
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        // get the destination
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
+                marker.getPosition().latitude,
+                marker.getPosition().longitude
+        );
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+
+        directions.alternatives(true); // set alternatives route to true
+
+        directions.origin(
+                new com.google.maps.model.LatLng(
+                        mUserPosition.getLatitude(),
+                        mUserPosition.getLongitude()
+                )
+        );
+        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
+        directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "onResult: routes: " + result.routes[0].toString());
+                Log.d(TAG, "onResult: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+
+                addPolylinesToMap(result);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.e(TAG, "onFailure: " + e.getMessage() );
+
+            }
+        });
+    }
+
+    // add the routes
+    private void addPolylinesToMap(final DirectionsResult result){
+
+        // we need to add lines on the main thread itself
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "run: result routes: " + result.routes.length);
+
+                for(DirectionsRoute route: result.routes){
+                    Log.d(TAG, "run: leg: " + route.legs[0].toString());
+                    // sum up all the routes
+                    List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
+
+                    List<LatLng> newDecodedPath = new ArrayList<>();
+
+                    // This loops through all the LatLng coordinates of ONE polyline.
+                    for(com.google.maps.model.LatLng latLng: decodedPath){
+
+//                        Log.d(TAG, "run: latlng: " + latLng.toString());
+
+                        newDecodedPath.add(new LatLng(
+                                latLng.lat,
+                                latLng.lng
+                        ));
+                    }
+
+                    // now create the polyline
+                    Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath));
+                    polyline.setColor(ContextCompat.getColor(MapActivity.this, R.color.grey));
+                    polyline.setClickable(true);
+
+                }
+            }
+        });
+    }
+
     private void buttonListeners(GoogleMap googleMap)
     {
         // set click listeners for hospital button
@@ -235,28 +327,6 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
 
         // set click listeners for blood bank button - there's no field available to search for blood bank using nearby api.
         // need to use text search api
-//        hospitalBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) // search nearby hospitals
-//            {
-//                new nearbySearchTask(new asyncResponse() {
-//                    @Override // returns a list of all the hospitals
-//                    public void processFinish(List<HashMap<String, String>> output)
-//                    {
-//                        for (HashMap<String, String> hospital : output)
-//                        {
-//                            if( hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
-//                                LatLng latLng = new LatLng( Float.parseFloat(hospital.get("latitude")),
-//                                        Float.parseFloat(hospital.get("longitude") ));
-//
-//                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))  );
-//                            }
-//                        }
-//                    }
-//                }).execute( new searchParameters(googleMap.getCameraPosition().target, "", "") );
-//            }
-//        });
-
     }
 
     /** Called when the user clicks a marker.
@@ -303,6 +373,14 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
                     dialog.getWindow().setGravity(Gravity.BOTTOM);
+
+                    getDirectionsBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            calculateDirections(marker);
+                        }
+                    });
+
                 }
             }
         }).execute( new searchParameters(marker.getPosition(), null, null) );
@@ -310,6 +388,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         return false; // to do the default action
     }
 
+    // helper class to pass parameters to asyncTask
     public static class searchParameters{
         LatLng location;
         String type;
@@ -441,6 +520,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                         {
                             Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
+                            mUserPosition = currentLocation;
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM);
