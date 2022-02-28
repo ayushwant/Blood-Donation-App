@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -300,7 +301,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     }
                 }
                 if(fastest!=null)
-                onPolylineClick(fastest);
+                    onPolylineClick(fastest);
+
             }
         });
     }
@@ -309,6 +311,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     @Override
     public void onPolylineClick(@NonNull Polyline polyline)
     {
+        zoomRoute(polyline.getPoints());
         int index = 0;
 //        BitmapDescriptor transparent = BitmapDescriptorFactory.fromResource(R.drawable.transparent);
 
@@ -348,6 +351,24 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
             }
         }
 
+    }
+
+    // animate and zoom the camera to the selected polyline
+    public void zoomRoute(List<LatLng> lstLatLngRoute) {
+
+        if (mMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        for (LatLng latLngPoint : lstLatLngRoute)
+            boundsBuilder.include(latLngPoint);
+
+        int routePadding = 50;
+        LatLngBounds latLngBounds = boundsBuilder.build();
+
+        mMap.animateCamera(
+                CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding),
+                600,
+                null);
     }
 
     private void buttonListeners(GoogleMap googleMap)
