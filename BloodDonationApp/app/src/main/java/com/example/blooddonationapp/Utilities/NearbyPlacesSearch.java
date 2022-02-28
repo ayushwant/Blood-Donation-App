@@ -99,6 +99,8 @@ public class NearbyPlacesSearch {
                             results.get(i).put("openStatus", result.getBusinessStatus() );
                             results.get(i).put("fullAddress", result.getVicinity());
                             results.get(i).put("placeID", result.getPlaceId());
+                            results.get(i).put("latitude", result.getGeometry().getLocation().getLat() +"");
+                            results.get(i).put("longitude", result.getGeometry().getLocation().getLng() +"");
 
                         }
                     }
@@ -112,7 +114,7 @@ public class NearbyPlacesSearch {
 //        }).start();
 
 
-
+        Log.d("NearbyPlacesSearch", String.valueOf(results));
         return results;
     }
 

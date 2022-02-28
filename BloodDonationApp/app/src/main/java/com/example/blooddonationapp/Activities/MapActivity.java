@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     FusedLocationProviderClient mFusedLocationProviderClient;
     AlertDialog.Builder builder = null;
     AlertDialog alert = null;
+    Button hospitalBtn, pharmacyBtn, bloodBankBtn;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -100,6 +102,9 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         // Inflate the layout for this fragment and bind
         mMapView = findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
+        hospitalBtn = findViewById(R.id.hospital_Btn);
+        pharmacyBtn = findViewById(R.id.pharmacy_Btn);
+        bloodBankBtn = findViewById(R.id.bloodBanks_Btn);
 
         initAutocomplete();
         getLocationPermission();
@@ -176,6 +181,82 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
 
         // Set a listener for marker click.
         googleMap.setOnMarkerClickListener(this);
+
+        buttonListeners(googleMap);
+    }
+
+    private void buttonListeners(GoogleMap googleMap)
+    {
+        // set click listeners for hospital button
+        hospitalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) // search nearby hospitals
+            {
+                new nearbySearchTask(new asyncResponse() {
+                    @Override // returns a list of all the hospitals
+                    public void processFinish(List<HashMap<String, String>> output)
+                    {
+                        for (HashMap<String, String> hospital : output)
+                        {
+                            if( hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
+                                LatLng latLng = new LatLng( Float.parseFloat(hospital.get("latitude")),
+                                        Float.parseFloat(hospital.get("longitude") ));
+
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))  );
+                            }
+                        }
+                    }
+                }).execute( new searchParameters(googleMap.getCameraPosition().target, "hospital", "") );
+            }
+        });
+
+        // set click listeners for pharmacy button
+        pharmacyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) // search nearby hospitals
+            {
+                new nearbySearchTask(new asyncResponse() {
+                    @Override // returns a list of all the hospitals
+                    public void processFinish(List<HashMap<String, String>> output)
+                    {
+                        for (HashMap<String, String> pharmacy : output)
+                        {
+                            if( pharmacy.get("latitude")!=null && pharmacy.get("longitude")!=null ) {
+                                LatLng latLng = new LatLng( Float.parseFloat(pharmacy.get("latitude")),
+                                        Float.parseFloat(pharmacy.get("longitude") ));
+
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(pharmacy.get("placeName"))  );
+                            }
+                        }
+                    }
+                }).execute( new searchParameters(googleMap.getCameraPosition().target, "pharmacy", "") );
+            }
+        });
+
+        // set click listeners for blood bank button - there's no field available to search for blood bank using nearby api.
+        // need to use text search api
+//        hospitalBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) // search nearby hospitals
+//            {
+//                new nearbySearchTask(new asyncResponse() {
+//                    @Override // returns a list of all the hospitals
+//                    public void processFinish(List<HashMap<String, String>> output)
+//                    {
+//                        for (HashMap<String, String> hospital : output)
+//                        {
+//                            if( hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
+//                                LatLng latLng = new LatLng( Float.parseFloat(hospital.get("latitude")),
+//                                        Float.parseFloat(hospital.get("longitude") ));
+//
+//                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))  );
+//                            }
+//                        }
+//                    }
+//                }).execute( new searchParameters(googleMap.getCameraPosition().target, "", "") );
+//            }
+//        });
+
     }
 
     /** Called when the user clicks a marker.
@@ -224,19 +305,56 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     dialog.getWindow().setGravity(Gravity.BOTTOM);
                 }
             }
-        }).execute(marker.getPosition());
+        }).execute( new searchParameters(marker.getPosition(), null, null) );
 
         return false; // to do the default action
     }
 
-    public static class nearbySearchTask extends AsyncTask<LatLng, Void, List<HashMap<String, String>> >
+    public static class searchParameters{
+        LatLng location;
+        String type;
+        String radius;
+
+        public searchParameters(LatLng location, String type, String radius) {
+            this.location = location;
+            this.type = type;
+            this.radius = radius;
+        }
+
+        public LatLng getLocation() {
+            return location;
+        }
+
+        public void setLocation(LatLng location) {
+            this.location = location;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getRadius() {
+            return radius;
+        }
+
+        public void setRadius(String radius) {
+            this.radius = radius;
+        }
+    }
+
+    public static class nearbySearchTask extends AsyncTask<searchParameters, Void, List<HashMap<String, String>> >
     {
         @Override
-        protected List<HashMap<String, String>> doInBackground(LatLng... latLngs)
+        protected List<HashMap<String, String>> doInBackground(searchParameters... params)
         {
             NearbyPlacesSearch nearbyPlacesSearch = new NearbyPlacesSearch();
             try {
-                List<HashMap<String, String>> results = nearbyPlacesSearch.search(latLngs[0], null, null);
+                List<HashMap<String, String>> results = nearbyPlacesSearch.search
+                        (params[0].getLocation(), params[0].getType(), params[0].getRadius());
 
                 return results;
             } catch (IOException e) {

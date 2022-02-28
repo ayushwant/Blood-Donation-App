@@ -34,4 +34,7 @@
     <string name="ask_to_donate">Ask to donate</string>
     <string name="donor_registration">Donor Registration</string>
     <string name="register">Register</string>
+    <string name="blood_banks">Blood Banks</string>
+    <string name="hospitals">Hospitals</string>
+    <string name="pharmacy">Pharmacy</string>
 </resources>
