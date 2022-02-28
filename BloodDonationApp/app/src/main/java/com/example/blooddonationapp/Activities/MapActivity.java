@@ -44,6 +44,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -257,7 +259,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
-                //prevent duplication and extra addition of lines
+                //prevent duplicate and old polyLines
                 if(mPolyLinesData.size() > 0){
                     for(PolylineData polylineData: mPolyLinesData){
                         polylineData.getPolyline().remove();
@@ -266,22 +268,20 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     mPolyLinesData = new ArrayList<>();
                 }
 
-                for(DirectionsRoute route: result.routes){
+                double duration = 999999999;
+                Polyline fastest = null;
+                for(DirectionsRoute route: result.routes)
+                {
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
+
                     // sum up all the routes
-                    List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
+                    List<com.google.maps.model.LatLng> decodedPath =
+                            PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
-
                     // This loops through all the LatLng coordinates of ONE polyline.
                     for(com.google.maps.model.LatLng latLng: decodedPath){
-
-//                        Log.d(TAG, "run: latlng: " + latLng.toString());
-
-                        newDecodedPath.add(new LatLng(
-                                latLng.lat,
-                                latLng.lng
-                        ));
+                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
                     // now create the polyline
@@ -290,7 +290,17 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     polyline.setClickable(true);
                     // store all lines to AL
                     mPolyLinesData.add(new PolylineData(polyline, route.legs[0]));
+
+                    // highlight the fastest route and adjust camera
+                    double tempDuration = route.legs[0].duration.inSeconds;
+                    if(tempDuration < duration){
+                        duration = tempDuration;
+                        fastest = polyline;
+//                        onPolylineClick(polyline);
+                    }
                 }
+                if(fastest!=null)
+                onPolylineClick(fastest);
             }
         });
     }
@@ -299,9 +309,13 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     @Override
     public void onPolylineClick(@NonNull Polyline polyline)
     {
+        int index = 0;
+//        BitmapDescriptor transparent = BitmapDescriptorFactory.fromResource(R.drawable.transparent);
+
         // loop through all lines and only make the clicked one blue, rest grey
         for(PolylineData polylineData: mPolyLinesData)
         {
+            index++;
             Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
 
             // if this polyLinesData references the clicked polyline, make it blue
@@ -309,6 +323,23 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
             {
                 polylineData.getPolyline().setColor(ContextCompat.getColor(MapActivity.this, R.color.quantum_vanillablueA700));
                 polylineData.getPolyline().setZIndex(1);
+
+                LatLng endLocation = new LatLng(
+                        polylineData.getLeg().endLocation.lat,
+                        polylineData.getLeg().endLocation.lng
+                );
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(endLocation)
+                        .title("Trip #" + index )//+": Distance: " +polylineData.getLeg().distance)   //("Trip #" + index)
+                        .alpha(0) // make transparent
+//                        .icon(transparent)
+                        .snippet( "Distance: " +polylineData.getLeg().distance + ", " +
+                                "Duration: " + polylineData.getLeg().duration
+                        ));
+
+
+                marker.showInfoWindow();
             }
             else
             {
