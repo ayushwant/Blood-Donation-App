@@ -94,7 +94,7 @@ public class NearbyPlacesSearch {
                             results.add(new HashMap<>());
                             results.get(i).put("placeName", result.getName());
                             results.get(i).put("placeRating", String.valueOf(result.getRating()));
-                            results.get(i).put("totalRatings", String.valueOf(result.getUserRatingsTotal()));
+                            results.get(i).put("totalRatings", "(" +result.getUserRatingsTotal() +" ratings)" );
                             results.get(i).put("placeType", result.getTypes().get(0)); // get the first type identifier
                             results.get(i).put("openStatus", result.getBusinessStatus() );
                             results.get(i).put("fullAddress", result.getVicinity());

@@ -186,63 +186,50 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
 
-        Toast.makeText(this, "Clicked marker" +marker.getTitle(), Toast.LENGTH_SHORT).show();
-        marker.showInfoWindow();
+        // start a nearby search on the location of the marker using async task,
+        // and show the nearest result on the bottom sheet dialog
+        new nearbySearchTask(new asyncResponse() {
+            @Override
+            public void processFinish(List<HashMap<String, String>> results) {
+                if (results != null && results.size() > 0) {
+                    final Dialog dialog;
+                    dialog = new Dialog(MapActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.bottom_sheet_map_places);
 
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-                //showDialog();
+                    // get and bind the views
+                    TextView placeName, placeRating, totalRatings, placeType, openStatus, fullAddress;
+                    ImageView starImg, getDirectionsBtn;
 
+                    placeName = dialog.findViewById(R.id.bs_placeName);
+                    placeRating = dialog.findViewById(R.id.bs_placeRating);
+                    totalRatings = dialog.findViewById(R.id.bs_totalRatings);
+                    placeType = dialog.findViewById(R.id.bs_placeType);
+                    openStatus = dialog.findViewById(R.id.bs_openStatus);
+                    fullAddress = dialog.findViewById(R.id.bs_fullAddress);
+                    starImg = dialog.findViewById(R.id.bs_starImage);
+                    getDirectionsBtn = dialog.findViewById(R.id.bs_getDirectionsBtn);
 
+                    placeName.setText(results.get(0).get("placeName"));
+                    placeRating.setText(results.get(0).get("placeRating"));
+                    totalRatings.setText(results.get(0).get("totalRatings"));
+                    placeType.setText(results.get(0).get("placeType"));
+                    openStatus.setText(results.get(0).get("openStatus"));
+                    fullAddress.setText(results.get(0).get("fullAddress"));
 
-                new nearbySearchTask(new asyncResponse() {
-                    @Override
-                    public void processFinish(List<HashMap<String, String>> results) {
-                        if (results != null && results.size()>0)
-                        {
-                            final Dialog dialog;
-                            dialog = new Dialog(MapActivity.this);
-                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            dialog.setContentView(R.layout.bottom_sheet_map_places);
+                    dialog.show();
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                    dialog.getWindow().setGravity(Gravity.BOTTOM);
+                }
+            }
+        }).execute(marker.getPosition());
 
-                            // get and bind the views
-                            TextView placeName, placeRating, totalRatings, placeType, openStatus, fullAddress;
-                            ImageView starImg, getDirectionsBtn;
-
-                            placeName = dialog.findViewById(R.id.bs_placeName);
-                            placeRating = dialog.findViewById(R.id.bs_placeRating);
-                            totalRatings = dialog.findViewById(R.id.bs_totalRatings);
-                            placeType = dialog.findViewById(R.id.bs_placeType);
-                            openStatus = dialog.findViewById(R.id.bs_openStatus);
-                            fullAddress = dialog.findViewById(R.id.bs_fullAddress);
-                            starImg = dialog.findViewById(R.id.bs_starImage);
-                            getDirectionsBtn = dialog.findViewById(R.id.bs_getDirectionsBtn);
-
-                            placeName.setText(results.get(0).get("placeName"));
-                            placeRating.setText(results.get(0).get("placeRating"));
-                            totalRatings.setText(results.get(0).get("totalRatings"));
-                            placeType.setText(results.get(0).get("placeType"));
-                            openStatus.setText(results.get(0).get("openStatus"));
-                            fullAddress.setText(results.get(0).get("fullAddress"));
-
-                            dialog.show();
-                            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-                            dialog.getWindow().setGravity(Gravity.BOTTOM);
-                        }
-                    }
-                }).execute(marker.getPosition());
-//            }
-//        });
-
-
-
-        return false;
+        return false; // to do the default action
     }
 
-    public class nearbySearchTask extends AsyncTask<LatLng, Void, List<HashMap<String, String>> >
+    public static class nearbySearchTask extends AsyncTask<LatLng, Void, List<HashMap<String, String>> >
     {
         @Override
         protected List<HashMap<String, String>> doInBackground(LatLng... latLngs)
