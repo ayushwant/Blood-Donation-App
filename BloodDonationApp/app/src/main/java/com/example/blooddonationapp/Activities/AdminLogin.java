@@ -19,6 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AdminLogin extends AppCompatActivity {
 
     ActivityAdminLoginBinding binding;
@@ -61,6 +64,8 @@ public class AdminLogin extends AppCompatActivity {
 
                             if(adminId.equals(ID) && adminPassword.equals(password))
                             {
+                                db.collection("Admin").document(phone)
+                                        .update("Signed_in", "true");
                                 Intent i=new Intent(AdminLogin.this, MainActivityAdmin.class);
                                 startActivity(i);
                                 finish();

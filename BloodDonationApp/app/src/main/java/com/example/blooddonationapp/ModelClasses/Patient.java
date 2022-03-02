@@ -13,7 +13,7 @@ public class Patient
     private String location;
     private String pdfUri;
     private String additionalDetails;
-    private Boolean isValid=false;
+    private String isValid="false";
 
 
 
@@ -25,12 +25,12 @@ public class Patient
         this.age = age;
     }
 
-    public Boolean getValid() {
+    public String getValid() {
         return isValid;
     }
 
-    public void setValid(Boolean valid) {
-        isValid = valid;
+    public void setValid(String isValid) {
+        this.isValid = isValid;
     }
     public String getUserName() {
         return userName;

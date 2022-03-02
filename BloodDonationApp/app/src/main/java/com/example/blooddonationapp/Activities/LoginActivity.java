@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivity;
+import com.example.blooddonationapp.MainActivityAdmin;
 import com.example.blooddonationapp.R;
 
 import com.example.blooddonationapp.databinding.ActivityLoginBinding;
@@ -207,10 +208,40 @@ public class LoginActivity extends AppCompatActivity
     //For sending user to main activity
     public void sendUserToHome()
     {
-        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
-        startActivity(i);
+
+        db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getResult().exists())
+                {
+                    String signedin=task.getResult().getString("Signed_in");
+                    if(signedin.equals("true"))
+                    {
+                        Intent i = new Intent(LoginActivity.this, MainActivityAdmin.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
+                        startActivity(i);
+                    }
+                    else
+                    {
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
+                        startActivity(i);
+                    }
+                }
+                else
+                {
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
+                    startActivity(i);
+                }
+            }
+        });
+
+
+
     }
 
 }
