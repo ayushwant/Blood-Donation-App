@@ -18,15 +18,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BloodDonationApp">
         <activity
+            android:name=".ActivitiesAdmin.RequestDetailAdmin"
+            android:exported="false" />
+        <activity
+            android:name=".ActivitiesAdmin.DonorRegistrationDetail"
+            android:exported="false" />
+        <activity
+            android:name=".ActivitiesAdmin.ProfileActivityAdmin"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.DetailedNotification"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.MapActivity"
             android:exported="false" />
         <activity
-
             android:name=".Activities.AdminLogin"
             android:exported="false" />
         <activity
             android:name=".MainActivityAdmin"
-            android:exported="false" />
+            android:exported="true"></activity>
         <activity
             android:name=".Activities.RegisteredMsg"
             android:exported="false" />

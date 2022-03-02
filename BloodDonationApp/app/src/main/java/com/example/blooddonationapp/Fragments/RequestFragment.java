@@ -1,12 +1,17 @@
 package com.example.blooddonationapp.Fragments;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -18,16 +23,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.Activities.RegisteredMsg;
 import com.example.blooddonationapp.Adapters.VPAdapter;
+import com.example.blooddonationapp.AdminSideFragments.DonorRegistrationList;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,11 +44,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class RequestFragment extends Fragment {
 
     private Button raiseRequest,postRequest;
     private TextView userName;
+    private ImageView drop_up;
+    private StorageReference storageReference;
+    private FirebaseStorage storage;
+    private Uri uri;
     private EditText patient_name,age,blood_group,required_units,location,documents,details;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -50,6 +65,8 @@ public class RequestFragment extends Fragment {
     private Patient patient=new Patient();
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private View bloodList;
+
 
     public RequestFragment(){
     }
@@ -79,8 +96,12 @@ public class RequestFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         VPAdapter vpAdapter=new VPAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new RequestList(),"Requests");
-        vpAdapter.addFragment(new DonorList(),"Blood Donors");
+        vpAdapter.addFragment(new DonorRegistrationList(),"Blood Donors");
         viewPager.setAdapter(vpAdapter);
+        storage =FirebaseStorage.getInstance();
+        storageReference =storage.getReference()
+                .child("Documents").child(auth.getCurrentUser().getPhoneNumber());
+
 
         raiseRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +126,8 @@ public class RequestFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+
         return v;
     }
 
@@ -126,7 +149,110 @@ public class RequestFragment extends Fragment {
         details=dialog.findViewById(R.id.details);
         postRequest=dialog.findViewById(R.id.post_request);
         age=dialog.findViewById(R.id.age);
+        bloodList=dialog.findViewById(R.id.blood_list);
+        drop_up=dialog.findViewById(R.id.drop_up);
 
+        //Uploading documents
+        documents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent();
+                i.setType("application/pdf");
+                i.setAction(i.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i,"PDF FILE SELECTED"),12);
+            }
+        });
+
+        blood_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                bloodList.setVisibility(View.VISIBLE);
+                drop_up.setVisibility(View.VISIBLE);
+                drop_up.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+
+                TextView op,on,ap,an,bp,bn,abp,abn;
+                op=dialog.findViewById(R.id.O_pos);
+                on=dialog.findViewById(R.id.O_neg);
+                ap=dialog.findViewById(R.id.A_pos);
+                an=dialog.findViewById(R.id.A_neg);
+                bp=dialog.findViewById(R.id.B_pos);
+                bn=dialog.findViewById(R.id.B_neg);
+                abp=dialog.findViewById(R.id.AB_pos);
+                abn=dialog.findViewById(R.id.AB_neg);
+
+                op.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(op.getText().toString());
+
+                    }
+                });
+                on.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(on.getText().toString());
+
+                    }
+                });
+                ap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(ap.getText().toString());
+
+                    }
+                });
+                an.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(an.getText().toString());
+
+                    }
+                });
+                ap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(ap.getText().toString());
+
+                    }
+                });
+                bp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(bp.getText().toString());
+
+                    }
+                });
+                bn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(bn.getText().toString());
+
+                    }
+                });
+                abp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(abp.getText().toString());
+
+                    }
+                });
+                abn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(abn.getText().toString());
+                      //  bloodList.setVisibility(View.GONE);
+                      //  drop_up.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
 
         postRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,30 +293,40 @@ public class RequestFragment extends Fragment {
                     patient.setBloodGrp(blood_group.getText().toString());
                     patient.setRequiredUnits(required_units.getText().toString());
                     patient.setLocation(location.getText().toString());
-                    patient.setPdfUri(documents.getText().toString());
                     patient.setAdditionalDetails(details.getText().toString());
 
-                    db.collection("Raised Requests").document(currentUser.getPhoneNumber())
-                            .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Intent intent=new Intent(getContext(),RegisteredMsg.class);
-                            startActivity(intent);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                    if (uri != null) {
+                        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                while (!uriTask.isComplete()) ;
+                                Uri uri1 = uriTask.getResult();
+                                patient.setPdfUri(uri1.toString());
+                                db.collection("Raised Requests").document(currentUser.getPhoneNumber())
+                                        .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Intent intent = new Intent(getContext(), RegisteredMsg.class);
+                                        startActivity(intent);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(getContext(),"Error in posting request, try after sometime",Toast.LENGTH_LONG).show();
-                        }
-                    });
+                                        Toast.makeText(getContext(), "Error in posting request, try after sometime", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        });
+                    }
+
                 }
 
 
 
             }
         });
-
 
         dialog.show();
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -200,4 +336,21 @@ public class RequestFragment extends Fragment {
 
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==12 && resultCode==RESULT_OK && data!=null && data.getData()!=null)
+        {
+            documents.setText(data.getDataString());
+            uri=data.getData();
+        }
+    }
+
+    //For picking the file from mobile storage
+    private void selectPDF()
+    {
+
+    }
+
 }
