@@ -1,6 +1,11 @@
 package com.example.blooddonationapp.ModelClasses;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class User implements Parcelable {
     private String name;
     private String phone;
     private String email;
@@ -9,6 +14,31 @@ public class User {
     private String dob;
     private String bloodGrp;
     private String address;
+
+    public User(){}
+
+    protected User(Parcel in) {
+        name = in.readString();
+        phone = in.readString();
+        email = in.readString();
+        uid = in.readString();
+        imgUri = in.readString();
+        dob = in.readString();
+        bloodGrp = in.readString();
+        address = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -72,5 +102,24 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+        // must be in the same order as when reading
+        parcel.writeString(name);
+        parcel.writeString(phone);
+        parcel.writeString(email);
+        parcel.writeString(uid);
+        parcel.writeString(imgUri);
+        parcel.writeString(dob);
+        parcel.writeString(bloodGrp);
+        parcel.writeString(address);
     }
 }

@@ -86,11 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(context, MessageRoomActivity.class);
-                i.putExtra("name", user.getName());
-                i.putExtra("phone", user.getPhone());
-                i.putExtra("uri", user.getImgUri());
-                i.putExtra("uid", user.getUid());
-
+                i.putExtra("chatPartner", user);
                 context.startActivity(i);
             }
         });

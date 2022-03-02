@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.example.blooddonationapp.Adapters.MessagesAdaptor;
 import com.example.blooddonationapp.ModelClasses.Message;
+import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityMessageRoomBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +43,7 @@ public class MessageRoomActivity extends AppCompatActivity {
     String senderUid;
 
     ProgressDialog dialog;
+    User chatPartner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MessageRoomActivity extends AppCompatActivity {
 
         binding = ActivityMessageRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.messagesBack.setOnClickListener(view -> onBackPressed() );
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Uploading message...");
@@ -65,8 +69,12 @@ public class MessageRoomActivity extends AppCompatActivity {
         currentUser = auth.getCurrentUser();
         storage = FirebaseStorage.getInstance();
 
+        chatPartner = (User) getIntent().getParcelableExtra("chatPartner");
+
+        binding.messagesName.setText(chatPartner.getName());
+
         String name = getIntent().getStringExtra("name");
-        receiverUid = getIntent().getStringExtra("uid");
+        receiverUid = chatPartner.getUid(); //getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid(); // uid of logged in user
 
 //        String receiverPhone = getIntent().getStringExtra("mobile");
