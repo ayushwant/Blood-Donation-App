@@ -49,11 +49,11 @@ public class RaisedRequestsList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v= inflater.inflate(R.layout.fragment_raised_requests_list, container, false);
-        //Progress Dialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Fetching data");
-        progressDialog.show();
+//        //Progress Dialog
+//        progressDialog = new ProgressDialog(getContext());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage("Fetching data");
+//        progressDialog.show();
 
         //Loading verified requests
         recyclerView =v.findViewById(R.id.recyclerView);
@@ -86,17 +86,17 @@ public class RaisedRequestsList extends Fragment {
                     {
                         if(!isGenuine.equals("true"))
                             patientArrayList.add(dc.getDocument().toObject(Patient.class));
-                        if(progressDialog.isShowing())
-                            progressDialog.dismiss();
+                       // if(progressDialog.isShowing())
+                           // progressDialog.dismiss();
                     }
-                    progressDialog.dismiss();
+                 //   progressDialog.dismiss();
                     adapter.notifyDataSetChanged();
 
                 }
 
             }
         });
-        progressDialog.dismiss();
+     //   progressDialog.dismiss();
 
     }
 }

@@ -39,10 +39,14 @@
 
     <Button
         android:id="@+id/raised_request"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_margin="15dp"
         android:layout_height="wrap_content"
-        android:text="@string/raise_request" />
+        android:layout_gravity="bottom"
+        android:layout_margin="15dp"
+        android:background="@drawable/button_style"
+        android:backgroundTint="@color/quantum_error_light"
+        android:text="@string/raise_request"
+        android:textColorHighlight="@color/cardview_shadow_start_color"
+        android:textColorLink="@color/cardview_shadow_start_color" />
 
 </FrameLayout>
