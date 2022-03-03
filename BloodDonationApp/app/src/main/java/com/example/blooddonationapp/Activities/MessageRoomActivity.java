@@ -71,9 +71,8 @@ public class MessageRoomActivity extends AppCompatActivity {
 
         chatPartner = (User) getIntent().getParcelableExtra("chatPartner");
 
-        binding.messagesName.setText(chatPartner.getName());
+        binding.chatPartnerName.setText(chatPartner.getName());
 
-        String name = getIntent().getStringExtra("name");
         receiverUid = chatPartner.getUid(); //getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid(); // uid of logged in user
 

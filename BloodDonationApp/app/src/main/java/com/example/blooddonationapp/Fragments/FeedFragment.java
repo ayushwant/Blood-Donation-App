@@ -3,6 +3,7 @@ package com.example.blooddonationapp.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,10 +63,18 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//
+//        if(getActivity()!=null)
+//        getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+////                if(getActivity()!=null)
+////                    getActivity().finish();
+//
+//                getActivity().finishAndRemoveTask();
+////                System.exit(0);
+//            }
+//        });
     }
 
     @Override

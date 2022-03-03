@@ -18,12 +18,22 @@ import com.example.blooddonationapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder>
 {
@@ -36,7 +46,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
-    private FirebaseDatabase firebaseDatabase;
+    private FirebaseDatabase realtimeDb;
 
     //HERE: our constructor
     public ChatAdapter(Context context, ArrayList<User> userslist) {
@@ -80,6 +90,54 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         });
 
         // get last msg and its time from realtime database
+        realtimeDb = FirebaseDatabase.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(currentUser!=null)
+        {
+            String room = currentUser.getUid() + "__" + user.getUid();
+            realtimeDb.getReference().child("chats").child(room)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String lastMsg = (String) snapshot.child("lastMsg").getValue();
+                            Long lastMsgTime = (Long) snapshot.child("lastMsgTime").getValue();
+
+                            String lastMsgTimeString = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                LocalDateTime date = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastMsgTime), ZoneId.systemDefault());
+
+                                LocalDateTime currentDate = LocalDateTime.now();
+
+                                String s1 = ""+ date.getYear()+date.getMonth();
+                                String s2 = ""+ currentDate.getYear() + currentDate.getMonth();
+
+                                if(s1.equals(s2) ) {
+                                    if (date.getDayOfMonth()==currentDate.getDayOfMonth()) // if same date
+                                        lastMsgTimeString = date.getHour() + ":" + date.getMinute();
+
+                                    else if( currentDate.getDayOfMonth() - date.getDayOfMonth() ==1 )
+                                        lastMsgTimeString = "Yesterday";
+                                }
+                                else
+                                    lastMsgTimeString = date.getDayOfMonth() +" " +
+                                            date.getMonth().toString().charAt(0) + date.getMonth().toString().substring(1,3).toLowerCase();
+                            }
+
+                            if(lastMsg!=null)
+                                holder.chatLastMsg.setText(lastMsg);
+//                            if(lastMsgTime!=null)
+//                                holder.chatMsgTime.setText(lastMsgTime+"");
+                            if(lastMsgTimeString!=null)
+                                holder.chatMsgTime.setText(lastMsgTimeString);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }
 
         // start messaging now
         holder.itemView.setOnClickListener(new View.OnClickListener() {
