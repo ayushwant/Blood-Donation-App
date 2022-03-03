@@ -70,6 +70,15 @@ public class MessageRoomActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
 
         chatPartner = (User) getIntent().getParcelableExtra("chatPartner");
+        binding.chatPartnerName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MessageRoomActivity.this, ChatPartnerInfo.class);
+                i.putExtra("chatPartner",chatPartner );
+                startActivity(i);
+            }
+        });
+
 
         binding.chatPartnerName.setText(chatPartner.getName());
 
@@ -150,10 +159,6 @@ public class MessageRoomActivity extends AppCompatActivity {
                 });
 
         // also cater the attachments
-
-//
-//        getSupportActionBar().setTitle(name);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
