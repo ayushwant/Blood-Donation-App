@@ -48,10 +48,10 @@ public class DonorRegistrationList extends Fragment {
         View v=inflater.inflate(R.layout.fragment_donor_registration_list, container, false);
 
         //Progress Dialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Fetching data");
-        progressDialog.show();
+//        progressDialog = new ProgressDialog(getContext());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage("Fetching data");
+//        progressDialog.show();
 
         //Loading verified requests
         recyclerView =v.findViewById(R.id.recyclerView);
@@ -84,11 +84,11 @@ public class DonorRegistrationList extends Fragment {
                     if(dc.getType() == DocumentChange.Type.ADDED)
                     {
                         donorArrayList.add(dc.getDocument().toObject(Donor.class));
-                        if(progressDialog.isShowing())
-                            progressDialog.dismiss();
+//                        if(progressDialog.isShowing())
+//                            progressDialog.dismiss();
                     }
                     adapter.notifyDataSetChanged();
-                    progressDialog.dismiss();
+                   // progressDialog.dismiss();
                 }
 
             }

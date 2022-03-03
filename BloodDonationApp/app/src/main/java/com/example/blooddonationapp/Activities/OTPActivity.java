@@ -68,7 +68,7 @@ public class OTPActivity extends AppCompatActivity {
                     signInWithPhoneAuthCredential(credential);
                     if(activity.equals("SignUp"))
                     {
-                        User user = new User();
+                         User user = new User();
                          user.setName(name);
                          user.setPhone("+91"+phone);
                          user.setEmail(email);

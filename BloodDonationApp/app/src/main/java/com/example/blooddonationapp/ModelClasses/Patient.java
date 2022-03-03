@@ -5,8 +5,6 @@ public class Patient
     private String userName;
     private String userPhone;
     private String patientName;
-
-
     private String age;
     private String bloodGrp;
     private String requiredUnits;
