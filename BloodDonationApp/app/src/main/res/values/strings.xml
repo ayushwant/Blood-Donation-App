@@ -39,4 +39,6 @@
     <string name="pharmacy">Pharmacy</string>
     <string name="blood_group_heading">Blood Group:</string>
     <string name="address_heading">Address:</string>
+    <string name="donor">DONOR</string>
+    <string name="receiver">RECEIVER</string>
 </resources>
