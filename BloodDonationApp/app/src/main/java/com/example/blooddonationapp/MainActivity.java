@@ -10,22 +10,31 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.MapActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
+import com.example.blooddonationapp.Activities.NotificationActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
+import com.example.blooddonationapp.ModelClasses.Notification;
 import com.example.blooddonationapp.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +45,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView edit;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    private DatabaseReference database;
     private FirebaseFirestore db;
     private NavigationView navigationView;
-    String uid;
-
+    private String uid;
+    private int count=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         auth=FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
         currentUser=auth.getCurrentUser();
+        database= FirebaseDatabase.getInstance().getReference("Notifications").
+                child(currentUser.getPhoneNumber());
+
         navigationView=findViewById(R.id.nav_view_side);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -74,6 +87,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for(DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                   Notification notification=dataSnapshot.getValue(Notification.class);
+                   if(!notification.isSeen())count++;
+                }
+                Toast.makeText(MainActivity.this,Integer.toString(count),Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         //Menu items
         binding.bottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_baseline_home_24));
@@ -125,6 +155,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.menuChatBtn.setOnClickListener(view -> {
             Intent i = new Intent(MainActivity.this, Chats.class);
             startActivity(i);
+        });
+
+        //Notication
+        binding.notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(i);
+            }
         });
 
     }

@@ -68,12 +68,13 @@ public class OTPActivity extends AppCompatActivity {
                     signInWithPhoneAuthCredential(credential);
                     if(activity.equals("SignUp"))
                     {
-                        User user = new User();
+                         User user = new User();
                          user.setName(name);
-                         user.setPhone(phone);
+                         user.setPhone("+91"+phone);
                          user.setEmail(email);
+
                         //Saving in firestore in +91... format
-                         db.collection("Users").document(phone).set(user)
+                         db.collection("Users").document("+91"+phone).set(user)
                                  .addOnSuccessListener(new OnSuccessListener<Void>() {
                                      @Override
                                      public void onSuccess(Void unused) {
