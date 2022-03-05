@@ -2,6 +2,7 @@ package com.example.blooddonationapp.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,9 +14,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,19 +26,29 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.Activities.RegisteredMsg;
+import com.example.blooddonationapp.Adapters.LocFragmentAdapter;
 import com.example.blooddonationapp.Adapters.VPAdapter;
 import com.example.blooddonationapp.AdminSideFragments.DonorRegistrationList;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,6 +60,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class RequestFragment extends Fragment {
 
@@ -66,6 +82,8 @@ public class RequestFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private View bloodList;
+    final List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+    private FragmentActivity activity;
 
 
     public RequestFragment(){
@@ -127,7 +145,6 @@ public class RequestFragment extends Fragment {
             }
         });
 
-
         return v;
     }
 
@@ -137,8 +154,49 @@ public class RequestFragment extends Fragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_sheet_layout);
 
+//        ViewPager viewPager = dialog.findViewById(R.id.locationViewPager);
+////        LocFragmentAdapter ad = new LocFragmentAdapter(getChildFragmentManager());
+//        VPAdapter vp = new VPAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+//        vp.addFragment( new AutocompleteFragment(), "Autocomplete");
+//        viewPager.setAdapter(vp);
+
+
+
+//        FrameLayout locFrame = dialog.findViewById(R.id.loc_frame);
+//        locFrame.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getChildFragmentManager().beginTransaction().replace(R.id.loc_frame, new AutocompleteFragment())
+//                        .commit();
+//            }
+//        });
+
+//        // Initialize the AutocompleteSupportFragment.
+//        AutocompleteSupportFragment autocompleteFragment;
+//        autocompleteFragment = (AutocompleteSupportFragment)
+//                getChildFragmentManager().findFragmentById(R.id.request_autocomplete_fragment);
+//
+//        autocompleteFragment.setPlaceFields(placeFields);
+//
+//        // Set up a PlaceSelectionListener to handle the response.
+//        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+//            @Override
+//            public void onPlaceSelected(@NonNull Place place) {
+//                // TODO: Get info about the selected place.
+//                Log.i("request", "Place: " + place.getName() + ", " + place.getId());
+//            }
+//
+//
+//            @Override
+//            public void onError(@NonNull Status status) {
+//                // TODO: Handle the error.
+//                Log.i("request", "An error occurred: " + status);
+//            }
+//        });
+
         userName=dialog.findViewById(R.id.name);
         userName.setText(user.getName());
+
 
 
         patient_name=dialog.findViewById(R.id.patient_name);
@@ -151,6 +209,8 @@ public class RequestFragment extends Fragment {
         age=dialog.findViewById(R.id.age);
         bloodList=dialog.findViewById(R.id.blood_list);
         drop_up=dialog.findViewById(R.id.drop_up);
+        
+//        location.setOnClickListener(view -> launchAutocompleteIntent() );
 
         //Uploading documents
         documents.setOnClickListener(new View.OnClickListener() {
@@ -336,6 +396,19 @@ public class RequestFragment extends Fragment {
 
 
     }
+
+//    private void launchAutocompleteIntent() {
+//        // Start the autocomplete intent.
+//        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, placeFields)
+//                .build(this.activity);
+//        startActivityForResult(intent, 1);
+//    }
+//
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        this.activity = (FragmentActivity) activity;
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
