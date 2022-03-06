@@ -22,6 +22,7 @@ import com.example.blooddonationapp.ActivitiesAdmin.ProfileActivityAdmin;
 import com.example.blooddonationapp.AdminSideFragments.FeedFragmentAdmin;
 import com.example.blooddonationapp.AdminSideFragments.HistoryFragmentAdmin;
 import com.example.blooddonationapp.AdminSideFragments.RequestFragmentAdmin;
+import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.databinding.ActivityMainAdminBinding;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;

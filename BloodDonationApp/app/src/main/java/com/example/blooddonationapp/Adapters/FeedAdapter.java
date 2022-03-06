@@ -12,19 +12,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
 
 import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder>
 {
     Context context;
-    ArrayList<Feed> feedArrayList;
+    List<Feed> feedArrayList;
     RvClickListener clickListener;
 
-    public FeedAdapter(Context context, ArrayList<Feed> feedArrayList, RvClickListener listener) {
+    public FeedAdapter(Context context, List<Feed> feedArrayList, RvClickListener listener) {
         this.context = context;
         this.feedArrayList = feedArrayList;
         this.clickListener = listener;
@@ -47,7 +49,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         Feed feed = feedArrayList.get(position);
 
 //        holder.feedImg.setImageResource(R.drawable.background);
-        holder.feedImg.setImageResource(feed.getImage());
+//        holder.feedImg.setImageResource(feed.getImage());
+        Glide.with(context).load(feed.getImage()).into(holder.feedImg);
 
         holder.feedText.setText(feed.getText());
         holder.saveBtn.setImageResource(R.drawable.save_alt_24);

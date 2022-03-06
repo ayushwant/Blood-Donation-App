@@ -42,4 +42,7 @@
     <string name="donor">DONOR</string>
     <string name="receiver">RECEIVER</string>
     <string name="notifications">Notifications</string>
+    <string name="create_a_new_feed">Create a New Feed</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="update_feed">Update Feed</string>
 </resources>

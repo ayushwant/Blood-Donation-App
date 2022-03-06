@@ -18,6 +18,8 @@ import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +28,7 @@ import java.util.ArrayList;
  */
 public class FeedFragment extends Fragment {
     RecyclerView feedRv;
-    ArrayList<Feed> feedList;
+    List<Feed> feedList;
     FeedAdapter.RvClickListener clickListener;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -83,7 +85,7 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        feedList = new ArrayList<>();
+        feedList = new LinkedList<>();
 
         feedRv = view.findViewById(R.id.feedRV);
 
@@ -93,8 +95,8 @@ public class FeedFragment extends Fragment {
         FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList, clickListener);
         feedRv.setAdapter(feedAdapter);
 
-        feedList.add(new Feed("hello just a check", R.drawable.background_1, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
-        feedList.add(new Feed("again just a check 😉", R.drawable.pic1, "https://www.google.com/search?q=hello"));
+//        feedList.add(0, new Feed("hello just a check", R.drawable.background_1, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
+//        feedList.add(0, new Feed("again just a check 😉", R.drawable.pic1, "https://www.google.com/search?q=hello"));
 
         return view;
     }
