@@ -64,9 +64,6 @@ public class AvailableChatsAdapter  extends RecyclerView.Adapter<AvailableChatsA
     {
         User user = usersList.get(position);
 
-//        if(user.getName()!=null)
-//        holder.availableChatsName.setText(user.getName());
-
         // get name and image uri from firestore
         db = FirebaseFirestore.getInstance();
         ref = db.collection("Users").document(user.getPhone());
@@ -86,43 +83,12 @@ public class AvailableChatsAdapter  extends RecyclerView.Adapter<AvailableChatsA
             }
         });
 
-        // Both above and below methods work!!!!
-
-//        DocumentReference docRef = db.collection("Users").document(user.getPhone());
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists())
-//                    {
-//                        holder.availableChatsName.setText( document.getString("name"));
-//                        str=document.getString("imgUri");
-//                        Glide.with(context).load(str)
-//                                .placeholder(R.drawable.ic_baseline_account_circle_24).into(holder.availableChatsProfilePic);
-//                    }
-//                    else
-//                    {
-//                        Toast.makeText(context, "User not available", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                else {
-//                    Toast.makeText(context, "Can't get user data", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
-
         // start messaging now
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(context, MessageRoomActivity.class);
-                i.putExtra("name", user.getName());
-                i.putExtra("phone", user.getPhone());
-                i.putExtra("uri", user.getImgUri());
-                i.putExtra("uid", user.getUid());
-
+                i.putExtra("chatPartner", user);
                 context.startActivity(i);
             }
         });

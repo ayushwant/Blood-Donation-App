@@ -18,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BloodDonationApp">
         <activity
+            android:name=".Activities.CreateFeed"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.ChatPartnerInfo"
+            android:exported="false" />
+        <activity
             android:name=".Activities.MyRequestDetail"
             android:exported="false" />
         <activity

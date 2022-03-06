@@ -3,15 +3,35 @@ package com.example.blooddonationapp.ModelClasses;
 public class Feed
 {
     private String text; // heading
-    private int image;
+    private String image;
     private String link;
-    private boolean liked;
-    private boolean saved;
 
-    public Feed(String text, int image, String link) {
+    private String uid = null; //Generates random UUID
+    private String timeCreated = null;
+
+    public Feed() {
+    }
+
+    public Feed(String text, String image, String link) {
         this.text = text;
         this.image = image;
         this.link = link;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uuid) {
+        this.uid = uuid;
+    }
+
+    public String getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(String timeCreated) {
+        this.timeCreated = timeCreated;
     }
 
     public String getText() {
@@ -22,11 +42,11 @@ public class Feed
         this.text = text;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -38,19 +58,4 @@ public class Feed
         this.link = link;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    public boolean isSaved() {
-        return saved;
-    }
-
-    public void setSaved(boolean saved) {
-        this.saved = saved;
-    }
 }

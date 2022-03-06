@@ -35,5 +35,60 @@
 
     </RelativeLayout>
 
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relLayout1">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/capsule_shape"
+                android:layout_margin="10dp"
+                android:text="@string/hospitals"
+                android:backgroundTint="@color/white"
+                android:id="@+id/hospital_Btn"
+
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/capsule_shape"
+                android:layout_margin="10dp"
+                android:text="@string/blood_banks"
+                android:backgroundTint="@color/white"
+                android:id="@+id/bloodBanks_Btn"
+
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/capsule_shape"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/white"
+                android:text="@string/pharmacy"
+                android:id="@+id/pharmacy_Btn"
+
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

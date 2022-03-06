@@ -1,6 +1,13 @@
 package com.example.blooddonationapp.ModelClasses;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Map;
+
+public class User implements Parcelable {
     private String name;
     private String phone;
     private String email;
@@ -9,6 +16,50 @@ public class User {
     private String dob;
     private String bloodGrp;
     private String address;
+
+    private Map<String, Boolean> likedFeeds;
+    private Map<String, Boolean> savedFeeds;
+
+    protected User(Parcel in) {
+        name = in.readString();
+        phone = in.readString();
+        email = in.readString();
+        uid = in.readString();
+        imgUri = in.readString();
+        dob = in.readString();
+        bloodGrp = in.readString();
+        address = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    public Map<String, Boolean> getLikedFeeds() {
+        return likedFeeds;
+    }
+
+    public void setLikedFeeds(Map<String, Boolean> likedFeeds) {
+        this.likedFeeds = likedFeeds;
+    }
+
+    public Map<String, Boolean> getSavedFeeds() {
+        return savedFeeds;
+    }
+
+    public void setSavedFeeds(Map<String, Boolean> savedFeeds) {
+        this.savedFeeds = savedFeeds;
+    }
+
+    public User(){}
 
     public String getName() {
         return name;
@@ -72,5 +123,22 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(phone);
+        parcel.writeString(email);
+        parcel.writeString(uid);
+        parcel.writeString(imgUri);
+        parcel.writeString(dob);
+        parcel.writeString(bloodGrp);
+        parcel.writeString(address);
     }
 }

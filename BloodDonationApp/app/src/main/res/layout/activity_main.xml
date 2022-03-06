@@ -81,7 +81,10 @@
                             android:layout_height="30dp"
                             android:layout_marginLeft="10dp"
                             android:padding="3dp"
-                            android:background="@drawable/ic_baseline_notifications_24"/>
+                            android:background="@drawable/ic_baseline_notifications_24"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"/>
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/menu_chatBtn"
@@ -90,7 +93,10 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:padding="3dp"
-                            android:background="@drawable/ic_baseline_chat_24"/>
+                            android:background="@drawable/ic_baseline_chat_24"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"/>
                     </LinearLayout>
 
                 </LinearLayout>

@@ -34,5 +34,15 @@
     <string name="ask_to_donate">Ask to donate</string>
     <string name="donor_registration">Donor Registration</string>
     <string name="register">Register</string>
+    <string name="blood_banks">Blood Banks</string>
+    <string name="hospitals">Hospitals</string>
+    <string name="pharmacy">Pharmacy</string>
+    <string name="blood_group_heading">Blood Group:</string>
+    <string name="address_heading">Address:</string>
+    <string name="donor">DONOR</string>
+    <string name="receiver">RECEIVER</string>
     <string name="notifications">Notifications</string>
+    <string name="create_a_new_feed">Create a New Feed</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="update_feed">Update Feed</string>
 </resources>
