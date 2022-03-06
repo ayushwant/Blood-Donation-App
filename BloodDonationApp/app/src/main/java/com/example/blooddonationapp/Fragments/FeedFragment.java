@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,11 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.blooddonationapp.Activities.WebViewActivity;
 import com.example.blooddonationapp.Adapters.FeedAdapter;
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -95,8 +101,43 @@ public class FeedFragment extends Fragment {
         FeedAdapter feedAdapter = new FeedAdapter(getContext(), feedList, clickListener);
         feedRv.setAdapter(feedAdapter);
 
+//HERE: create/fetch the data here
 //        feedList.add(0, new Feed("hello just a check", R.drawable.background_1, "https://www.youtube.com/watch?v=vBxNDtyE_Co"));
 //        feedList.add(0, new Feed("again just a check 😉", R.drawable.pic1, "https://www.google.com/search?q=hello"));
+
+        FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
+
+        fireStore.collection("Feed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
+                // after getting the data we are calling on success method
+                // and inside this method we are checking if the received
+                // query snapshot is empty or not.
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    // if the snapshot is not empty we are
+                    // hiding our progress bar and adding
+                    // our data in a list.
+                    List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                    for (DocumentSnapshot d : list) {
+                        // after getting this list we are passing
+                        // that list to our object class.
+
+                        Feed f = d.toObject(Feed.class);
+
+                        // and we will pass this object class inside our arraylist
+                        feedList.add(0, f);
+                    }
+                    // after adding the data to recycler view.
+                    // we are calling recycler view notifyDataSetChanged
+                    // method to notify that data has been changed in recycler view.
+                    feedAdapter.notifyDataSetChanged();
+                } else {
+                    // if the snapshot is empty we are displaying a toast message.
+                    Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         return view;
     }

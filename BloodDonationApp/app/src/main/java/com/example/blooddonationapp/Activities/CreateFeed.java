@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.ModelClasses.Feed;
-import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityCreateFeedBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,7 +26,7 @@ import java.util.UUID;
 
 public class CreateFeed extends AppCompatActivity {
     ActivityCreateFeedBinding binding;
-    FirebaseFirestore db;
+    FirebaseFirestore fireStore;
     private static final int PICK_IMAGE_REQUEST=1;//To identify our image request
     Uri feedImgUri;
     FirebaseStorage storage;
@@ -41,7 +40,7 @@ public class CreateFeed extends AppCompatActivity {
         binding = ActivityCreateFeedBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        db = FirebaseFirestore.getInstance();
+        fireStore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
         binding.feedImg.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +110,7 @@ public class CreateFeed extends AppCompatActivity {
                             feed.setTimeCreated( String.valueOf(date.getTime()) );
 
                             // below method is use to add data to Firebase Firestore.
-                            db.collection("Feed").document( feed.getTimeCreated() ).set(feed) // String.valueOf(date.getTime())
+                            fireStore.collection("Feed").document( feed.getTimeCreated() ).set(feed) // String.valueOf(date.getTime())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(@NonNull Void unused) {
