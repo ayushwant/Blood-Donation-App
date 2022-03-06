@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="35dp"
-        android:layout_marginTop="60sp"
+        android:layout_marginTop="100sp"
         android:layout_marginRight="35dp"
         android:hint="@string/enter_name"
         app:startIconDrawable="@drawable/ic_baseline_person_24">
@@ -98,7 +98,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:textColor="@color/white"
+            android:textAllCaps="false"
             android:id="@+id/sign_up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

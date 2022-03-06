@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/button_style"
     android:id="@+id/container"
     tools:context=".MainActivityAdmin">
     <LinearLayout
@@ -26,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
+                android:background="@drawable/toolbar_style"
                 android:theme="?attr/actionBarTheme"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -57,6 +59,7 @@
                     android:id="@+id/welcome_note"
                     android:layout_width="wrap_content"
                     android:text="App Name"
+                    android:textColor="@color/white"
                     android:layout_weight="@integer/material_motion_duration_long_1"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -93,24 +96,40 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/frame_layout_admin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-    </FrameLayout>
 
-    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
-        android:id="@+id/bottom_navigation_admin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:mbn_backgroundBottomColor="@color/white"
-        app:mbn_circleColor="@color/red"
-        app:mbn_countBackgroundColor="@color/grey"
-        app:mbn_countTextColor="@color/design_default_color_on_secondary"
-        app:mbn_defaultIconColor="@color/grey"
-        app:mbn_selectedIconColor="@color/white" />
+            <FrameLayout
+                android:id="@+id/frame_layout_admin"
+                android:layout_width="match_parent"
+                android:layout_height="630dp"
+                android:layout_weight="1"
+                android:background="@drawable/dialog_box_main"
+                android:padding="15dp"
+                android:paddingTop="40dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation_admin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+                android:id="@+id/bottom_navigation_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:mbn_backgroundBottomColor="@color/peach"
+                app:mbn_circleColor="@color/red"
+                app:mbn_countBackgroundColor="@color/grey"
+                app:mbn_countTextColor="@color/design_default_color_on_secondary"
+                app:mbn_defaultIconColor="@color/red"
+                app:mbn_selectedIconColor="@color/white" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:layout_height="match_parent"
@@ -118,6 +137,6 @@
         app:menu="@menu/navigation_menu_admin"
         android:layout_gravity="start"
         android:id="@+id/nav_view_side_admin"
-        app:headerLayout="@layout/nav_header">
+        app:headerLayout="@layout/nav_header_admin">
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

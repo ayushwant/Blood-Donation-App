@@ -95,8 +95,8 @@ public class DonorList extends Fragment {
                 {
                     if(dc.getType() == DocumentChange.Type.ADDED)
                     {
-                        String isPublic=dc.getDocument().getString("isPublic");
-                        if(isPublic.equals("true"))
+                        Boolean isPublic=dc.getDocument().getBoolean("public");
+                        if(isPublic.equals(true))
                         donorArrayList.add(dc.getDocument().toObject(Donor.class));
                         if(progressDialog.isShowing())
                             progressDialog.dismiss();

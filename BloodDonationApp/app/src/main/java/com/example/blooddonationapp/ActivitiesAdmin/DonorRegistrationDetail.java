@@ -53,6 +53,12 @@ public class DonorRegistrationDetail extends AppCompatActivity {
         Intent i=getIntent();
         number=i.getStringExtra("phone");
 
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //Displaying details
         db.collection("Donor Requests").document(number).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -76,7 +82,7 @@ public class DonorRegistrationDetail extends AppCompatActivity {
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(DonorRegistrationDetail.this);
-                builder.setTitle("Mark as verified seeker?");
+                builder.setMessage("Mark as verified donor?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

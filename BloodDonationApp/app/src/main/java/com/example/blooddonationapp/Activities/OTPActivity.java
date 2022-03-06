@@ -92,6 +92,7 @@ public class OTPActivity extends AppCompatActivity {
                         Intent i=new Intent(OTPActivity.this,AdminLogin.class);
                         i.putExtra("phone",phone);
                         startActivity(i);
+                        finish();
                     }
                     else
                     {

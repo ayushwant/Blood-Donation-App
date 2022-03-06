@@ -71,13 +71,20 @@ public class RequestDetailAdmin extends AppCompatActivity {
             }
         });
 
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //Marking as verified
         binding.verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailAdmin.this);
-                builder.setTitle("Are you sure?");
+                builder.setMessage("Are you sure?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -95,6 +102,8 @@ public class RequestDetailAdmin extends AppCompatActivity {
                                 mDatabase.child("Notifications")
                                         .child(number).push().setValue(notification);
 
+                                Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
+                                startActivity(intent);
 
                             }
                         });
@@ -137,6 +146,9 @@ public class RequestDetailAdmin extends AppCompatActivity {
 
                                         mDatabase.child("Notifications")
                                                 .child(number).push().setValue(notification);
+
+                                        Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
+                                        startActivity(intent);
                                     }
                                 });
                     }

@@ -8,6 +8,9 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:paddingTop="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="10dp"
         android:id="@+id/feedRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

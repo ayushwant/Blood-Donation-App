@@ -137,6 +137,8 @@ public class SignUpActivity extends AppCompatActivity
                                 otpIntent.putExtra("email",email);
                                 otpIntent.putExtra("phone",phone);
                                 startActivity(otpIntent);
+                                finish();
+
                             }
                         },1000);
 

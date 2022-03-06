@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/toolbar_style"
     tools:context=".Activities.NotificationActivity">
 
     <LinearLayout
@@ -14,7 +15,9 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
+            android:layout_marginRight="100dp"
             android:layout_height="60dp"
+            android:background="@drawable/toolbar_notification"
             >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -65,19 +68,21 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <ScrollView
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="689dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/notification_bg">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:paddingTop="20dp" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
