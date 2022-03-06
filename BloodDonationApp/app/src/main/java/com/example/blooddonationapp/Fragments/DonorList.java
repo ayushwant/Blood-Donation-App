@@ -42,7 +42,6 @@ public class DonorList extends Fragment {
     ArrayList<Donor> donorArrayList;
     DonorAdapter adapter;
     FirebaseFirestore db;
-    ProgressDialog progressDialog;
 
     public DonorList() {
         // Required empty public constructor
@@ -58,12 +57,6 @@ public class DonorList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_donor_list, container, false);
-
-        //Progress Dialog
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Fetching data");
-        progressDialog.show();
 
         //Loading verified requests
         recyclerView =v.findViewById(R.id.recyclerView);
@@ -98,11 +91,9 @@ public class DonorList extends Fragment {
                         Boolean isPublic=dc.getDocument().getBoolean("public");
                         if(isPublic.equals(true))
                         donorArrayList.add(dc.getDocument().toObject(Donor.class));
-                        if(progressDialog.isShowing())
-                            progressDialog.dismiss();
                     }
                     adapter.notifyDataSetChanged();
-                    progressDialog.dismiss();
+
                 }
 
             }

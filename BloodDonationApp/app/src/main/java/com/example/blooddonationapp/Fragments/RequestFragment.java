@@ -323,7 +323,7 @@ public class RequestFragment extends Fragment {
                                     @Override
                                     public void onSuccess(Void unused) {
                                                 Toast.makeText(getContext(),"Request Sent",Toast.LENGTH_LONG).show();
-                                                dialog.cancel();
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -332,6 +332,7 @@ public class RequestFragment extends Fragment {
                                         Toast.makeText(getContext(), "Error in posting request, try after sometime", Toast.LENGTH_LONG).show();
                                     }
                                 });
+                                dialog.cancel();
                             }
                         });
                     }

@@ -29,6 +29,7 @@ import com.google.firestore.v1.WriteResult;
 
 import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,11 +81,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                             User user = documentSnapshot.toObject(User.class);
 
                             assert user != null;
+                            if(user.getLikedFeeds()==null)
+                                user.setLikedFeeds(new HashMap<>());
                             if(user.getLikedFeeds().containsKey(feed.getUid() ) )
                                 holder.likeBtn.setImageResource(R.drawable.liked);
                             else
                                 holder.likeBtn.setImageResource(R.drawable.unliked);
 
+
+                            if(user.getSavedFeeds()==null)
+                                user.setSavedFeeds(new HashMap<>());
                             if(user.getSavedFeeds().containsKey(feed.getUid() ) )
                                 holder.saveBtn.setImageResource(R.drawable.ic_saved);
                             else
@@ -114,7 +120,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                     assert user != null;
                     Map<String , Boolean> savedFeeds = user.getSavedFeeds();
 
-                    if(user.getSavedFeeds().containsKey(feed.getUid() ) ) // was saved
+                    if(savedFeeds==null)
+                        savedFeeds=new HashMap<>();
+                    if(savedFeeds.containsKey(feed.getUid() ) ) // was saved
                     {
                         holder.saveBtn.setImageResource(R.drawable.ic_unsaved_again);
                         savedFeeds.remove(feed.getUid());
@@ -145,7 +153,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                     assert user != null;
                     Map<String , Boolean> likedFeeds = user.getLikedFeeds();
 
-                    if(user.getLikedFeeds().containsKey(feed.getUid() ) ) // was liked
+                    if(likedFeeds==null)
+                        likedFeeds=new HashMap<>();
+                    if(likedFeeds.containsKey(feed.getUid() ) ) // was liked
                     {
                         holder.likeBtn.setImageResource(R.drawable.unliked);
                         likedFeeds.remove(feed.getUid());

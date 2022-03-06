@@ -8,6 +8,9 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:padding="5dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="70dp"
         android:id="@+id/feedAdminRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -20,13 +23,16 @@
             android:id="@+id/createFeedBtn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="30dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="5dp"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/ic_baseline_add_circle_24"
             tools:src="@drawable/ic_baseline_add_circle_24"
             android:contentDescription="@string/create_a_new_feed" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

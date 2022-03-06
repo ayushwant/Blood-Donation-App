@@ -68,7 +68,6 @@ public class AdminLogin extends AppCompatActivity {
                                         .update("Signed_in", "true");
                                 Intent i=new Intent(AdminLogin.this, MainActivityAdmin.class);
                                 startActivity(i);
-                                finish();
                             }
                             else
                             {

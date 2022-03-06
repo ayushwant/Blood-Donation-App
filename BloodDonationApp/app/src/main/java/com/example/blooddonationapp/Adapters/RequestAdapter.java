@@ -335,6 +335,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
                                                                     Toast.makeText(holder.itemView.getContext(),"Details Submitted",Toast.LENGTH_LONG).show();
+                                                                     dialog1.cancel();
                                                                 }
                                                             }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override

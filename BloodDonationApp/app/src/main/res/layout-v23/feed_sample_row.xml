@@ -12,9 +12,7 @@
         android:id="@+id/feedRowCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
+        android:layout_margin="4dp"
         android:padding="4dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,12 +23,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/edit_text_background"
+            android:padding="18dp">
 
             <ImageView
                 android:id="@+id/feedImg"
-                android:layout_width="wrap_content"
-                android:layout_height="300dp"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
