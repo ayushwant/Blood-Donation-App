@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,17 +15,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.example.blooddonationapp.ModelClasses.Feed;
+import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firestore.v1.WriteResult;
 
 import java.sql.ClientInfoStatus;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder>
 {
     Context context;
     List<Feed> feedArrayList;
     RvClickListener clickListener;
+    // check for like and save on fireStore
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
+    DocumentReference saveRef = fireStore.collection("Feed").document("savedBy");
+
 
     public FeedAdapter(Context context, List<Feed> feedArrayList, RvClickListener listener) {
         this.context = context;
@@ -48,36 +65,102 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
         Feed feed = feedArrayList.get(position);
 
-//        holder.feedImg.setImageResource(R.drawable.background);
-//        holder.feedImg.setImageResource(feed.getImage());
         Glide.with(context).load(feed.getImage()).into(holder.feedImg);
-
         holder.feedText.setText(feed.getText());
-        holder.saveBtn.setImageResource(R.drawable.save_alt_24);
-        if(feed.isLiked()) holder.likeBtn.setImageResource(R.drawable.liked);
-        else holder.likeBtn.setImageResource(R.drawable.unliked);
 
         holder.shareBtn.setImageResource(R.drawable.ic_baseline_share_24);
 
+        // check in database for liked and saved
+        if(currentUser!=null && currentUser.getPhoneNumber()!=null )
+        {
+            fireStore.collection("Users").document( currentUser.getPhoneNumber() )
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            User user = documentSnapshot.toObject(User.class);
 
-        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                holder.likeBtn.clearAnimation();
-                if(feed.isLiked()){
-                    feed.setLiked(false);
-                    holder.likeBtn.setImageResource(R.drawable.unliked);
-                }
-                else{
-                    feed.setLiked(true);
-//                    holder.likeBtn.setAnimation(R.raw.like_animation);
-//                    holder.likeBtn.playAnimation();
-//                    holder.likeBtn.animate().setDuration(1000);
+                            assert user != null;
+                            if(user.getLikedFeeds().containsKey(feed.getUid() ) )
+                                holder.likeBtn.setImageResource(R.drawable.liked);
+                            else
+                                holder.likeBtn.setImageResource(R.drawable.unliked);
 
-                    holder.likeBtn.setImageResource(R.drawable.liked);
+                            if(user.getSavedFeeds().containsKey(feed.getUid() ) )
+                                holder.saveBtn.setImageResource(R.drawable.ic_saved);
+                            else
+                                holder.saveBtn.setImageResource(R.drawable.ic_unsaved_again);
+                        }
+                    });
+        }
+
+        // listen for like button clicks
+        holder.likeBtn.setOnClickListener( view -> likeButtonCLick(holder, feed) );
+
+        // listen for save button clicks
+        holder.saveBtn.setOnClickListener( view -> saveButtonCLick(holder, feed) );
+    }
+
+    private void saveButtonCLick(FeedViewHolder holder, Feed feed)
+    {
+        if (currentUser != null && currentUser.getPhoneNumber() != null)
+        {
+            fireStore.collection("Users").document(currentUser.getPhoneNumber())
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot)
+                {
+                    User user = documentSnapshot.toObject(User.class);
+
+                    assert user != null;
+                    Map<String , Boolean> savedFeeds = user.getSavedFeeds();
+
+                    if(user.getSavedFeeds().containsKey(feed.getUid() ) ) // was saved
+                    {
+                        holder.saveBtn.setImageResource(R.drawable.ic_unsaved_again);
+                        savedFeeds.remove(feed.getUid());
+                    }
+                    else // was unsaved
+                    {
+                        holder.saveBtn.setImageResource(R.drawable.ic_saved);
+                        savedFeeds.put(feed.getUid(), true);
+                    }
+                    fireStore.collection("Users").document(currentUser.getPhoneNumber())
+                            .update( "savedFeeds", savedFeeds );
                 }
-            }
-        });
+            });
+        }
+    }
+
+    private void likeButtonCLick(FeedViewHolder holder, Feed feed)
+    {
+        if (currentUser != null && currentUser.getPhoneNumber() != null)
+        {
+            fireStore.collection("Users").document(currentUser.getPhoneNumber())
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot)
+                {
+                    User user = documentSnapshot.toObject(User.class);
+
+                    assert user != null;
+                    Map<String , Boolean> likedFeeds = user.getLikedFeeds();
+
+                    if(user.getLikedFeeds().containsKey(feed.getUid() ) ) // was liked
+                    {
+                        holder.likeBtn.setImageResource(R.drawable.unliked);
+                        likedFeeds.remove(feed.getUid());
+                    }
+                    else // was unliked
+                    {
+                        holder.likeBtn.setImageResource(R.drawable.liked);
+                        likedFeeds.put(feed.getUid(), true);
+                    }
+                    // now update in fireStore
+                    fireStore.collection("Users").document(currentUser.getPhoneNumber())
+                            .update( "likedFeeds", likedFeeds );
+                }
+            });
+        }
     }
 
     @Override

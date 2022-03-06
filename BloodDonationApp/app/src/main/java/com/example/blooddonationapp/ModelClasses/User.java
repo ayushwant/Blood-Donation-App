@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class User implements Parcelable {
     private String name;
@@ -15,7 +17,8 @@ public class User implements Parcelable {
     private String bloodGrp;
     private String address;
 
-    public User(){}
+    private Map<String, Boolean> likedFeeds;
+    private Map<String, Boolean> savedFeeds;
 
     protected User(Parcel in) {
         name = in.readString();
@@ -39,6 +42,24 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public Map<String, Boolean> getLikedFeeds() {
+        return likedFeeds;
+    }
+
+    public void setLikedFeeds(Map<String, Boolean> likedFeeds) {
+        this.likedFeeds = likedFeeds;
+    }
+
+    public Map<String, Boolean> getSavedFeeds() {
+        return savedFeeds;
+    }
+
+    public void setSavedFeeds(Map<String, Boolean> savedFeeds) {
+        this.savedFeeds = savedFeeds;
+    }
+
+    public User(){}
 
     public String getName() {
         return name;
@@ -111,8 +132,6 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
-        // must be in the same order as when reading
         parcel.writeString(name);
         parcel.writeString(phone);
         parcel.writeString(email);

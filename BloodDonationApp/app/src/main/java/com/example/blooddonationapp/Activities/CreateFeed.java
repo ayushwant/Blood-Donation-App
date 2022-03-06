@@ -21,7 +21,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class CreateFeed extends AppCompatActivity {
@@ -110,11 +112,12 @@ public class CreateFeed extends AppCompatActivity {
                             feed.setTimeCreated( String.valueOf(date.getTime()) );
 
                             // below method is use to add data to Firebase Firestore.
-                            fireStore.collection("Feed").document( feed.getTimeCreated() ).set(feed) // String.valueOf(date.getTime())
+                            fireStore.collection("Feed").document( feed.getUid() ).set(feed)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(@NonNull Void unused) {
                                             Toast.makeText(CreateFeed.this, "Your Feed has been added to Firebase Firestore", Toast.LENGTH_SHORT).show();
+                                            onBackPressed();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -131,10 +134,10 @@ public class CreateFeed extends AppCompatActivity {
             }
         });
 
-
-
-        Toast.makeText(CreateFeed.this,"2nd time " +finalUri,Toast.LENGTH_LONG).show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

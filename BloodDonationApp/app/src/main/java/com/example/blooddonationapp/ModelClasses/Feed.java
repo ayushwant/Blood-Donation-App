@@ -1,14 +1,10 @@
 package com.example.blooddonationapp.ModelClasses;
 
-import java.util.UUID;
-
 public class Feed
 {
     private String text; // heading
     private String image;
     private String link;
-    private boolean liked;
-    private boolean saved;
 
     private String uid = null; //Generates random UUID
     private String timeCreated = null;
@@ -62,19 +58,4 @@ public class Feed
         this.link = link;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
-
-    public boolean isSaved() {
-        return saved;
-    }
-
-    public void setSaved(boolean saved) {
-        this.saved = saved;
-    }
 }
