@@ -24,9 +24,12 @@ import com.example.blooddonationapp.AdminSideFragments.HistoryFragmentAdmin;
 import com.example.blooddonationapp.AdminSideFragments.RequestFragmentAdmin;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.databinding.ActivityMainAdminBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivityAdmin extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,7 +39,7 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
     private View hView;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
-    private TextView edit;
+    private TextView position,name;
     private FirebaseFirestore db;
 
     @Override
@@ -55,15 +58,19 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
         navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
         hView=binding.navViewSideAdmin.getHeaderView(0);
-        edit=hView.findViewById(R.id.edit_profile);
+        position=hView.findViewById(R.id.edit_profile);
+        name=hView.findViewById(R.id.user_name);
 
-        edit.setOnClickListener(new View.OnClickListener() {
+        db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View view) {
-                Intent i=new Intent(MainActivityAdmin.this, ProfileActivityAdmin.class);
-                startActivity(i);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                String sname=task.getResult().getString("name");
+                String sposition=task.getResult().getString("position");
+                name.setText(sname);
+                position.setText(sposition);
             }
         });
+
 
         binding.profileImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +107,6 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
                 switch(item.getId()) {
                     case 1: //when id is 1
                         //initialize feed fragment
-                        Toast.makeText(MainActivityAdmin.this,"ttttttt",Toast.LENGTH_LONG).show();
                         loadFragment(new FeedFragmentAdmin());
                         break;
 
@@ -125,17 +131,13 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
         binding.bottomNavigationAdmin.setOnClickMenuListener(new MeowBottomNavigation.ClickListener() {
             @Override
             public void onClickItem(MeowBottomNavigation.Model item) {
-                //display toast
-                Toast.makeText(getApplicationContext(), "You clicked" + item.getId(),
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
         binding.bottomNavigationAdmin.setOnReselectListener(new MeowBottomNavigation.ReselectListener() {
             @Override
             public void onReselectItem(MeowBottomNavigation.Model item) {
-                //display toast
-                Toast.makeText(getApplicationContext(), "You Reselected" + item.getId(),
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -153,8 +155,7 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
         switch (item.getItemId())
         {
             case R.id.log_out:
-                db.collection("Admin").document(currentUser.getPhoneNumber())
-                        .update("Signed_in", "false");
+
                 auth.signOut();
                 sendToLogin();
                 break;
@@ -169,7 +170,8 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
 
     private void sendToLogin()
     {
-
+        db.collection("Admin").document(currentUser.getPhoneNumber())
+                .update("Signed_in", "false");
         Intent i=new Intent(MainActivityAdmin.this, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task

@@ -23,8 +23,7 @@
                 android:layout_weight="1"
                 android:textSize="15dp"
                 android:layout_marginLeft="10dp"
-                android:drawableEnd="@drawable/ic_baseline_filter_list_24"
-                android:text="@string/filter" />
+                android:drawableEnd="@drawable/ic_baseline_filter_list_24"/>
         </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"

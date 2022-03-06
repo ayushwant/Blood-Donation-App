@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivityAdmin;
+import com.example.blooddonationapp.ModelClasses.Notification;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityDonorRegistrationDetailBinding;
 import com.example.blooddonationapp.databinding.ActivityRequestDetailAdminBinding;
@@ -18,6 +19,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +33,7 @@ public class RequestDetailAdmin extends AppCompatActivity {
     ActivityRequestDetailAdminBinding binding;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
+    private DatabaseReference mDatabase;
     private FirebaseFirestore db;
     private String number;
 
@@ -42,6 +47,9 @@ public class RequestDetailAdmin extends AppCompatActivity {
         auth=FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
         currentUser=auth.getCurrentUser();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
         Intent i=getIntent();
         number=i.getStringExtra("phone");
@@ -63,13 +71,20 @@ public class RequestDetailAdmin extends AppCompatActivity {
             }
         });
 
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //Marking as verified
         binding.verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailAdmin.this);
-                builder.setTitle("Are you sure?");
+                builder.setMessage("Are you sure?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -77,6 +92,19 @@ public class RequestDetailAdmin extends AppCompatActivity {
                                 Map < String, Object > data = new HashMap<>();
                                 db.collection("Raised Requests").document(number)
                                         .update("valid", "true");
+
+                                Notification notification=new Notification();
+                                notification.setLine1("Blood Request Verification");
+                                notification.setLine2("Your request has been verified");
+                                notification.setLine3("");
+                                notification.setSeen(false);
+
+                                mDatabase.child("Notifications")
+                                        .child(number).push().setValue(notification);
+
+                                Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
+                                startActivity(intent);
+
                             }
                         });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -110,7 +138,17 @@ public class RequestDetailAdmin extends AppCompatActivity {
                                         Intent i= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
                                         startActivity(i);
                                         //Notifying
+                                        Notification notification=new Notification();
+                                        notification.setLine1("Blood Request Verification");
+                                        notification.setLine2("Your request has been declined");
+                                        notification.setLine3("Kindly check your credentials before applying");
+                                        notification.setSeen(false);
 
+                                        mDatabase.child("Notifications")
+                                                .child(number).push().setValue(notification);
+
+                                        Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
+                                        startActivity(intent);
                                     }
                                 });
                     }

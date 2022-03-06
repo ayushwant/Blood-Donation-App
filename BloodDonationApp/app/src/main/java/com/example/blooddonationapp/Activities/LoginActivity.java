@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
-                ds.setColor(Color.BLACK);
+                ds.setColor(Color.RED);
 
             }
             @Override
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity
             }
 
         };
-        ss.setSpan(clickableSpan,10,st.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan,0,st.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         binding.signUpTxt.setText(ss);
         binding.signUpTxt.setMovementMethod(LinkMovementMethod.getInstance());
@@ -221,6 +221,7 @@ public class LoginActivity extends AppCompatActivity
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
                         startActivity(i);
+                        finish();
                     }
                     else
                     {
@@ -228,6 +229,7 @@ public class LoginActivity extends AppCompatActivity
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
                         startActivity(i);
+                        finish();
                     }
                 }
                 else
@@ -236,6 +238,7 @@ public class LoginActivity extends AppCompatActivity
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
                     startActivity(i);
+                    finish();
                 }
             }
         });

@@ -5,12 +5,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="100dp"
     app:cardCornerRadius="30dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginLeft="30dp"
-    android:layout_marginRight="30dp">
+
+    android:layout_marginTop="5dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="35dp">
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:elevation="100dp"
+        android:padding="8dp"
+        android:background="@drawable/edit_text_notification"
         android:layout_height="match_parent"
         android:orientation="vertical">
 

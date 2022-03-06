@@ -31,6 +31,7 @@ import com.example.blooddonationapp.Activities.RegisteredMsg;
 import com.example.blooddonationapp.Adapters.VPAdapter;
 import com.example.blooddonationapp.AdminSideFragments.DonorRegistrationList;
 import com.example.blooddonationapp.ModelClasses.Patient;
+import com.example.blooddonationapp.ModelClasses.RequestHistory;
 import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +54,7 @@ public class RequestFragment extends Fragment {
     private Button raiseRequest,postRequest;
     private TextView userName;
     private ImageView drop_up;
+    private DatabaseReference mDatabase;
     private StorageReference storageReference;
     private FirebaseStorage storage;
     private Uri uri;
@@ -96,7 +98,7 @@ public class RequestFragment extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         VPAdapter vpAdapter=new VPAdapter(getFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new RequestList(),"Requests");
-        vpAdapter.addFragment(new DonorRegistrationList(),"Blood Donors");
+        vpAdapter.addFragment(new DonorList(),"Blood Donors");
         viewPager.setAdapter(vpAdapter);
         storage =FirebaseStorage.getInstance();
         storageReference =storage.getReference()
@@ -159,7 +161,7 @@ public class RequestFragment extends Fragment {
                 Intent i= new Intent();
                 i.setType("application/pdf");
                 i.setAction(i.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i,"PDF FILE SELECTED"),12);
+                 startActivityForResult(Intent.createChooser(i,"PDF FILE SELECTED"),12);
             }
         });
 
@@ -295,6 +297,19 @@ public class RequestFragment extends Fragment {
                     patient.setLocation(location.getText().toString());
                     patient.setAdditionalDetails(details.getText().toString());
 
+
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                    RequestHistory requestHistory=new RequestHistory();
+                    requestHistory.setUserPhone(user.getPhone());
+                    requestHistory.setPatientName(patient_name.getText().toString());
+                    requestHistory.setPatientBloodGrp(blood_group.getText().toString());
+                    requestHistory.setRequiredUnits(Long.parseLong(required_units.getText().toString()));
+                    requestHistory.setLocation(location.getText().toString());
+                    requestHistory.setStatus("Pending");
+                    mDatabase.child("Raised Request History")
+                            .child(user.getPhone()).child(patient_name.getText().toString()).setValue(requestHistory);
+
+
                     if (uri != null) {
                         storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -307,8 +322,8 @@ public class RequestFragment extends Fragment {
                                         .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Intent intent = new Intent(getContext(), RegisteredMsg.class);
-                                        startActivity(intent);
+                                                Toast.makeText(getContext(),"Request Sent",Toast.LENGTH_LONG).show();
+                                                dialog.cancel();
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

@@ -24,6 +24,9 @@
             android:name=".Activities.ChatPartnerInfo"
             android:exported="false" />
         <activity
+            android:name=".Activities.MyRequestDetail"
+            android:exported="false" />
+        <activity
             android:name=".ActivitiesAdmin.RequestDetailAdmin"
             android:exported="false" />
         <activity
@@ -43,7 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".Activities.AdminLogin"
-            android:exported="false" />
+            android:exported="true"></activity>
         <activity
             android:name=".MainActivityAdmin"
             android:exported="true" />
@@ -67,7 +70,7 @@
             android:exported="false" />
         <activity
             android:name=".Activities.OTPActivity"
-            android:exported="false" />
+            android:exported="true"></activity>
         <activity
             android:name=".Activities.SignUpActivity"
             android:exported="false" />

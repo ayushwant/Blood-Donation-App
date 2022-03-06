@@ -1,5 +1,7 @@
 package com.example.blooddonationapp.Adapters;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Dialog;
 import android.app.Notification;
 import android.content.Context;
@@ -14,10 +16,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blooddonationapp.Activities.RegisteredMsg;
@@ -39,7 +43,9 @@ import java.util.Map;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder>{
 
-    private EditText donorName,donorPhone,donorAge,donorEmail,donorBloodGrp,donorLocation,donorPdfUri;
+    private EditText donorName,donorPhone,donorAge,donorEmail,blood_group,donorLocation,donorPdfUri;
+    private View bloodList;
+    private ImageView drop_up;
     private Button register;
     private CheckBox isPublicBox;
     private Boolean isValid=false;
@@ -153,12 +159,116 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                 donorPhone=dialog1.findViewById(R.id.phone);
                                                 donorAge=dialog1.findViewById(R.id.age);
                                                 donorEmail=dialog1.findViewById(R.id.email);
-                                                donorBloodGrp=dialog1.findViewById(R.id.blood_group);
+                                                blood_group=dialog1.findViewById(R.id.blood_group);
                                                 donorLocation=dialog1.findViewById(R.id.location);
                                                 donorPdfUri=dialog1.findViewById(R.id.upload_documents);
                                                 isPublicBox=dialog1.findViewById(R.id.isPublic);
                                                 register=dialog1.findViewById(R.id.register);
+                                                bloodList=dialog1.findViewById(R.id.blood_list);
+                                                drop_up=dialog1.findViewById(R.id.drop_up);
 
+//                                                //Uploading documents
+//                                                donorPdfUri.setOnClickListener(new View.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(View v) {
+//                                                        Intent i= new Intent();
+//                                                        i.setType("application/pdf");
+//                                                        i.setAction(i.ACTION_GET_CONTENT);
+//                                                        holder.itemView.getContext().startActivity(Intent.createChooser(i,"PDF FILE SELECTED"));
+//                                                    }
+//                                                });
+
+
+                                                blood_group.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v)
+                                                    {
+                                                        bloodList.setVisibility(View.VISIBLE);
+                                                        drop_up.setVisibility(View.VISIBLE);
+                                                        drop_up.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                bloodList.setVisibility(View.GONE);
+                                                                drop_up.setVisibility(View.GONE);
+                                                            }
+                                                        });
+
+                                                        TextView op,on,ap,an,bp,bn,abp,abn;
+                                                        op=dialog1.findViewById(R.id.O_pos);
+                                                        on=dialog1.findViewById(R.id.O_neg);
+                                                        ap=dialog1.findViewById(R.id.A_pos);
+                                                        an=dialog1.findViewById(R.id.A_neg);
+                                                        bp=dialog1.findViewById(R.id.B_pos);
+                                                        bn=dialog1.findViewById(R.id.B_neg);
+                                                        abp=dialog1.findViewById(R.id.AB_pos);
+                                                        abn=dialog1.findViewById(R.id.AB_neg);
+
+                                                        op.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(op.getText().toString());
+
+                                                            }
+                                                        });
+                                                        on.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(on.getText().toString());
+
+                                                            }
+                                                        });
+                                                        ap.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(ap.getText().toString());
+
+                                                            }
+                                                        });
+                                                        an.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(an.getText().toString());
+
+                                                            }
+                                                        });
+                                                        ap.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(ap.getText().toString());
+
+                                                            }
+                                                        });
+                                                        bp.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(bp.getText().toString());
+
+                                                            }
+                                                        });
+                                                        bn.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(bn.getText().toString());
+
+                                                            }
+                                                        });
+                                                        abp.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(abp.getText().toString());
+
+                                                            }
+                                                        });
+                                                        abn.setOnClickListener(new View.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(View v) {
+                                                                blood_group.setText(abn.getText().toString());
+                                                                //  bloodList.setVisibility(View.GONE);
+                                                                //  drop_up.setVisibility(View.GONE);
+                                                            }
+                                                        });
+                                                    }
+                                                });
                                                 db1.collection("Users").document(currentUser.getPhoneNumber())
                                                         .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                     @Override
@@ -166,7 +276,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                         donorName.setText(dc.getString("name"));
                                                         donorPhone.setText(currentUser.getPhoneNumber());
                                                         donorEmail.setText(dc.getString("email"));
-                                                        donorBloodGrp.setText(dc.getString("bloodGrp"));
+                                                        blood_group.setText(dc.getString("bloodGrp"));
                                                         donorLocation.setText(dc.getString("address"));
                                                     }
                                                 });
@@ -189,9 +299,9 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                         {
                                                             donorAge.setError("Required");
                                                         }
-                                                        if(donorBloodGrp.length()==0)
+                                                        if(blood_group.length()==0)
                                                         {
-                                                            donorBloodGrp.setError("Required");
+                                                            blood_group.setError("Required");
                                                         }
                                                         if(donorEmail.length()==0)
                                                         {
@@ -212,7 +322,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                             donor.setPhone(donorPhone.getText().toString());
                                                             donor.setAge(donorAge.getText().toString());
                                                             donor.setEmail(donorEmail.getText().toString());
-                                                            donor.setBloodGrp(donorBloodGrp.getText().toString());
+                                                            donor.setBloodGrp(blood_group.getText().toString());
                                                             donor.setLocation(donorLocation.getText().toString());
                                                             donor.setPdfUri(donorPdfUri.getText().toString());
                                                             donor.setValid(false);
@@ -280,6 +390,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
             location=itemView.findViewById(R.id.request_list_location);
         }
     }
+
+
+
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+////        super.onActivityResult(requestCode, resultCode, data);
+////        if(requestCode==12 && resultCode==RESULT_OK && data!=null && data.getData()!=null)
+////        {
+////            documents.setText(data.getDataString());
+////            uri=data.getData();
+////        }
+//   }
+
 
 
 }

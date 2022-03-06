@@ -24,6 +24,8 @@ import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
 import com.example.blooddonationapp.ModelClasses.Notification;
 import com.example.blooddonationapp.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Collections;
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ActivityMainBinding binding;
     private View hView;
-    private TextView edit;
+    private TextView edit,userName;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private DatabaseReference database;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private String uid;
     private int count=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         hView=binding.navViewSide.getHeaderView(0);
         edit=hView.findViewById(R.id.edit_profile);
+        userName=hView.findViewById(R.id.user_name);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +92,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        db.collection("Users").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                String name=task.getResult().getString("name");
+                userName.setText(name);
+            }
+        });
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
