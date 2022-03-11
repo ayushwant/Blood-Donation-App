@@ -1,7 +1,8 @@
 package com.example.blooddonationapp.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.WriteResult;
 
-import java.sql.ClientInfoStatus;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +38,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     // check for like and save on fireStore
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
-    DocumentReference saveRef = fireStore.collection("Feed").document("savedBy");
 
 
     public FeedAdapter(Context context, List<Feed> feedArrayList, RvClickListener listener) {
@@ -70,6 +66,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.feedText.setText(feed.getText());
 
         holder.shareBtn.setImageResource(R.drawable.ic_baseline_share_24);
+
+//        holder.shareBtn.setOnClickListener(view -> {
+//            Uri imageUri = Uri.parse(feed.getImage());
+//
+//            Intent shareIntent = new Intent();
+//            shareIntent.setAction(Intent.ACTION_SEND);
+//
+//            shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
+//            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+//
+//            shareIntent.setType("image/jpeg");
+//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//            context.startActivity(Intent.createChooser(shareIntent, "send"));
+//        });
 
         // check in database for liked and saved
         if(currentUser!=null && currentUser.getPhoneNumber()!=null )

@@ -87,6 +87,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 //Loading details from firebase firestore
                 TextView userName,patientName,bloodGrp,units,age,location;
                 Button donate;
+                ImageView share;
+                share = dialog.findViewById(R.id.share);
 
                 userName=dialog.findViewById(R.id.name);
                 patientName=dialog.findViewById(R.id.patient_name);
@@ -102,6 +104,26 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 units.setText(patient.getRequiredUnits());
                 age.setText(patient.getAge());
                 location.setText(patient.getLocation());
+
+
+                share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+
+                        String msg = patient.getPatientName() +" requires " +patient.getRequiredUnits()
+                                +" units of " +patient.getBloodGrp() + " blood at "
+                                + patient.getLocation();
+
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
+                        sendIntent.setType("text/plain");
+
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        dialog.getContext().startActivity(shareIntent);
+                    }
+                });
+
 
                 donate.setOnClickListener(new View.OnClickListener() {
                     @Override

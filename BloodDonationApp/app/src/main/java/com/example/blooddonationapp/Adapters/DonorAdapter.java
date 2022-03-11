@@ -87,7 +87,17 @@ public class DonorAdapter extends RecyclerView.Adapter<DonorAdapter.DonorViewHol
                 donorShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(holder.itemView.getContext(),"Share",Toast.LENGTH_LONG).show();
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+
+                        String msg = donor.getName() + " is available to donate " +donor.getBloodGrp()
+                                + " blood at " +donor.getLocation();
+
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
+                        sendIntent.setType("text/plain");
+
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        dialog.getContext().startActivity(shareIntent);
                     }
                 });
 
