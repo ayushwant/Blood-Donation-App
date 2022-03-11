@@ -82,7 +82,7 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
 
         // initiating chat
         binding.menuChatBtn.setOnClickListener(view -> {
-
+            startActivity( new Intent(MainActivityAdmin.this, Chats.class) );
         });
 
         //Notication
