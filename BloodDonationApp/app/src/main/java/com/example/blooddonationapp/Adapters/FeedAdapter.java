@@ -2,7 +2,10 @@ package com.example.blooddonationapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -67,20 +71,29 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
         holder.shareBtn.setImageResource(R.drawable.ic_baseline_share_24);
 
-//        holder.shareBtn.setOnClickListener(view -> {
-//            Uri imageUri = Uri.parse(feed.getImage());
-//
-//            Intent shareIntent = new Intent();
-//            shareIntent.setAction(Intent.ACTION_SEND);
-//
-//            shareIntent.putExtra(Intent.EXTRA_TEXT, "Hello");
-//            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-//
-//            shareIntent.setType("image/jpeg");
-//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//            context.startActivity(Intent.createChooser(shareIntent, "send"));
-//        });
+        holder.shareBtn.setOnClickListener(view -> {
+
+            BitmapDrawable drawable = (BitmapDrawable) holder.feedImg.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+
+            String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    bitmap, "title", "");
+            Uri imageUri = Uri.parse(bitmapPath);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/png");
+
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT,
+                    feed.getText() +"\n" + feed.getLink());
+            // can insert only one extra text at a time. So just append into a single message
+
+            //            intent.putExtra(Intent.EXTRA_TEXT,
+//            "PlayStore Link: https://play.google.com/store/apps/details?id=" +context.getPackageName());
+
+            context.startActivity(Intent.createChooser(intent, "Share image via..."));
+
+        });
 
         // check in database for liked and saved
         if(currentUser!=null && currentUser.getPhoneNumber()!=null )
