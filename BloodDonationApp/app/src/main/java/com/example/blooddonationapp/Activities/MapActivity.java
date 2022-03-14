@@ -66,6 +66,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -92,6 +93,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     AlertDialog.Builder builder = null;
     AlertDialog alert = null;
     Button hospitalBtn, pharmacyBtn, bloodBankBtn;
+    FloatingActionButton myLocationBtn;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -136,10 +138,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         hospitalBtn = findViewById(R.id.hospital_Btn);
         pharmacyBtn = findViewById(R.id.pharmacy_Btn);
         bloodBankBtn = findViewById(R.id.bloodBanks_Btn);
-
-//        Intent gpsOptionsIntent = new Intent(
-//                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//        startActivity(gpsOptionsIntent);
+        myLocationBtn = findViewById(R.id.myLocationBtn);
 
         lm = (LocationManager)MapActivity.this.getSystemService(Context.LOCATION_SERVICE);
         checkLocationEnabled();
@@ -147,6 +146,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         if(gps_enabled && network_enabled) {
             initAutocomplete();
             getLocationPermission();
+
+            myLocationBtn.setOnClickListener(view -> getDeviceLocation());
         }
     }
 
