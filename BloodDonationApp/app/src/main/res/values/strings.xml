@@ -45,4 +45,5 @@
     <string name="create_a_new_feed">Create a New Feed</string>
     <string name="upload_image">Upload Image</string>
     <string name="update_feed">Update Feed</string>
+    <string name="type_a_message">Type a message</string>
 </resources>
