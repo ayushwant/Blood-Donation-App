@@ -39,7 +39,7 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
     private View hView;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
-    private TextView position,name;
+    private TextView position,name,switchUser;
     private FirebaseFirestore db;
 
     @Override
@@ -60,6 +60,7 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
         hView=binding.navViewSideAdmin.getHeaderView(0);
         position=hView.findViewById(R.id.edit_profile);
         name=hView.findViewById(R.id.user_name);
+        switchUser=hView.findViewById(R.id.switch_to_user);
 
         db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -68,6 +69,17 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
                 String sposition=task.getResult().getString("position");
                 name.setText(sname);
                 position.setText(sposition);
+            }
+        });
+
+        switchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.collection("Admin").document(currentUser.getPhoneNumber())
+                        .update("Signed_in", "false");
+                Intent i=new Intent(MainActivityAdmin.this,MainActivity.class);
+                startActivity(i);
+                finish();
             }
         });
 
@@ -182,10 +194,10 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
     @Override
     protected void onStart() {
         super.onStart();
-        if(currentUser==null)
-        {
-            sendToLogin();
-        }
+//        if(currentUser==null)
+//        {
+//            sendToLogin();
+//        }
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -36,6 +37,9 @@ public class DonorRegistrationDetail extends AppCompatActivity {
     private FirebaseFirestore db;
     private String number;
     private boolean isPublic;
+    private String pdfUri;
+
+    Donor donor = new Donor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +74,7 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                 binding.drBloodGroup.setText(task.getResult().getString("bloodGrp"));
                 binding.drAge.setText(task.getResult().getString("age"));
                 binding.drLocation.setText(task.getResult().getString("location"));
-                binding.drDocuments.setText(task.getResult().getString("pdfUri"));
+                pdfUri=task.getResult().getString("pdfUri");
                 isPublic=task.getResult().getBoolean("public");
 
             }
@@ -87,7 +91,6 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Donor donor = new Donor();
                         donor.setName(binding.donorName.getText().toString());
                         donor.setPhone(binding.donorContact.getText().toString());
                         donor.setAge(binding.drAge.getText().toString());
@@ -148,6 +151,15 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                 AlertDialog ad=builder.create();
                 ad.show();
 
+            }
+        });
+
+        //Downloading Document
+        binding.drDocuments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUri));
+                startActivity(browserIntent);
             }
         });
 

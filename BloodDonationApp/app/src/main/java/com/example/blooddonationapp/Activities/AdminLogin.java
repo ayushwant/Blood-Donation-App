@@ -44,6 +44,7 @@ public class AdminLogin extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
         binding.login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

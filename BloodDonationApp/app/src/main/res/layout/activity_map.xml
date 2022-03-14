@@ -43,45 +43,52 @@
         app:layout_constraintTop_toBottomOf="@+id/relLayout1">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal" >
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/capsule_shape"
+                android:background="@drawable/button_style"
                 android:layout_margin="10dp"
+                android:padding="5dp"
                 android:text="@string/hospitals"
-                android:backgroundTint="@color/white"
                 android:id="@+id/hospital_Btn"
-
+                android:textColor="@color/white"
                 android:clickable="true"
                 android:focusable="true"
+                android:textSize="15dp"
+                android:textAllCaps="false"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/capsule_shape"
+                android:background="@drawable/button_style"
                 android:layout_margin="10dp"
                 android:text="@string/blood_banks"
-                android:backgroundTint="@color/white"
+                android:textColor="@color/white"
                 android:id="@+id/bloodBanks_Btn"
-
+                android:padding="5dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:textSize="15dp"
+                android:textAllCaps="false"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/capsule_shape"
+                android:background="@drawable/button_style"
                 android:layout_margin="10dp"
-                android:backgroundTint="@color/white"
+                android:padding="5dp"
+                android:textColor="@color/white"
                 android:text="@string/pharmacy"
                 android:id="@+id/pharmacy_Btn"
-
+                android:textSize="15dp"
+                android:textAllCaps="false"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"/>

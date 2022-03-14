@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.PostBloodRequestFormActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_gravity="center"
+                android:layout_height="5dp"
+                android:background="@color/red"></View>
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textColor="@color/grey"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:textSize="15dp"
+                android:textColor="@color/grey"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/patient_details" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:padding="7dp"
+                android:background="@drawable/edit_text_background"
+                android:id="@+id/patient_name"
+                android:drawableStart="@drawable/ic_baseline_perm_identity_24"
+                android:layout_width="match_parent"
+                android:inputType="textPersonName"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/grey"
+                android:textSize="15dp"
+                android:hint="@string/name"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/age"
+                android:padding="7dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:inputType="number"
+                android:textColor="@color/grey"
+                android:textSize="15dp"
+                android:drawableStart="@drawable/ic_baseline_nature_people_r"
+                android:hint="Age"
+                android:layout_height="wrap_content" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/blood_group"
+                    android:padding="7dp"
+                    android:background="@drawable/edit_text_background"
+                    android:drawableStart="@drawable/ic_blood_r"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:hint="@string/blood_group"
+                    android:textColor="@color/grey"
+                    android:textSize="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/drop_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/blood_group"
+                    app:layout_constraintHorizontal_bias="0.94"
+                    app:layout_constraintStart_toStartOf="@+id/blood_group"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.47"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_up_24" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <LinearLayout
+                android:id="@+id/blood_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.cardview.widget.CardView
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/O_pos"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="O+ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/A_pos"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A+ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/B_pos"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="B+ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/AB_pos"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AB+ve" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/O_neg"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="O-ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/A_neg"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="A-ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/B_neg"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="B-ve" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" >
+                        <TextView
+                            android:id="@+id/AB_neg"
+                            android:padding="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AB-ve" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/required_units"
+                android:layout_marginLeft="15dp"
+                android:padding="7dp"
+                android:drawableStart="@drawable/ic_baseline_local_drink_r"
+                android:layout_marginTop="13sp"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/edit_text_background"
+                android:inputType="number"
+                android:textColor="@color/grey"
+                android:textSize="15dp"
+                android:hint="@string/required_units"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/location"
+                android:textSize="15dp"
+                android:padding="7dp"
+                android:drawableStart="@drawable/ic_baseline_location_on_r"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginRight="15dp"
+                android:hint="@string/location"
+                android:textColor="@color/grey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/upload_documents"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:padding="7dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/edit_text_background"
+                android:textSize="15dp"
+                android:editable="false"
+                android:cursorVisible="false"
+                android:drawableStart="@drawable/ic_baseline_cloud_upload"
+                android:textColor="@color/grey"
+                android:hint="@string/medical_document"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/id_proof"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:padding="7dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/edit_text_background"
+                android:textSize="15dp"
+                android:editable="false"
+                android:cursorVisible="false"
+                android:drawableStart="@drawable/ic_baseline_cloud_upload"
+                android:textColor="@color/grey"
+                android:hint="@string/id_proof"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/details"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:padding="7dp"
+                android:background="@drawable/edit_text_background"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/grey"
+                android:hint="@string/additional_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:background="@drawable/button_style"
+                android:id="@+id/post_request"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="13sp"
+                android:layout_marginRight="15dp"
+                android:text="@string/post_request" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

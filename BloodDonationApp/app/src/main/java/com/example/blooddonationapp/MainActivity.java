@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.blooddonationapp.Activities.AdminLogin;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
 import com.example.blooddonationapp.Activities.MapActivity;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ActivityMainBinding binding;
     private View hView;
-    private TextView edit,userName;
+    private TextView edit,userName,adminSwitch;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private DatabaseReference database;
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hView=binding.navViewSide.getHeaderView(0);
         edit=hView.findViewById(R.id.edit_profile);
         userName=hView.findViewById(R.id.user_name);
+        adminSwitch=hView.findViewById(R.id.switch_to_admin);
+
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +117,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+        //Switching to admin side if admin
+        db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getResult().exists())
+                {
+                    adminSwitch.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        adminSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(MainActivity.this, AdminLogin.class);
+                i.putExtra("phone",currentUser.getPhoneNumber());
+                startActivity(i);
+                finish();
             }
         });
 
@@ -220,9 +244,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        if(currentUser==null)
-        {
-            sendToLogin();
-        }
+//        if(currentUser==null)
+//        {
+//            sendToLogin();
+//        }
     }
 }
