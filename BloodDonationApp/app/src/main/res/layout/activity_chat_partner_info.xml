@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="TextView"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -33,38 +32,18 @@
         app:layout_constraintTop_toBottomOf="@+id/cpiImage"
         />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+    <ImageView
+        android:id="@+id/cpiChat"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cpiName">
-
-        <ImageView
-            android:id="@+id/cpiCall"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="100dp"
-            android:layout_weight="1"
-            android:contentDescription="Call"
-            app:srcCompat="@android:drawable/ic_menu_call"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"/>
-
-        <ImageView
-            android:id="@+id/cpiChat"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="100dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_baseline_chat_24"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"/>
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/cpiName"
+        app:srcCompat="@drawable/ic_baseline_chat_24" />
 
     <TextView
         android:id="@+id/cpiUserType"
@@ -76,13 +55,13 @@
         android:textSize="24sp"
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintTop_toBottomOf="@+id/cpiChat"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/bloodConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
@@ -111,22 +90,22 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/cpiBloodHeading"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addressConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true">
+        app:layout_constraintTop_toBottomOf="@+id/bloodConstraintLayout">
 
         <TextView
             android:id="@+id/cpiAddressHeading"
@@ -156,7 +135,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/LocImageView"
             app:layout_constraintTop_toTopOf="parent" />

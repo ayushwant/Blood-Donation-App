@@ -1,6 +1,7 @@
 package com.example.blooddonationapp.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,19 +9,26 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.BuildConfig;
+import com.example.blooddonationapp.MainActivity;
 import com.example.blooddonationapp.ModelClasses.PolylineData;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.Utilities.NearbyPlacesSearch;
@@ -60,6 +69,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.PendingResult;
@@ -86,6 +96,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     AlertDialog.Builder builder = null;
     AlertDialog alert = null;
     Button hospitalBtn, pharmacyBtn, bloodBankBtn;
+    FloatingActionButton myLocationBtn;
 
     private static final String TAG = "MapFragment";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -108,6 +119,10 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     // list of polyLines
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
+    LocationManager lm ;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +141,64 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         hospitalBtn = findViewById(R.id.hospital_Btn);
         pharmacyBtn = findViewById(R.id.pharmacy_Btn);
         bloodBankBtn = findViewById(R.id.bloodBanks_Btn);
+        myLocationBtn = findViewById(R.id.myLocationBtn);
 
-        initAutocomplete();
-        getLocationPermission();
+        lm = (LocationManager)MapActivity.this.getSystemService(Context.LOCATION_SERVICE);
+        checkLocationEnabled();
+
+        if(gps_enabled && network_enabled) {
+            initAutocomplete();
+            getLocationPermission();
+
+            myLocationBtn.setOnClickListener(view -> getDeviceLocation());
+        }
+    }
+
+    private void checkLocationEnabled()
+    {
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this)
+                    .setMessage(R.string.gps_network_not_enabled)
+                    .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                            MapActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) , 120);
+                        }
+                    })
+                    .setNegativeButton(R.string.Cancel,null)
+                    .show();
+
+
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==120){
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch(Exception ex) {}
+
+            try {
+                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch(Exception ex) {}
+
+            if (gps_enabled && network_enabled)
+                recreate();
+        }
     }
 
     // initializes the map after getting permissions properly
@@ -384,11 +454,12 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     {
                         for (HashMap<String, String> hospital : output)
                         {
-                            if( hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
+                            if(hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
                                 LatLng latLng = new LatLng( Float.parseFloat(hospital.get("latitude")),
                                         Float.parseFloat(hospital.get("longitude") ));
 
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))  );
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))
+                                .icon( BitmapFromVector(getApplicationContext(), R.drawable.ic_hospital_icon) ) );
                             }
                         }
                     }
@@ -411,7 +482,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                                 LatLng latLng = new LatLng( Float.parseFloat(pharmacy.get("latitude")),
                                         Float.parseFloat(pharmacy.get("longitude") ));
 
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(pharmacy.get("placeName"))  );
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(pharmacy.get("placeName"))
+                                        .icon( BitmapFromVector(getApplicationContext(), R.drawable.ic_pharmacy_marker) ) );
                             }
                         }
                     }
@@ -681,25 +753,34 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         }
     }
 
-    // Ask to enable GPS
-    private void buildAlertMessageNoGps() {
-        builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        alert = builder.create();
-        alert.show();
+    // to create custom markers
+    private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
+        // below line is use to generate a drawable.
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        // below line is use to add bitmap in our canvas.
+        Canvas canvas = new Canvas(bitmap);
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas);
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent( MapActivity.this, MainActivity.class ) );
+    }
 
     @Override
     public void onResume() {
