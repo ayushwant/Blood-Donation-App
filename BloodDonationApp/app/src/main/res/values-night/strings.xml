@@ -2,4 +2,6 @@
 <resources>
     <string name="blood_banks">Blood Banks</string>
     <string name="type_a_message">Type a message</string>
+    <string name="gps_network_not_enabled">Enable GPS to access Maps</string>
+    <string name="Cancel">Cancel</string>
 </resources>

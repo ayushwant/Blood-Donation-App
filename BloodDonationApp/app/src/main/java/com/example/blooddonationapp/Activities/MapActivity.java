@@ -1,6 +1,7 @@
 package com.example.blooddonationapp.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,7 +9,9 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,10 +20,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.BuildConfig;
+import com.example.blooddonationapp.MainActivity;
 import com.example.blooddonationapp.ModelClasses.PolylineData;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.Utilities.NearbyPlacesSearch;
@@ -108,6 +114,10 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     // list of polyLines
     private ArrayList<PolylineData> mPolyLinesData = new ArrayList<>();
 
+    LocationManager lm ;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +137,64 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         pharmacyBtn = findViewById(R.id.pharmacy_Btn);
         bloodBankBtn = findViewById(R.id.bloodBanks_Btn);
 
-        initAutocomplete();
-        getLocationPermission();
+//        Intent gpsOptionsIntent = new Intent(
+//                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//        startActivity(gpsOptionsIntent);
+
+        lm = (LocationManager)MapActivity.this.getSystemService(Context.LOCATION_SERVICE);
+        checkLocationEnabled();
+
+        if(gps_enabled && network_enabled) {
+            initAutocomplete();
+            getLocationPermission();
+        }
+    }
+
+    private void checkLocationEnabled()
+    {
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this)
+                    .setMessage(R.string.gps_network_not_enabled)
+                    .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                            MapActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) , 120);
+                        }
+                    })
+                    .setNegativeButton(R.string.Cancel,null)
+                    .show();
+
+
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==120){
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch(Exception ex) {}
+
+            try {
+                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch(Exception ex) {}
+
+            if (gps_enabled && network_enabled)
+                recreate();
+        }
     }
 
     // initializes the map after getting permissions properly
@@ -700,6 +766,11 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         alert.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent( MapActivity.this, MainActivity.class ) );
+    }
 
     @Override
     public void onResume() {
