@@ -1,7 +1,11 @@
 package com.example.blooddonationapp.Adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +26,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firestore.v1.WriteResult;
 
-import java.sql.ClientInfoStatus;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     // check for like and save on fireStore
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
-    DocumentReference saveRef = fireStore.collection("Feed").document("savedBy");
 
 
     public FeedAdapter(Context context, List<Feed> feedArrayList, RvClickListener listener) {
@@ -70,6 +70,30 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.feedText.setText(feed.getText());
 
         holder.shareBtn.setImageResource(R.drawable.ic_baseline_share_24);
+
+        holder.shareBtn.setOnClickListener(view -> {
+
+            BitmapDrawable drawable = (BitmapDrawable) holder.feedImg.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+
+            String bitmapPath = MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    bitmap, "title", "");
+            Uri imageUri = Uri.parse(bitmapPath);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/png");
+
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT,
+                    feed.getText() +"\n" + feed.getLink());
+            // can insert only one extra text at a time. So just append into a single message
+
+            //            intent.putExtra(Intent.EXTRA_TEXT,
+//            "PlayStore Link: https://play.google.com/store/apps/details?id=" +context.getPackageName());
+
+            context.startActivity(Intent.createChooser(intent, "Share image via..."));
+
+        });
 
         // check in database for liked and saved
         if(currentUser!=null && currentUser.getPhoneNumber()!=null )
