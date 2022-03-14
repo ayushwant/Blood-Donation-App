@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.blooddonationapp.Activities.DonorRegistrationFormActivity;
 import com.example.blooddonationapp.Activities.RegisteredMsg;
 import com.example.blooddonationapp.ModelClasses.Donor;
 import com.example.blooddonationapp.ModelClasses.Patient;
@@ -85,7 +87,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 dialog.setContentView(R.layout.bottom_sheet_request_detail);
 
                 //Loading details from firebase firestore
-                TextView userName,patientName,bloodGrp,units,age,location;
+                TextView userName,patientName,bloodGrp,units,age,location,message,msg;
                 Button donate;
                 ImageView share;
                 share = dialog.findViewById(R.id.share);
@@ -97,6 +99,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 age=dialog.findViewById(R.id.age);
                 location=dialog.findViewById(R.id.location);
                 donate=dialog.findViewById(R.id.donate);
+                message=dialog.findViewById(R.id.message);
+                msg=dialog.findViewById(R.id.msg);
 
                 userName.setText(patient.getUserName());
                 patientName.setText(patient.getPatientName());
@@ -104,7 +108,11 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                 units.setText(patient.getRequiredUnits());
                 age.setText(patient.getAge());
                 location.setText(patient.getLocation());
-
+                if(patient.getAdditionalDetails().length()>0)
+                {
+                    msg.setVisibility(View.VISIBLE);
+                }
+                message.setText(patient.getAdditionalDetails());
 
                 share.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -160,221 +168,15 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                             .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if(task.getResult().exists())
-                                            {
+                                            if (task.getResult().exists()) {
                                                 Toast.makeText(holder.itemView.getContext(),
                                                         "Your request has been registered, we will contact you soon " +
-                                                                "after manual verification of documents",Toast.LENGTH_LONG).show();
-                                            }
-                                            else
-                                            {
+                                                                "after manual verification of documents", Toast.LENGTH_LONG).show();
+                                            } else {
                                                 //Directly Register
                                                 dialog.cancel();
-                                                //Opening other dialog
-                                                final Dialog dialog1;
-                                                dialog1 = new Dialog(holder.itemView.getContext());
-                                                dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                                dialog1.setContentView(R.layout.bottom_sheet_donor_registration);
-
-
-                                                donorName=dialog1.findViewById(R.id.name);
-                                                donorPhone=dialog1.findViewById(R.id.phone);
-                                                donorAge=dialog1.findViewById(R.id.age);
-                                                donorEmail=dialog1.findViewById(R.id.email);
-                                                blood_group=dialog1.findViewById(R.id.blood_group);
-                                                donorLocation=dialog1.findViewById(R.id.location);
-                                                donorPdfUri=dialog1.findViewById(R.id.upload_documents);
-                                                isPublicBox=dialog1.findViewById(R.id.isPublic);
-                                                register=dialog1.findViewById(R.id.register);
-                                                bloodList=dialog1.findViewById(R.id.blood_list);
-                                                drop_up=dialog1.findViewById(R.id.drop_up);
-
-//                                                //Uploading documents
-//                                                donorPdfUri.setOnClickListener(new View.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(View v) {
-//                                                        Intent i= new Intent();
-//                                                        i.setType("application/pdf");
-//                                                        i.setAction(i.ACTION_GET_CONTENT);
-//                                                        holder.itemView.getContext().startActivity(Intent.createChooser(i,"PDF FILE SELECTED"));
-//                                                    }
-//                                                });
-
-
-                                                blood_group.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v)
-                                                    {
-                                                        bloodList.setVisibility(View.VISIBLE);
-                                                        drop_up.setVisibility(View.VISIBLE);
-                                                        drop_up.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                bloodList.setVisibility(View.GONE);
-                                                                drop_up.setVisibility(View.GONE);
-                                                            }
-                                                        });
-
-                                                        TextView op,on,ap,an,bp,bn,abp,abn;
-                                                        op=dialog1.findViewById(R.id.O_pos);
-                                                        on=dialog1.findViewById(R.id.O_neg);
-                                                        ap=dialog1.findViewById(R.id.A_pos);
-                                                        an=dialog1.findViewById(R.id.A_neg);
-                                                        bp=dialog1.findViewById(R.id.B_pos);
-                                                        bn=dialog1.findViewById(R.id.B_neg);
-                                                        abp=dialog1.findViewById(R.id.AB_pos);
-                                                        abn=dialog1.findViewById(R.id.AB_neg);
-
-                                                        op.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(op.getText().toString());
-
-                                                            }
-                                                        });
-                                                        on.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(on.getText().toString());
-
-                                                            }
-                                                        });
-                                                        ap.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(ap.getText().toString());
-
-                                                            }
-                                                        });
-                                                        an.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(an.getText().toString());
-
-                                                            }
-                                                        });
-                                                        ap.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(ap.getText().toString());
-
-                                                            }
-                                                        });
-                                                        bp.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(bp.getText().toString());
-
-                                                            }
-                                                        });
-                                                        bn.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(bn.getText().toString());
-
-                                                            }
-                                                        });
-                                                        abp.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(abp.getText().toString());
-
-                                                            }
-                                                        });
-                                                        abn.setOnClickListener(new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View v) {
-                                                                blood_group.setText(abn.getText().toString());
-                                                                //  bloodList.setVisibility(View.GONE);
-                                                                //  drop_up.setVisibility(View.GONE);
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                                db1.collection("Users").document(currentUser.getPhoneNumber())
-                                                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(DocumentSnapshot dc) {
-                                                        donorName.setText(dc.getString("name"));
-                                                        donorPhone.setText(currentUser.getPhoneNumber());
-                                                        donorEmail.setText(dc.getString("email"));
-                                                        blood_group.setText(dc.getString("bloodGrp"));
-                                                        donorLocation.setText(dc.getString("address"));
-                                                    }
-                                                });
-
-
-                                                register.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-
-
-                                                        if(donorName.length()==0)
-                                                        {
-                                                            donorName.setError("Required");
-                                                        }
-                                                        if(donorPhone.length()==0)
-                                                        {
-                                                            donorPhone.setError("Required");
-                                                        }
-                                                        if(donorAge.length()==0)
-                                                        {
-                                                            donorAge.setError("Required");
-                                                        }
-                                                        if(blood_group.length()==0)
-                                                        {
-                                                            blood_group.setError("Required");
-                                                        }
-                                                        if(donorEmail.length()==0)
-                                                        {
-                                                            donorEmail.setError("Required");
-                                                        }
-                                                        if(donorLocation.length()==0)
-                                                        {
-                                                            donorLocation.setError("Required");
-                                                        }
-                                                        if(donorPdfUri.length()==0)
-                                                        {
-                                                            donorPdfUri.setError("Required");
-                                                        }
-                                                        else
-                                                        {
-                                                            Donor donor=new Donor();
-                                                            donor.setName(donorName.getText().toString());
-                                                            donor.setPhone(donorPhone.getText().toString());
-                                                            donor.setAge(donorAge.getText().toString());
-                                                            donor.setEmail(donorEmail.getText().toString());
-                                                            donor.setBloodGrp(blood_group.getText().toString());
-                                                            donor.setLocation(donorLocation.getText().toString());
-                                                            donor.setPdfUri(donorPdfUri.getText().toString());
-                                                            donor.setValid(false);
-                                                            donor.setPublic(false);
-                                                            if(isPublicBox.isChecked())
-                                                                donor.setPublic(true);
-
-                                                            db.collection("Donor Requests").document(currentUser.getPhoneNumber())
-                                                                    .set(donor).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-                                                                    Toast.makeText(holder.itemView.getContext(),"Details Submitted",Toast.LENGTH_LONG).show();
-                                                                     dialog1.cancel();
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-
-                                                                    Toast.makeText(holder.itemView.getContext(),"Error in posting request, try after sometime",Toast.LENGTH_LONG).show();
-                                                                }
-                                                            });
-                                                        }
-                                                    }
-                                                });
-
-                                                dialog1.show();
-                                                dialog1.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                                                dialog1.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                                                dialog1.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-                                                dialog1.getWindow().setGravity(Gravity.BOTTOM);
+                                                Intent i = new Intent(holder.itemView.getContext(), DonorRegistrationFormActivity.class);
+                                                context.startActivity(i);
                                             }
                                         }
                                      });
@@ -387,7 +189,6 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
                     }
                 });
-
                 dialog.show();
                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

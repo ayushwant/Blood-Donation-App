@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class RequestDetailAdmin extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseFirestore db;
     private String number;
+    private String medicalDoc,idProof;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,8 @@ public class RequestDetailAdmin extends AppCompatActivity {
                 binding.requiredUnits.setText(task.getResult().getString("requiredUnits"));
                 binding.patientAge.setText(task.getResult().getString("age"));
                 binding.location.setText(task.getResult().getString("location"));
-                binding.documents.setText(task.getResult().getString("pdfUri"));
+                medicalDoc=task.getResult().getString("pdfUri");
+                idProof=task.getResult().getString("idProof");
                 binding.details.setText(task.getResult().getString("additionalDetails"));
             }
         });
@@ -75,6 +78,22 @@ public class RequestDetailAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        //Downloading Documents
+        binding.documents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(medicalDoc));
+                startActivity(browserIntent);
+            }
+        });
+        binding.idProof.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(idProof));
+                startActivity(browserIntent);
             }
         });
 

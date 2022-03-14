@@ -1,11 +1,18 @@
 package com.example.blooddonationapp.Activities;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.google.firebase.messaging.FirebaseMessaging;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.blooddonationapp.MainActivity;
 import com.example.blooddonationapp.MainActivityAdmin;
@@ -17,9 +24,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+
 public class SplashScreen extends AppCompatActivity {
 
     private FirebaseUser currentUser;
+    public static String token;
     FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +38,75 @@ public class SplashScreen extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        //Getting app's token for cloud messaging
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("FCM TOKEN Failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        token = task.getResult();
+                       // Toast.makeText(SplashScreen.this, token, Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
+
+        //Subscribing to topic-- CODE
+        FirebaseMessaging.getInstance().subscribeToTopic("weather")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (!task.isSuccessful()) {
+                            Log.w("FCM TOKEN Failed", task.getException());
+                            return;
+                        }
+                        Toast.makeText(SplashScreen.this,"Subscribed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+//       //Sending message to topic
+//        // The topic name can be optionally prefixed with "/topics/".
+//        String topic = "highScores";
+//
+//
+//        // See documentation on defining a message payload.
+//        Message message = Message.builder()
+//                .putData("score", "850")
+//                .putData("time", "2:45")
+//                .setTopic(topic)
+//                .build();
+//
+//        // Send a message to the devices subscribed to the provided topic.
+//        String response = null;
+//        try {
+//            response = FirebaseMessaging.getInstance().send(message);
+//        } catch (FirebaseMessagingException e) {
+//            e.printStackTrace();
+//        }
+//        // Response is a message ID string.
+//        System.out.println("Successfully sent message: " + response);
+
+
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-                startActivity(i);
-                finish();
+                if(currentUser!=null)
+                {
+                    sendUserToHome();
+                }
+                else
+                {
+                    sendUserToLogin();
+                }
             }
         }, 3000);
     }
@@ -44,10 +115,6 @@ public class SplashScreen extends AppCompatActivity {
     public void onStart()
     {
         super.onStart();
-        if(currentUser!=null)
-        {
-            sendUserToHome();
-        }
     }
 
     //For sending user to main activity
@@ -87,8 +154,13 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         });
-
-
-
+    }
+    private void sendUserToLogin()
+    {
+        Intent i=new Intent(SplashScreen.this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//clear top
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);//clear task
+        startActivity(i);
+        finish();
     }
 }

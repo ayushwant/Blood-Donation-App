@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Blood Donation App</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="notification_channel_id">default</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="raised_requests">Raised Requests</string>
     <string name="my_requests">My Requests</string>
@@ -50,4 +51,12 @@
     <string name="open_location_settings">Open Location Settings</string>
     <string name="Cancel">Cancel</string>
     <string name="content_description">Content Description</string>
+
+    <string name="id_proof">ID Proof</string>
+    <string name="additional_message">Additional Message</string>
+    <string name="medical_document">Medical Document</string>
+    <string name="switch_to_admin_side">Switch to admin side</string>
+    <string name="switch_to_user_side">Switch to user side</string>
+
+
 </resources>

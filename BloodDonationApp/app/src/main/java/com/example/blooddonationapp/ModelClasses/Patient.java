@@ -10,6 +10,24 @@ public class Patient
     private String requiredUnits;
     private String location;
     private String pdfUri;
+
+    public String getIdProof() {
+        return idProof;
+    }
+
+    public void setIdProof(String idProof) {
+        this.idProof = idProof;
+    }
+
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
+    }
+
+    private String idProof;
     private String additionalDetails;
     private String isValid="false";
 

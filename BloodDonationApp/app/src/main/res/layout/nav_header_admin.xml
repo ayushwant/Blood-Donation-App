@@ -46,6 +46,18 @@
                 android:layout_weight="1"
                 android:textSize="15sp"
                 android:layout_marginTop="8dp"/>
+            <TextView
+                android:id="@+id/switch_to_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:text="@string/switch_to_user_side"
+                style="@style/TextAppearance.Material3.BodyLarge"
+                android:textColor="@color/red"
+                android:onClick="userSwitch"
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
     </LinearLayout>

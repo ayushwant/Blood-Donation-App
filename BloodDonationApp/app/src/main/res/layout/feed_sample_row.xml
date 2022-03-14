@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:layout_constraintCircleRadius="2dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:padding="4dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edit_text_background"
-            android:padding="18dp">
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/feedImg"
@@ -46,15 +47,15 @@
                 android:hint="@string/app_name"
                 android:paddingLeft="8dp"
                 android:textColor="#000000"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedImg" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/likeBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_margin="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
@@ -64,8 +65,8 @@
 
             <ImageView
                 android:id="@+id/saveBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_margin="5dp"
                 android:layout_marginRight="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,8 +76,8 @@
 
             <ImageView
                 android:id="@+id/shareBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toStartOf="@+id/saveBtn"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"

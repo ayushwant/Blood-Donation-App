@@ -110,7 +110,7 @@ public class OTPActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            sendUserToHome();
+                            //sendUserToHome();
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             }
