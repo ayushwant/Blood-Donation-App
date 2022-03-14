@@ -15,8 +15,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -451,11 +454,12 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                     {
                         for (HashMap<String, String> hospital : output)
                         {
-                            if( hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
+                            if(hospital.get("latitude")!=null && hospital.get("longitude")!=null ) {
                                 LatLng latLng = new LatLng( Float.parseFloat(hospital.get("latitude")),
                                         Float.parseFloat(hospital.get("longitude") ));
 
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))  );
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(hospital.get("placeName"))
+                                .icon( BitmapFromVector(getApplicationContext(), R.drawable.ic_hospital_icon) ) );
                             }
                         }
                     }
@@ -478,7 +482,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
                                 LatLng latLng = new LatLng( Float.parseFloat(pharmacy.get("latitude")),
                                         Float.parseFloat(pharmacy.get("longitude") ));
 
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(pharmacy.get("placeName"))  );
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(pharmacy.get("placeName"))
+                                        .icon( BitmapFromVector(getApplicationContext(), R.drawable.ic_pharmacy_marker) ) );
                             }
                         }
                     }
@@ -748,23 +753,27 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
         }
     }
 
-    // Ask to enable GPS
-    private void buildAlertMessageNoGps() {
-        builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        alert = builder.create();
-        alert.show();
+    // to create custom markers
+    private BitmapDescriptor BitmapFromVector(Context context, int vectorResId) {
+        // below line is use to generate a drawable.
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+
+        // below line is use to set bounds to our vector drawable.
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        // below line is use to add bitmap in our canvas.
+        Canvas canvas = new Canvas(bitmap);
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas);
+
+        // after generating our bitmap we are returning our bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     @Override
