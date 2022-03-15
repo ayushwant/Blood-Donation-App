@@ -51,12 +51,12 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
     private Patient patient=new Patient();
     private Button postRequest;
     private TextView userName;
-    private ImageView drop_up;
+    private ImageView drop_up, locationDropUp;
     private DatabaseReference mDatabase;
     private StorageReference storageReference;
     private FirebaseStorage storage;
     private EditText patient_name,age,blood_group,required_units,location,documents,details,idProof;
-    private View bloodList;
+    private View bloodList, locationOptions;
     ProgressDialog progressDialog;
 
     @Override
@@ -104,7 +104,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         patient_name=findViewById(R.id.patient_name);
         blood_group=findViewById(R.id.blood_group);
         required_units=findViewById(R.id.required_units);
-        location=findViewById(R.id.location);
+        location=findViewById(R.id.location_request);
         documents=findViewById(R.id.upload_documents);
         idProof=findViewById(R.id.id_proof);
         details=findViewById(R.id.details);
@@ -112,6 +112,9 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         age=findViewById(R.id.age);
         bloodList=findViewById(R.id.blood_list);
         drop_up=findViewById(R.id.drop_up);
+
+        locationDropUp = findViewById(R.id.drop_up_request_location);
+        locationOptions = findViewById(R.id.locationRequestOptions);
 
         //Uploading documents
         documents.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +233,23 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                         blood_group.setText(abn.getText().toString());
                         bloodList.setVisibility(View.GONE);
                         drop_up.setVisibility(View.GONE);
+                    }
+                });
+            }
+        });
+
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                locationDropUp.setVisibility(View.VISIBLE);
+                locationOptions.setVisibility(View.VISIBLE);
+
+                locationDropUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        locationDropUp.setVisibility(View.GONE);
+                        locationOptions.setVisibility(View.GONE);
                     }
                 });
             }
