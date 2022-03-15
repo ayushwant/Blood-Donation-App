@@ -1,5 +1,7 @@
 package com.example.blooddonationapp.Activities;
 
+import static com.example.blooddonationapp.BuildConfig.MAPS_API_KEY;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +28,15 @@ import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityAdminLoginBinding;
 import com.example.blooddonationapp.databinding.ActivityPostBloodRequestFormBinding;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +47,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PostBloodRequestFormActivity extends AppCompatActivity {
 
@@ -58,6 +70,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
     private EditText patient_name,age,blood_group,required_units,location,documents,details,idProof;
     private View bloodList, locationOptions;
     ProgressDialog progressDialog;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +112,11 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+        // initialize Places API key
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), MAPS_API_KEY);
+        }
 
 
         patient_name=findViewById(R.id.patient_name);
@@ -238,23 +256,6 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
             }
         });
 
-        location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view)
-            {
-                locationDropUp.setVisibility(View.VISIBLE);
-                locationOptions.setVisibility(View.VISIBLE);
-
-                locationDropUp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        locationDropUp.setVisibility(View.GONE);
-                        locationOptions.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-
         postRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -345,11 +346,71 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
             }
         });
 
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                locationDropUp.setVisibility(View.VISIBLE);
+                locationOptions.setVisibility(View.VISIBLE);
+
+                locationDropUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        locationDropUp.setVisibility(View.GONE);
+                        locationOptions.setVisibility(View.GONE);
+                    }
+                });
+
+
+                TextView useCurrent, searchLoc;
+                useCurrent = findViewById(R.id.currentLocationRequest);
+                searchLoc = findViewById(R.id.SearchLocationRequest);
+
+                searchLoc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<Place.Field> fields = Arrays.asList(Place.Field.NAME,
+                                Place.Field.LAT_LNG, Place.Field.ID);
+
+                        // Start the autocomplete intent.
+                        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                                .build(PostBloodRequestFormActivity.this);
+                        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                    }
+                });
+
+
+            }
+        });
+
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data!=null)
+        {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                Log.i("request", "Place: " + place.getName() + ", " + place.getId());
+                location.setText(place.getName());
+                locationDropUp.setVisibility(View.GONE);
+                locationOptions.setVisibility(View.GONE);
+            }
+
+            else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+//                Log.i("request", status.getStatusMessage());
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+
         if(requestCode==12 && resultCode==RESULT_OK && data!=null && data.getData()!=null)
         {
             progressDialog.show();
