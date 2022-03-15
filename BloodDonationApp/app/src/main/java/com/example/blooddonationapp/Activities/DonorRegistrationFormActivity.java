@@ -94,6 +94,13 @@ public class DonorRegistrationFormActivity extends AppCompatActivity {
         bloodList=findViewById(R.id.blood_list);
         drop_up=findViewById(R.id.drop_up);
 
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //Uploading documents
         donorPdfUri.setOnClickListener(new View.OnClickListener() {
         @Override
