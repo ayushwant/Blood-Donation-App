@@ -1,17 +1,29 @@
 package com.example.blooddonationapp.Activities;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static com.example.blooddonationapp.BuildConfig.MAPS_API_KEY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +41,10 @@ import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityAdminLoginBinding;
 import com.example.blooddonationapp.databinding.ActivityPostBloodRequestFormBinding;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -71,6 +87,20 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
     private View bloodList, locationOptions;
     ProgressDialog progressDialog;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 100;
+
+    LocationManager lm ;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
+    FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mUserPosition;  // the current user position
+
+    private static final int enableLocationRequestCode = 120;
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private boolean mLocationPermissionsGranted = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +163,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
 
         locationDropUp = findViewById(R.id.drop_up_request_location);
         locationOptions = findViewById(R.id.locationRequestOptions);
+        lm = (LocationManager)PostBloodRequestFormActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
         //Uploading documents
         documents.setOnClickListener(new View.OnClickListener() {
@@ -379,6 +410,27 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     }
                 });
 
+                useCurrent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view)
+                    {
+//                        getLocationPermission();
+//                        checkLocationEnabled();
+//
+//                        if (gps_enabled && network_enabled && mLocationPermissionsGranted)
+//                            getDeviceLocation();
+
+                        getLocationPermission();
+
+                        if(mLocationPermissionsGranted) {
+                            checkLocationEnabled();
+
+                            if(gps_enabled && network_enabled)
+                                getDeviceLocation();
+                        }
+                    }
+                });
+
 
             }
         });
@@ -386,9 +438,58 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
 
     }
 
+    private void getDeviceLocation(){
+        Log.d("getDeviceLocation:", " getting the devices current location");
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+            if(mLocationPermissionsGranted)
+            {
+
+                @SuppressLint("MissingPermission") final Task lastLocation = mFusedLocationProviderClient.getLastLocation();
+                lastLocation.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            Log.d("getDeviceLocation:", "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
+                            mUserPosition = currentLocation;
+                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
+                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+
+                            location.setText(currentLocation.getLatitude() +", " + currentLocation.getLongitude());
+                        }
+                        else{
+                            Log.d("getDeviceLocation:", "onComplete: current location is null");
+//                            Toast.makeText(this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }catch (SecurityException e){
+            Log.e("getDeviceLocation:", "getDeviceLocation: SecurityException: " + e.getMessage() );
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==enableLocationRequestCode){
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch(Exception ex) {}
+
+            try {
+                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch(Exception ex) {}
+
+            if (gps_enabled && network_enabled)
+                recreate();
+        }
 
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data!=null)
         {
@@ -444,6 +545,77 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                 }
             });
+        }
+    }
+
+    private void checkLocationEnabled()
+    {
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            AlertDialog alertDialog = new AlertDialog.Builder(PostBloodRequestFormActivity.this)
+                    .setMessage(R.string.gps_network_not_enabled)
+                    .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                            MapActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) , enableLocationRequestCode);
+                        }
+                    })
+                    .setNegativeButton(R.string.Cancel,null)
+                    .show();
+
+
+
+        }
+    }
+
+    private void getLocationPermission(){
+        Log.d("getLocationPermission", "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this, FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
+        {
+            mLocationPermissionsGranted = true;
+        }
+        else // request for permission
+            ActivityCompat.requestPermissions(this,
+                    permissions, LOCATION_PERMISSION_REQUEST_CODE);
+
+
+    }
+
+
+    // checks if the needed permissions were granted
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mLocationPermissionsGranted = false;
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults.length > 0) {
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        mLocationPermissionsGranted = false;
+                        Log.d("getLocationPermission", "onRequestPermissionsResult: permission failed");
+                        return;
+                    }
+                }
+                Log.d("getLocationPermission", "onRequestPermissionsResult: permission granted");
+                mLocationPermissionsGranted = true;
+                //initialize our map
+            }
         }
     }
 
