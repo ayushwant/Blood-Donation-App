@@ -21,14 +21,21 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.Activities.RegisteredMsg;
+import com.example.blooddonationapp.Activities.SplashScreen;
 import com.example.blooddonationapp.Adapters.DonorAdapter;
 import com.example.blooddonationapp.Adapters.RequestAdapter;
+import com.example.blooddonationapp.MainActivityAdmin;
 import com.example.blooddonationapp.ModelClasses.Donor;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,7 +48,9 @@ public class DonorList extends Fragment {
     RecyclerView recyclerView;
     ArrayList<Donor> donorArrayList;
     DonorAdapter adapter;
-    FirebaseFirestore db;
+    FirebaseFirestore db,db1;
+    private FirebaseUser currentUser;
+    public String isAdmin="false";
 
     public DonorList() {
         // Required empty public constructor
@@ -63,12 +72,30 @@ public class DonorList extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         db=FirebaseFirestore.getInstance();
         donorArrayList= new ArrayList<Donor>();
         adapter = new DonorAdapter(getContext(),donorArrayList);
 
-        EventChangeListener();
+
+        db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.getResult().exists())
+                {
+                    String signedin=task.getResult().getString("Signed_in");
+                    if(signedin.equals("true"))
+                    {
+                        isAdmin ="true";
+                    }
+                }
+
+
+                EventChangeListener();
+            }
+        });
+
+
         recyclerView.setAdapter(adapter);
 
         return v;
@@ -89,8 +116,18 @@ public class DonorList extends Fragment {
                     if(dc.getType() == DocumentChange.Type.ADDED)
                     {
                         Boolean isPublic=dc.getDocument().getBoolean("public");
-                        if(isPublic.equals(true))
-                        donorArrayList.add(dc.getDocument().toObject(Donor.class));
+
+                        //For admin side donor list
+                        if(isAdmin.equals("true") || (isPublic.equals(true)))
+                        {
+                            donorArrayList.add(dc.getDocument().toObject(Donor.class));
+                        }
+//                        else
+//                        {
+//                            if(isPublic.equals(true))
+//                            donorArrayList.add(dc.getDocument().toObject(Donor.class));
+//                        }
+
                     }
                     adapter.notifyDataSetChanged();
 

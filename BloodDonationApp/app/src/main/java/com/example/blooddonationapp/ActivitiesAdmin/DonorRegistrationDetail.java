@@ -63,6 +63,19 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        //Downloading Document
+        binding.drDocuments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(DonorRegistrationDetail.this, pdfUri, Toast.LENGTH_SHORT).show();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUri));
+                startActivity(browserIntent);
+            }
+        });
+
+
         //Displaying details
         db.collection("Donor Requests").document(number).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -79,6 +92,8 @@ public class DonorRegistrationDetail extends AppCompatActivity {
 
             }
         });
+
+
 
         //Marking as verified i.e. adding donor to registered donors list
         binding.verify.setOnClickListener(new View.OnClickListener() {
@@ -151,15 +166,6 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                 AlertDialog ad=builder.create();
                 ad.show();
 
-            }
-        });
-
-        //Downloading Document
-        binding.drDocuments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(pdfUri));
-                startActivity(browserIntent);
             }
         });
 

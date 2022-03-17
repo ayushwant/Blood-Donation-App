@@ -305,18 +305,24 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     requestHistory.setRequiredUnits(Long.parseLong(required_units.getText().toString()));
                     requestHistory.setLocation(location.getText().toString());
                     requestHistory.setStatus("Pending");
+
+                    // Saving in history -realtime
                     mDatabase.child("Raised Request History")
-                            .child(user.getPhone()).child(patient_name.getText().toString()).setValue(requestHistory);
+                            .child(user.getPhone()).child(patient_name.getText().toString()+
+                            blood_group.getText().toString()+location.getText().toString())
+                            .setValue(requestHistory);
 
-
+                    //Saving in request list -firestore
                     if(uri!=null && uri1!=null)
                     {
                         db.collection("Raised Requests").document(currentUser.getPhoneNumber())
+                                .collection("Requests").
+                                document(patient.getPatientName()+patient.getBloodGrp()+patient.getLocation())
                                 .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(PostBloodRequestFormActivity.this,"Request Sent",Toast.LENGTH_LONG).show();
-
+//                                Toast.makeText(PostBloodRequestFormActivity.this,"Request Sent",Toast.LENGTH_LONG).show();
+//                                finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -325,6 +331,24 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                                 Toast.makeText(PostBloodRequestFormActivity.this, "Error in posting request, try after sometime", Toast.LENGTH_LONG).show();
                             }
                         });
+
+                        //Saving in requestList collection with document id phone+name+blood+location
+                        db.collection("Raised Requests List").document(currentUser.getPhoneNumber()
+                        +patient.getPatientName()+patient.getBloodGrp()+patient.getLocation())
+                                .set(patient).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(PostBloodRequestFormActivity.this,"Request Sent",Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                Toast.makeText(PostBloodRequestFormActivity.this, "Error in posting request, try after sometime", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
 
                     }
 

@@ -194,6 +194,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:textColor="@color/white"
             android:textAllCaps="false"
+            android:visibility="gone"
             android:background="@drawable/button_style"
             android:id="@+id/donate"
             android:layout_width="match_parent"

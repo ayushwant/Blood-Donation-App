@@ -81,7 +81,7 @@ public class RequestList extends Fragment {
 
     private void EventChangeListener() {
 
-        db.collection("Raised Requests").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("Raised Requests List").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 

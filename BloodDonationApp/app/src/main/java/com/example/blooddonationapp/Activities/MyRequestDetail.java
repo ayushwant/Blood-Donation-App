@@ -31,7 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class MyRequestDetail extends AppCompatActivity {
 
     ActivityMyRequestDetailBinding binding;
-    String phone,patientName;
+    String phone,patientName,patientBloodGrp,patientLocation;
     private FirebaseAuth auth;
     private DatabaseReference mDatabase;
     private FirebaseUser currentUser;
@@ -45,6 +45,10 @@ public class MyRequestDetail extends AppCompatActivity {
         setContentView(binding.getRoot());
         Intent i=getIntent();
         phone=i.getStringExtra("Seeker Number");
+        patientName=i.getStringExtra("Patient Name");
+        patientBloodGrp=i.getStringExtra("Patient BloodGrp");
+        patientLocation=i.getStringExtra("Patient Location");
+
 
         // getting current user from firebase authentication
         auth=FirebaseAuth.getInstance();
@@ -56,7 +60,9 @@ public class MyRequestDetail extends AppCompatActivity {
 
 
         //Displaying details
-        db.collection("Raised Requests").document(phone).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("Raised Requests List").
+                document(phone+patientName+patientBloodGrp+patientLocation).
+                get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
@@ -100,7 +106,8 @@ public class MyRequestDetail extends AppCompatActivity {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.collection("Raised Requests").document(phone).delete()
+                        db.collection("Raised Requests List")
+                                .document(phone+patientName+patientBloodGrp+patientLocation).delete()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -111,9 +118,9 @@ public class MyRequestDetail extends AppCompatActivity {
 
                                         //Deleting pending request
                                         removePending();
-
-                                        Intent intent= new Intent(MyRequestDetail.this, MyRequest.class);
-                                        startActivity(intent);
+        //                                        Intent intent= new Intent(MyRequestDetail.this, MyRequest.class);
+//                                        startActivity(intent);
+                                        finish();
                                     }
                                 });
                     }
@@ -142,7 +149,8 @@ public class MyRequestDetail extends AppCompatActivity {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.collection("Raised Requests").document(phone).delete()
+                        db.collection("Raised Requests List")
+                                .document(phone+patientName+patientBloodGrp+patientLocation).delete()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -153,8 +161,9 @@ public class MyRequestDetail extends AppCompatActivity {
 
                                         //Deleting pending request
                                         removePending();
-                                        Intent intent= new Intent(MyRequestDetail.this, MyRequest.class);
-                                        startActivity(intent);
+//                                        Intent intent= new Intent(MyRequestDetail.this, MyRequest.class);
+//                                        startActivity(intent);
+                                        finish();
                                     }
                                 });
                     }
@@ -162,7 +171,23 @@ public class MyRequestDetail extends AppCompatActivity {
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        db.collection("Raised Requests List")
+                                .document(phone+patientName+patientBloodGrp+patientLocation).delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
 
+                                        requestHistory.setStatus("Received");
+                                        mDatabase.child("Raised Request History")
+                                                .child(phone).push().setValue(requestHistory);
+
+                                        //Deleting pending request
+                                        removePending();
+//                                        Intent intent= new Intent(MyRequestDetail.this, MyRequest.class);
+//                                        startActivity(intent);
+                                          finish();
+                                    }
+                                });
                     }
                 });
 
@@ -179,7 +204,13 @@ public class MyRequestDetail extends AppCompatActivity {
     {
         Toast.makeText(this, patientName, Toast.LENGTH_SHORT).show();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Raised Request History").child(currentUser.getPhoneNumber())
-                .child(patientName);
+                .child(patientName+patientBloodGrp+patientLocation);
         mDatabase.removeValue();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

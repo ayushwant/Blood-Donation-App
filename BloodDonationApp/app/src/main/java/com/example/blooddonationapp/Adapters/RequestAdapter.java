@@ -52,6 +52,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     private CheckBox isPublicBox;
     private Boolean isValid=false;
     private Boolean isPublic=false;
+    public String isAdmin="false";
 
     Context context;
     ArrayList<Patient> patientArrayList;
@@ -67,6 +68,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @Override
     public RequestAdapter.RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v=LayoutInflater.from(context).inflate(R.layout.item_request,parent,false);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         return new RequestViewHolder(v);
     }
 
@@ -132,6 +134,20 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                     }
                 });
 
+                db = FirebaseFirestore.getInstance();
+                db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.getResult().exists())
+                        {
+                            String signedin=task.getResult().getString("Signed_in");
+                            if(!signedin.equals("true"))
+                            {
+                                donate.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
 
                 donate.setOnClickListener(new View.OnClickListener() {
                     @Override

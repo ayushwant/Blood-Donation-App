@@ -58,6 +58,9 @@
     <string name="switch_to_admin_side">Switch to admin side</string>
     <string name="switch_to_user_side">Switch to user side</string>
     <string name="saved_posts">Saved Posts</string>
+    <string name="pending_requests">Pending Requests</string>
+    <string name="registered_blood_donors">Registered Blood Donors</string>
+    <string name="chats">Chats</string>
 
 
 </resources>
