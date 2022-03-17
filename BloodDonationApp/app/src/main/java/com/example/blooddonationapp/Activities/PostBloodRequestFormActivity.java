@@ -414,20 +414,10 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view)
                     {
-//                        getLocationPermission();
-//                        checkLocationEnabled();
-//
-//                        if (gps_enabled && network_enabled && mLocationPermissionsGranted)
-//                            getDeviceLocation();
+                        getLocationPermission();  // goes on to check if gps is enabled after successful
 
-                        getLocationPermission();
-
-                        if(mLocationPermissionsGranted) {
-                            checkLocationEnabled();
-
-                            if(gps_enabled && network_enabled)
-                                getDeviceLocation();
-                        }
+                        if (gps_enabled && network_enabled && mLocationPermissionsGranted)
+                            getDeviceLocation();
                     }
                 });
 
@@ -457,8 +447,8 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                             Log.d("getDeviceLocation:", "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
                             mUserPosition = currentLocation;
-                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
-                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
+//                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
                             location.setText(currentLocation.getLatitude() +", " + currentLocation.getLongitude());
                         }
@@ -487,8 +477,10 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                 network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             } catch(Exception ex) {}
 
-            if (gps_enabled && network_enabled)
+            if (gps_enabled && network_enabled) {
                 recreate();
+//                getDeviceLocation();  // since activity is getting recreated, easier to use this in onCreate
+            }
         }
 
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data!=null)
@@ -561,7 +553,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         if(!gps_enabled && !network_enabled) {
             // notify user
             AlertDialog alertDialog = new AlertDialog.Builder(PostBloodRequestFormActivity.this)
-                    .setMessage(R.string.gps_network_not_enabled)
+                    .setMessage(R.string.enable_gps)
                     .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface paramDialogInterface, int paramInt) {
@@ -575,6 +567,8 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
 
 
         }
+        else
+            getDeviceLocation();
     }
 
     private void getLocationPermission(){
@@ -587,6 +581,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                 COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
         {
             mLocationPermissionsGranted = true;
+            checkLocationEnabled();
         }
         else // request for permission
             ActivityCompat.requestPermissions(this,
@@ -615,6 +610,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                 Log.d("getLocationPermission", "onRequestPermissionsResult: permission granted");
                 mLocationPermissionsGranted = true;
                 //initialize our map
+                checkLocationEnabled();
             }
         }
     }
