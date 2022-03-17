@@ -460,6 +460,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
             }
         });
 
+        checkLocationEnabled();
 
     }
 
@@ -516,6 +517,8 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                                 patient.setLocation("User's current Location");
                             }
 
+                            locationDropUp.setVisibility(View.GONE);
+                            locationOptions.setVisibility(View.GONE);
                             patient.setLatLng(currentLocation.getLatitude()
                                     +"," +currentLocation.getLongitude());
                         }
