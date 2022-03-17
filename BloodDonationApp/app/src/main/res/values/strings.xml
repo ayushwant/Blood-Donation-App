@@ -61,6 +61,9 @@
     <string name="pending_requests">Pending Requests</string>
     <string name="registered_blood_donors">Registered Blood Donors</string>
     <string name="chats">Chats</string>
+    <string name="current_location">Current location</string>
+    <string name="specific_location">Specific location</string>
+    <string name="filter_by_distance_from">Filter by distance from:</string>
 
 
 </resources>

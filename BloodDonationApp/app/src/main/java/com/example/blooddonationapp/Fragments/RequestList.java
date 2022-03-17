@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blooddonationapp.Adapters.RequestAdapter;
@@ -34,7 +35,10 @@ public class RequestList extends Fragment {
     RequestAdapter adapter;
     FirebaseFirestore db;
     ProgressDialog progressDialog;
+    LinearLayout filters;
+    TextView textFilter,specificLocation,currentLocation;
     LinearLayout filter;
+    boolean filterVisible=false;
     public RequestList() {
         // Required empty public constructor
     }
@@ -49,14 +53,60 @@ public class RequestList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_request_list, container, false);
+        filters=v.findViewById(R.id.filters);
+        textFilter=v.findViewById(R.id.text_filter);
         filter=v.findViewById(R.id.filter);
+        specificLocation=v.findViewById(R.id.specific_location);
+        currentLocation=v.findViewById(R.id.current_location);
         //Filter feature
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                if(filterVisible==false)
+                {
+                    filterVisible=true;
+                    filters.setVisibility(View.VISIBLE);
+                    textFilter.setVisibility(View.VISIBLE);
+                }
+
+                else
+                {
+                    filterVisible=false;
+                    filters.setVisibility(View.GONE);
+                    textFilter.setVisibility(View.GONE);
+                }
             }
         });
+
+        //On selecting specific location
+        specificLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+
+                filterVisible=false;
+                filters.setVisibility(View.GONE);
+                textFilter.setVisibility(View.GONE);
+            }
+        });
+
+        //On selecting current location
+        currentLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                
+
+                filterVisible=false;
+                filters.setVisibility(View.GONE);
+                textFilter.setVisibility(View.GONE);
+            }
+        });
+
 
         //Progress Dialog
         progressDialog = new ProgressDialog(getContext());
