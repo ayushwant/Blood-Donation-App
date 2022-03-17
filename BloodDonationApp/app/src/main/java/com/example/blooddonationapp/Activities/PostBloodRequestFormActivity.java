@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -64,8 +66,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class PostBloodRequestFormActivity extends AppCompatActivity {
 
@@ -481,7 +485,39 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
 //                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
 //                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
-                            location.setText(currentLocation.getLatitude() +", " + currentLocation.getLongitude());
+                            // get the Address from LatLng
+                            Geocoder geocoder = new Geocoder(PostBloodRequestFormActivity.this, Locale.ENGLISH);
+                            StringBuilder addressInfo = new StringBuilder("");
+
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(
+                                        currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+
+                                if (addresses.size() > 0)
+                                {
+                                    Address fetchedAddress = addresses.get(0);
+
+                                    if(fetchedAddress.getSubLocality()!=null)
+                                        addressInfo.append(fetchedAddress.getSubLocality()).append(", ").append(fetchedAddress.getSubAdminArea());
+                                }
+
+                            }
+                            catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            if(!addressInfo.toString().equals("")) {
+                                location.setText(addressInfo);
+                                patient.setLocation(addressInfo.toString());
+                            }
+                            else{
+                                location.setText(R.string.curr_loc);
+                                patient.setLocation("User's current Location");
+                            }
+
+                            patient.setLatLng(currentLocation.getLatitude()
+                                    +"," +currentLocation.getLongitude());
                         }
                         else{
                             Log.d("getDeviceLocation:", "onComplete: current location is null");
