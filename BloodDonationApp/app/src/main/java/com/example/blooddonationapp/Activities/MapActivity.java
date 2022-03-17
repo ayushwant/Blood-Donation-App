@@ -780,6 +780,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent( MapActivity.this, MainActivity.class ) );
+        finish();
     }
 
     @Override

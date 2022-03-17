@@ -58,8 +58,8 @@ public class AdminLogin extends AppCompatActivity {
                             String adminId=task.getResult().getString("id");
                             String adminPassword=task.getResult().getString("password");
 
-                            ID=binding.adminId.getText().toString();
-                            password=binding.adminPassword.getText().toString();
+                            ID=binding.adminId.getText().toString().trim();
+                            password=binding.adminPassword.getText().toString().trim();
                             Toast.makeText(AdminLogin.this,adminId+" "+adminPassword
                                     +" "+ID+password,Toast.LENGTH_LONG).show();
 

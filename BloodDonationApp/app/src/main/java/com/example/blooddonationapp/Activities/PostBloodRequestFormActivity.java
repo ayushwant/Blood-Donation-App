@@ -118,6 +118,13 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         storageReference =storage.getReference()
                 .child("Documents").child(auth.getCurrentUser().getPhoneNumber());
 
+        binding.back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //Progress Bar while loading pdf
         progressDialog = new ProgressDialog(PostBloodRequestFormActivity.this);
         progressDialog.setCancelable(false);

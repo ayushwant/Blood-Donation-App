@@ -20,6 +20,7 @@ import com.example.blooddonationapp.Activities.MapActivity;
 import com.example.blooddonationapp.Activities.MyRequest;
 import com.example.blooddonationapp.Activities.NotificationActivity;
 import com.example.blooddonationapp.Activities.ProfileActivity;
+import com.example.blooddonationapp.Activities.SavedPostsActivity;
 import com.example.blooddonationapp.Fragments.FeedFragment;
 import com.example.blooddonationapp.Fragments.MapFragment;
 import com.example.blooddonationapp.Fragments.RequestFragment;
@@ -222,6 +223,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.my_request:
                                Intent i1=new Intent(MainActivity.this, MyRequest.class);
                                startActivity(i1);
+                               break;
+            case R.id.saved_post:
+                               Intent i2=new Intent(MainActivity.this, SavedPostsActivity.class);
+                               startActivity(i2);
                                break;
             case R.id.settings:
                                break;
