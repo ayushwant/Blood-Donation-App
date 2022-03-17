@@ -518,10 +518,16 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Log.i("request", "Place: " + place.getName() + ", " + place.getId());
+//                Log.i("request", "Place: " + place.getName() + ", " + place.getId());
+
                 location.setText(place.getName());
                 locationDropUp.setVisibility(View.GONE);
                 locationOptions.setVisibility(View.GONE);
+
+                patient.setLocation(place.getName());
+
+                if(place.getLatLng()!=null)
+                patient.setLatLng(place.getLatLng().latitude+ "," + place.getLatLng().longitude );
             }
 
             else if (resultCode == AutocompleteActivity.RESULT_ERROR) {

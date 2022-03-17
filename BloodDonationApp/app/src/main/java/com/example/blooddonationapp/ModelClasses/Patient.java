@@ -10,6 +10,15 @@ public class Patient
     private String requiredUnits;
     private String location;
     private String pdfUri;
+    private String LatLng;
+
+    public String getLatLng() {
+        return LatLng;
+    }
+
+    public void setLatLng(String latLng) {
+        LatLng = latLng;
+    }
 
     public String getIdProof() {
         return idProof;
