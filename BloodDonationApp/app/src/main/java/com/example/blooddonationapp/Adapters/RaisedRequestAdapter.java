@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,8 +50,11 @@ public class RaisedRequestAdapter extends RecyclerView.Adapter<RaisedRequestAdap
             public void onClick(View v) {
                 Intent i=new Intent(holder.itemView.getContext(), RequestDetailAdmin.class);
                 i.putExtra("phone",patient.getUserPhone());
+                i.putExtra("name",patient.getPatientName());
+                i.putExtra("blood",patient.getBloodGrp());
+                i.putExtra("location",patient.getLocation());
+                Toast.makeText(context, patient.getUserPhone(), Toast.LENGTH_SHORT).show();
                 context.startActivity(i);
-
             }
         });
     }

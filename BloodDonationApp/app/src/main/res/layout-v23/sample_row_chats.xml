@@ -7,7 +7,9 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:padding="5dp">
+    android:layout_marginTop="5dp"
+    android:background="@drawable/edit_text_background"
+    android:padding="10dp">
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -26,7 +28,7 @@
         android:layout_margin="5dp"
         android:layout_marginLeft="8dp"
         android:text="Name"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/chatProfilePic"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,6 +40,7 @@
         android:layout_margin="5dp"
         android:layout_marginBottom="5dp"
         android:text="TextView"
+        android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chatProfilePic" />
 
@@ -47,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="TextView"
+        android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.blooddonationapp.Adapters.RaisedRequestAdapter;
 import com.example.blooddonationapp.Adapters.RequestAdapter;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.R;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,13 +25,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 
 public class RaisedRequestsList extends Fragment {
 
     RecyclerView recyclerView;
     ArrayList<Patient> patientArrayList;
-    FirebaseFirestore db;
+    FirebaseFirestore db,db1;
     RaisedRequestAdapter adapter;
     ProgressDialog progressDialog;
 
@@ -60,6 +63,7 @@ public class RaisedRequestsList extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         db=FirebaseFirestore.getInstance();
+
         patientArrayList= new ArrayList<Patient>();
         adapter = new RaisedRequestAdapter(getContext(),patientArrayList);
 
@@ -69,9 +73,11 @@ public class RaisedRequestsList extends Fragment {
         return v;
     }
 
+
     private void EventChangeListener() {
 
-        db.collection("Raised Requests").addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        db.collection("Raised Requests List").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
@@ -86,12 +92,8 @@ public class RaisedRequestsList extends Fragment {
                     {
                         if(!isGenuine.equals("true"))
                             patientArrayList.add(dc.getDocument().toObject(Patient.class));
-                       // if(progressDialog.isShowing())
-                           // progressDialog.dismiss();
                     }
-                 //   progressDialog.dismiss();
                     adapter.notifyDataSetChanged();
-
                 }
 
             }

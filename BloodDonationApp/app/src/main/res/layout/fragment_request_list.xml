@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.RequestList">
 
     <LinearLayout
@@ -24,7 +25,62 @@
                 android:textSize="15dp"
                 android:layout_marginLeft="10dp"
                 android:drawableEnd="@drawable/ic_baseline_filter_list_24"/>
+
+
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_filter"
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/filter_by_distance_from"
+        />
+
+        <LinearLayout
+            android:id="@+id/filters"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <androidx.cardview.widget.CardView
+                app:cardCornerRadius="50dp"
+                android:padding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
+                <TextView
+                    android:id="@+id/current_location"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_location" />
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                app:cardCornerRadius="50dp"
+                android:padding="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
+                <TextView
+                    android:id="@+id/specific_location"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/specific_location" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">

@@ -63,10 +63,16 @@ public class RequestHistoryAdapter extends RecyclerView.Adapter<RequestHistoryAd
             @Override
             public void onClick(View v)
             {
-                Intent i=new Intent(holder.itemView.getContext(), MyRequestDetail.class);
-                Toast.makeText( holder.itemView.getContext(), requestHistory.getUserPhone(), Toast.LENGTH_SHORT).show();
-                i.putExtra("Seeker Number",requestHistory.getUserPhone());
-                holder.itemView.getContext().startActivity(i);
+                if(requestHistory.getStatus().equals("Pending"))
+                {
+                    Intent i=new Intent(holder.itemView.getContext(), MyRequestDetail.class);
+                    Toast.makeText( holder.itemView.getContext(), requestHistory.getUserPhone(), Toast.LENGTH_SHORT).show();
+                    i.putExtra("Seeker Number",requestHistory.getUserPhone());
+                    i.putExtra("Patient Name",requestHistory.getPatientName());
+                    i.putExtra("Patient BloodGrp",requestHistory.getPatientBloodGrp());
+                    i.putExtra("Patient Location",requestHistory.getLocation());
+                    holder.itemView.getContext().startActivity(i);
+                }
             }
         });
     }
