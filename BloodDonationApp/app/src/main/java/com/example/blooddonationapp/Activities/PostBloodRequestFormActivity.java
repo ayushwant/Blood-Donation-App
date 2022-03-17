@@ -96,7 +96,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
     boolean gps_enabled = false;
     boolean network_enabled = false;
     FusedLocationProviderClient mFusedLocationProviderClient;
-    private Location mUserPosition;  // the current user position
+    // the current user position
 
     private static final int enableLocationRequestCode = 120;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -482,8 +482,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                         {
                             Log.d("getDeviceLocation:", "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
-                            mUserPosition = currentLocation;
-//                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
+                            //                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
 //                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
 
                             // get the Address from LatLng

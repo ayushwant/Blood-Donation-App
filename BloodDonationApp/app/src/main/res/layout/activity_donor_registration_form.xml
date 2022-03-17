@@ -310,19 +310,81 @@
             </LinearLayout>
 
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/location"
-                android:textSize="15dp"
-                android:drawableStart="@drawable/ic_baseline_location_on_r"
-                android:padding="7dp"
-                android:background="@drawable/edit_text_background"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="13sp"
                 android:layout_marginRight="15dp"
-                android:hint="@string/location"
-                android:textColor="@color/grey"
+                android:orientation="horizontal">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/location_Donor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_background"
+                    android:drawableStart="@drawable/ic_baseline_location_on_r"
+                    android:editable="false"
+                    android:hint="@string/location"
+                    android:padding="7dp"
+                    android:textColor="@color/grey"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/drop_up_request_Donor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/location_Donor"
+                    app:layout_constraintHorizontal_bias="0.94"
+                    app:layout_constraintStart_toStartOf="@+id/location_Donor"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.47"
+                    app:srcCompat="@drawable/ic_baseline_arrow_drop_up_24" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:id="@+id/locationDonorOptions"
+                android:visibility="gone">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="50dp">
+
+                    <TextView
+                        android:id="@+id/currentLocationDonor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="@string/use_current_location" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="50dp">
+
+                    <TextView
+                        android:id="@+id/SearchLocationDonor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="@string/search_a_location" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/upload_documents"

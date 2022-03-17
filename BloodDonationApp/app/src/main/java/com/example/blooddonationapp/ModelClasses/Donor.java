@@ -12,6 +12,15 @@ public class Donor
     private String additionalDetails;
     private Boolean isValid=false;
     private Boolean isPublic=false;
+    private String LatLng;
+
+    public String getLatLng() {
+        return LatLng;
+    }
+
+    public void setLatLng(String latLng) {
+        LatLng = latLng;
+    }
 
     public String getEmail() {
         return email;

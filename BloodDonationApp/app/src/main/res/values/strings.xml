@@ -66,6 +66,8 @@
     <string name="specific_location">Specific location</string>
     <string name="filter_by_distance_from">Filter by distance from:</string>
     <string name="curr_loc">Current Location</string>
+    <string name="use_current_location">Use current location</string>
+    <string name="search_a_location">Search a location</string>
 
 
 </resources>
