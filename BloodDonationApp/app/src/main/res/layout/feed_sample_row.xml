@@ -42,6 +42,7 @@
                 android:id="@+id/feedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_marginTop="6dp"
                 android:hint="@string/app_name"
                 android:textColor="#000000"
@@ -55,11 +56,13 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
-
-                app:lottie_autoPlay = "true"
-                app:lottie_rawRes = "@raw/like_animation"/>
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/like_animation" />
 
             <ImageView
                 android:id="@+id/saveBtn"
@@ -67,16 +70,19 @@
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
-                app:srcCompat="@drawable/ic_unsaved"
-                />
+                app:srcCompat="@drawable/ic_unsaved" />
 
             <ImageView
                 android:id="@+id/shareBtn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="5dp"
+                android:layout_marginBottom="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/saveBtn"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
                 app:srcCompat="@android:drawable/ic_menu_share" />

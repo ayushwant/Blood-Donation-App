@@ -12,8 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -35,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.blooddonationapp.Activities.DonorRegistrationFormActivity;
 import com.example.blooddonationapp.Adapters.RequestAdapter;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.R;
@@ -50,18 +47,17 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class RequestList extends Fragment {
 
@@ -71,9 +67,10 @@ public class RequestList extends Fragment {
     FirebaseFirestore db;
     ProgressDialog progressDialog;
     LinearLayout filters;
-    TextView textFilter,specificLocation,currentLocation;
+    TextView textFilter,specificLocation, useCurrentLocation;
     LinearLayout filter;
     boolean filterVisible=false;
+    Location currentLocation;
 
     // Location
     private static final int AUTOCOMPLETE_REQUEST_CODE = 100;
@@ -109,7 +106,7 @@ public class RequestList extends Fragment {
         textFilter=v.findViewById(R.id.text_filter);
         filter=v.findViewById(R.id.filter);
         specificLocation=v.findViewById(R.id.specific_location);
-        currentLocation=v.findViewById(R.id.current_location);
+        useCurrentLocation =v.findViewById(R.id.current_location);
 
         // HERE: Location stuff
         assert getContext()!=null;
@@ -159,7 +156,7 @@ public class RequestList extends Fragment {
         });
 
         //On selecting current location
-        currentLocation.setOnClickListener(new View.OnClickListener() {
+        useCurrentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getLocationPermission();  // goes on to check if gps is enabled after successful
@@ -179,9 +176,9 @@ public class RequestList extends Fragment {
 
         //Progress Dialog
         progressDialog = new ProgressDialog(getContext());
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.setMessage("Fetching data");
-        progressDialog.show();
+//        progressDialog.show();
 
         //Loading verified requests
         recyclerView =v.findViewById(R.id.recyclerView);
@@ -193,7 +190,17 @@ public class RequestList extends Fragment {
         patientArrayList= new ArrayList<Patient>();
         adapter = new RequestAdapter(getContext(),patientArrayList);
 
-        EventChangeListener();
+        if(mLatLng!=null && gps_enabled && network_enabled && mLocationPermissionsGranted)
+            EventChangeListener();
+        else{
+            getLocationPermission();  // goes on to check if gps is enabled after successful
+
+            if (gps_enabled && network_enabled && mLocationPermissionsGranted) {
+                getDeviceLocation();
+                EventChangeListener();
+            }
+        }
+
         recyclerView.setAdapter(adapter);
         return v;
     }
@@ -208,6 +215,10 @@ public class RequestList extends Fragment {
                  {
                      return;
                  }
+                getLocationPermission();  // goes on to check if gps is enabled after successful
+
+                if (gps_enabled && network_enabled && mLocationPermissionsGranted)
+                    getDeviceLocation();
                  for(DocumentChange dc : value.getDocumentChanges())
                  {
                      String isGenuine=dc.getDocument().getString("valid");
@@ -219,6 +230,7 @@ public class RequestList extends Fragment {
                              progressDialog.dismiss();
                      }
                      progressDialog.dismiss();
+
                      adapter.notifyDataSetChanged();
 
                  }
@@ -292,11 +304,48 @@ public class RequestList extends Fragment {
                         if(task.isSuccessful())
                         {
                             Log.d("getDeviceLocation:", "onComplete: found location!");
-                            Location currentLocation = (Location) task.getResult();
+                            currentLocation = (Location) task.getResult();
                             Toast.makeText(getContext(), "Location: " + currentLocation.getLatitude() +", " +
                                     currentLocation.getLongitude(), Toast.LENGTH_LONG).show();
 
                             mLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+                            // sort the list
+                            Collections.sort(patientArrayList, new Comparator<Patient>() {
+                                @Override
+                                public int compare(Patient p1, Patient p2) {
+                                    float[] d1 = new float[3], d2 = new float[3];
+
+                                    // Get Latitude and Longitudes of both patients
+                                    String[] latlng1 = p1.getLatLng().split(",");
+                                    String[] latlng2 = p2.getLatLng().split(",");
+
+                                    double lat1 = Double.parseDouble(latlng1[0]);
+                                    double long1 = Double.parseDouble(latlng1[1]);
+
+                                    double lat2 = Double.parseDouble(latlng2[0]);
+                                    double long2 = Double.parseDouble(latlng2[1]);
+
+                                    if(mLatLng==null){
+                                        getLocationPermission();  // goes on to check if gps is enabled after successful
+
+                                        if (gps_enabled && network_enabled && mLocationPermissionsGranted)
+                                            getDeviceLocation();
+                                    }
+
+//                             Location.distanceBetween( lat1, long1, mLatLng.latitude, mLatLng.longitude, d1 );
+                                    Location.distanceBetween( lat1, long1, currentLocation.getLatitude(),
+                                            currentLocation.getLongitude(), d1 );
+
+//                             Location.distanceBetween( lat2, long2, mLatLng.latitude, mLatLng.longitude, d2 );
+                                    Location.distanceBetween( lat2, long2, currentLocation.getLatitude(),
+                                            currentLocation.getLongitude(), d2 );
+
+                                    return (int) (d1[0] - d2[0]);
+                                }
+                            });
+                            adapter.notifyDataSetChanged();
+
                         }
                         else{
                             Log.d("getDeviceLocation:", "onComplete: current location is null");
