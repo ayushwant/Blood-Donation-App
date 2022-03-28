@@ -273,6 +273,37 @@ public class RequestList extends Fragment {
 
                 if(place.getLatLng()!=null)
                     mLatLng = place.getLatLng();
+
+
+                // sort the list
+                Collections.sort(patientArrayList, new Comparator<Patient>() {
+                    @Override
+                    public int compare(Patient p1, Patient p2) {
+                        float[] d1 = new float[3], d2 = new float[3];
+
+                        // Get Latitude and Longitudes of both patients
+                        String[] latlng1 = p1.getLatLng().split(",");
+                        String[] latlng2 = p2.getLatLng().split(",");
+
+                        double lat1 = Double.parseDouble(latlng1[0]);
+                        double long1 = Double.parseDouble(latlng1[1]);
+
+                        double lat2 = Double.parseDouble(latlng2[0]);
+                        double long2 = Double.parseDouble(latlng2[1]);
+
+//                             Location.distanceBetween( lat1, long1, mLatLng.latitude, mLatLng.longitude, d1 );
+                        Location.distanceBetween( lat1, long1, place.getLatLng().latitude,
+                                place.getLatLng().longitude, d1 );
+
+//                             Location.distanceBetween( lat2, long2, mLatLng.latitude, mLatLng.longitude, d2 );
+                        Location.distanceBetween( lat2, long2, place.getLatLng().latitude,
+                                place.getLatLng().longitude, d2 );
+
+                        return (int) (d1[0] - d2[0]);
+                    }
+                });
+                adapter.notifyDataSetChanged();
+
             }
 
             else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
