@@ -13,25 +13,25 @@
         android:id="@+id/feedRowCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:padding="4dp"
-        app:cardCornerRadius="2dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/edit_text_background"
-            android:padding="10dp">
+            android:background="@drawable/edit_text_background">
 
             <ImageView
                 android:id="@+id/feedImg"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:padding="4dp"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -44,17 +44,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:hint="@string/app_name"
-                android:paddingLeft="8dp"
                 android:textColor="#000000"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedImg" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/likeBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
@@ -64,19 +63,19 @@
 
             <ImageView
                 android:id="@+id/saveBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="5dp"
                 android:layout_marginRight="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"
-                app:srcCompat="@android:drawable/ic_menu_save"
-/>
+                app:srcCompat="@drawable/ic_unsaved"
+                />
 
             <ImageView
                 android:id="@+id/shareBtn"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_margin="5dp"
                 app:layout_constraintEnd_toStartOf="@+id/saveBtn"
                 app:layout_constraintTop_toBottomOf="@+id/feedText"

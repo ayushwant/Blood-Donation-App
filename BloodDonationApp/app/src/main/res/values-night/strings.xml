@@ -5,4 +5,6 @@
     <string name="gps_network_not_enabled">Enable GPS to access Maps</string>
     <string name="Cancel">Cancel</string>
     <string name="content_description">Content Description</string>
+    <string name="enable_gps">Enable GPS</string>
+    <string name="curr_loc">Current Location</string>
 </resources>
