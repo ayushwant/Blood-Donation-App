@@ -340,7 +340,7 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                 }
 
 
-                if(complete==true)
+                if(complete)
                 {
 
                     patient.setUserName(user.getName());
