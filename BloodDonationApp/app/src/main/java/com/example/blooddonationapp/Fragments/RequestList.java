@@ -99,7 +99,7 @@ public class RequestList extends Fragment {
             public void onClick(View v) {
 
 
-                
+
 
                 filterVisible=false;
                 filters.setVisibility(View.GONE);

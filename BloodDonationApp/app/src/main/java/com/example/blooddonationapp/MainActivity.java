@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.AdminLogin;
 import com.example.blooddonationapp.Activities.Chats;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     ActivityMainBinding binding;
     private View hView;
+    private ImageView profileImage;
+    private ImageView headerProfileImage;
     private TextView edit,userName,adminSwitch;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         database= FirebaseDatabase.getInstance().getReference("Notifications").
                 child(currentUser.getPhoneNumber());
 
+        profileImage=findViewById(R.id.profile_img);
         navigationView=findViewById(R.id.nav_view_side);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -86,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         edit=hView.findViewById(R.id.edit_profile);
         userName=hView.findViewById(R.id.user_name);
         adminSwitch=hView.findViewById(R.id.switch_to_admin);
+        headerProfileImage=hView.findViewById(R.id.profilePicture);
 
 
         edit.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +106,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 String name=task.getResult().getString("name");
+                String imgUri=task.getResult().getString("imgUri");
                 userName.setText(name);
+
+                if(imgUri!="")
+                {
+                    Glide.with(MainActivity.this).load(imgUri)
+                            .placeholder(R.drawable.ic_baseline_account_circle_24).into(profileImage);
+                    Glide.with(MainActivity.this).load(imgUri)
+                            .placeholder(R.drawable.ic_baseline_account_circle_24).into(headerProfileImage);
+                }
             }
         });
         database.addValueEventListener(new ValueEventListener() {

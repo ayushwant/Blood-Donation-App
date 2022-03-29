@@ -175,7 +175,21 @@
                     android:background="@drawable/edit_text_background"
                     android:cursorVisible="false"
                     android:editable="false"
-                    android:hint="Document"
+                    android:hint="@string/medical_document"
+                    android:padding="17dp"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/id_proof"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginTop="13sp"
+                    android:layout_marginRight="25dp"
+                    android:background="@drawable/edit_text_background"
+                    android:cursorVisible="false"
+                    android:editable="false"
+                    android:hint="@string/id_proof"
                     android:padding="17dp"
                     android:textSize="15dp" />
 

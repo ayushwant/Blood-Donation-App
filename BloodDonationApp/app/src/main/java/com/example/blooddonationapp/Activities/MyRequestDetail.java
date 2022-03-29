@@ -82,6 +82,7 @@ public class MyRequestDetail extends AppCompatActivity {
                 requestHistory.setLocation(task.getResult().getString("location"));
 
                 binding.documents.setText(task.getResult().getString("pdfUri"));
+                binding.idProof.setText(task.getResult().getString("idProof"));
                 binding.details.setText(task.getResult().getString("additionalDetails"));
 
             }
