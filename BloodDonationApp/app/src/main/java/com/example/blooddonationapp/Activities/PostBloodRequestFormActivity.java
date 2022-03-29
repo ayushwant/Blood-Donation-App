@@ -1,15 +1,32 @@
 package com.example.blooddonationapp.Activities;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static com.example.blooddonationapp.BuildConfig.MAPS_API_KEY;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +42,19 @@ import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
 import com.example.blooddonationapp.databinding.ActivityAdminLoginBinding;
 import com.example.blooddonationapp.databinding.ActivityPostBloodRequestFormBinding;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +65,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class PostBloodRequestFormActivity extends AppCompatActivity {
 
@@ -51,13 +83,28 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
     private Patient patient=new Patient();
     private Button postRequest;
     private TextView userName;
-    private ImageView drop_up;
+    private ImageView drop_up, locationDropUp;
     private DatabaseReference mDatabase;
     private StorageReference storageReference;
     private FirebaseStorage storage;
     private EditText patient_name,age,blood_group,required_units,location,documents,details,idProof;
-    private View bloodList;
+    private View bloodList, locationOptions;
     ProgressDialog progressDialog;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 100;
+
+    LocationManager lm ;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
+    FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mUserPosition;  // the current user position
+
+    private static final int enableLocationRequestCode = 120;
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private boolean mLocationPermissionsGranted = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,11 +154,16 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
             }
         });
 
+        // initialize Places API key
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), MAPS_API_KEY);
+        }
+
 
         patient_name=findViewById(R.id.patient_name);
         blood_group=findViewById(R.id.blood_group);
         required_units=findViewById(R.id.required_units);
-        location=findViewById(R.id.location);
+        location=findViewById(R.id.location_request);
         documents=findViewById(R.id.upload_documents);
         idProof=findViewById(R.id.id_proof);
         details=findViewById(R.id.details);
@@ -119,6 +171,10 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
         age=findViewById(R.id.age);
         bloodList=findViewById(R.id.blood_list);
         drop_up=findViewById(R.id.drop_up);
+
+        locationDropUp = findViewById(R.id.drop_up_request_location);
+        locationOptions = findViewById(R.id.locationRequestOptions);
+        lm = (LocationManager)PostBloodRequestFormActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
         //Uploading documents
         documents.setOnClickListener(new View.OnClickListener() {
@@ -356,11 +412,174 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
             }
         });
 
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+                locationDropUp.setVisibility(View.VISIBLE);
+                locationOptions.setVisibility(View.VISIBLE);
+
+                locationDropUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        locationDropUp.setVisibility(View.GONE);
+                        locationOptions.setVisibility(View.GONE);
+                    }
+                });
+
+
+                TextView useCurrent, searchLoc;
+                useCurrent = findViewById(R.id.currentLocationRequest);
+                searchLoc = findViewById(R.id.SearchLocationRequest);
+
+                searchLoc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        List<Place.Field> fields = Arrays.asList(Place.Field.NAME,
+                                Place.Field.LAT_LNG, Place.Field.ID);
+
+                        // Start the autocomplete intent.
+                        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                                .build(PostBloodRequestFormActivity.this);
+                        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                    }
+                });
+
+                useCurrent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        getLocationPermission();  // goes on to check if gps is enabled after successful
+
+                        if (gps_enabled && network_enabled && mLocationPermissionsGranted)
+                            getDeviceLocation();
+                    }
+                });
+
+
+            }
+        });
+
+        checkLocationEnabled();
+
+    }
+
+    private void getDeviceLocation(){
+        Log.d("getDeviceLocation:", " getting the devices current location");
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+            if(mLocationPermissionsGranted)
+            {
+
+                @SuppressLint("MissingPermission") final Task lastLocation = mFusedLocationProviderClient.getLastLocation();
+                lastLocation.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            Log.d("getDeviceLocation:", "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
+                            mUserPosition = currentLocation;
+//                            Toast.makeText(PostBloodRequestFormActivity.this, "Location:" +
+//                                    currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+
+                            // get the Address from LatLng
+                            Geocoder geocoder = new Geocoder(PostBloodRequestFormActivity.this, Locale.ENGLISH);
+                            StringBuilder addressInfo = new StringBuilder("");
+
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(
+                                        currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+
+                                if (addresses.size() > 0)
+                                {
+                                    Address fetchedAddress = addresses.get(0);
+
+                                    if(fetchedAddress.getSubLocality()!=null)
+                                        addressInfo.append(fetchedAddress.getSubLocality()).append(", ").append(fetchedAddress.getSubAdminArea());
+                                }
+
+                            }
+                            catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            if(!addressInfo.toString().equals("")) {
+                                location.setText(addressInfo);
+                                patient.setLocation(addressInfo.toString());
+                            }
+                            else{
+                                location.setText(R.string.curr_loc);
+                                patient.setLocation("User's current Location");
+                            }
+
+                            locationDropUp.setVisibility(View.GONE);
+                            locationOptions.setVisibility(View.GONE);
+                            patient.setLatLng(currentLocation.getLatitude()
+                                    +"," +currentLocation.getLongitude());
+                        }
+                        else{
+                            Log.d("getDeviceLocation:", "onComplete: current location is null");
+//                            Toast.makeText(this, "unable to get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }catch (SecurityException e){
+            Log.e("getDeviceLocation:", "getDeviceLocation: SecurityException: " + e.getMessage() );
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==enableLocationRequestCode){
+            try {
+                gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch(Exception ex) {}
+
+            try {
+                network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch(Exception ex) {}
+
+            if (gps_enabled && network_enabled) {
+                recreate();
+//                getDeviceLocation();  // since activity is getting recreated, easier to use this in onCreate
+            }
+        }
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE && data!=null)
+        {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+//                Log.i("request", "Place: " + place.getName() + ", " + place.getId());
+
+                location.setText(place.getName());
+                locationDropUp.setVisibility(View.GONE);
+                locationOptions.setVisibility(View.GONE);
+
+                patient.setLocation(place.getName());
+
+                if(place.getLatLng()!=null)
+                patient.setLatLng(place.getLatLng().latitude+ "," + place.getLatLng().longitude );
+            }
+
+            else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+//                Log.i("request", status.getStatusMessage());
+            }
+            else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+
         if(requestCode==12 && resultCode==RESULT_OK && data!=null && data.getData()!=null)
         {
             progressDialog.show();
@@ -394,6 +613,81 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                 }
             });
+        }
+    }
+
+    private void checkLocationEnabled()
+    {
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled) {
+            // notify user
+            AlertDialog alertDialog = new AlertDialog.Builder(PostBloodRequestFormActivity.this)
+                    .setMessage(R.string.enable_gps)
+                    .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                            MapActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS) , enableLocationRequestCode);
+                        }
+                    })
+                    .setNegativeButton(R.string.Cancel,null)
+                    .show();
+
+
+
+        }
+        else
+            getDeviceLocation();
+    }
+
+    private void getLocationPermission(){
+        Log.d("getLocationPermission", "getLocationPermission: getting location permissions");
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if(ContextCompat.checkSelfPermission(this, FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                COURSE_LOCATION) == PackageManager.PERMISSION_GRANTED )
+        {
+            mLocationPermissionsGranted = true;
+            checkLocationEnabled();
+        }
+        else // request for permission
+            ActivityCompat.requestPermissions(this,
+                    permissions, LOCATION_PERMISSION_REQUEST_CODE);
+
+
+    }
+
+
+    // checks if the needed permissions were granted
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mLocationPermissionsGranted = false;
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE)
+        {
+            if (grantResults.length > 0) {
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        mLocationPermissionsGranted = false;
+                        Log.d("getLocationPermission", "onRequestPermissionsResult: permission failed");
+                        return;
+                    }
+                }
+                Log.d("getLocationPermission", "onRequestPermissionsResult: permission granted");
+                mLocationPermissionsGranted = true;
+                //initialize our map
+                checkLocationEnabled();
+            }
         }
     }
 

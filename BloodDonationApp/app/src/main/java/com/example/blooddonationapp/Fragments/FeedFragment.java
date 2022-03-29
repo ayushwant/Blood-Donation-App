@@ -24,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,18 +72,6 @@ public class FeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//
-//        if(getActivity()!=null)
-//        getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-////                if(getActivity()!=null)
-////                    getActivity().finish();
-//
-//                getActivity().finishAndRemoveTask();
-////                System.exit(0);
-//            }
-//        });
     }
 
     @Override
@@ -130,6 +119,8 @@ public class FeedFragment extends Fragment {
                     // after adding the data to recycler view.
                     // we are calling recycler view notifyDataSetChanged
                     // method to notify that data has been changed in recycler view.
+                    Collections.sort(feedList,
+                            (Feed f1, Feed f2) -> f2.getTimeCreated().compareTo(f1.getTimeCreated()) );
                     feedAdapter.notifyDataSetChanged();
                 } else {
                     // if the snapshot is empty we are displaying a toast message.

@@ -16,6 +16,7 @@ public class User implements Parcelable {
     private String dob;
     private String bloodGrp;
     private String address;
+    private String LatLng;
 
     private Map<String, Boolean> likedFeeds;
     private Map<String, Boolean> savedFeeds;
@@ -29,6 +30,7 @@ public class User implements Parcelable {
         dob = in.readString();
         bloodGrp = in.readString();
         address = in.readString();
+        LatLng = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -42,6 +44,14 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public String getLatLng() {
+        return LatLng;
+    }
+
+    public void setLatLng(String latLng) {
+        LatLng = latLng;
+    }
 
     public Map<String, Boolean> getLikedFeeds() {
         return likedFeeds;
@@ -140,5 +150,6 @@ public class User implements Parcelable {
         parcel.writeString(dob);
         parcel.writeString(bloodGrp);
         parcel.writeString(address);
+        parcel.writeString(LatLng);
     }
 }

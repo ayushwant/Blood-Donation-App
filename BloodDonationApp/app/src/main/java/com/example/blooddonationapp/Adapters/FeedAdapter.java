@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.example.blooddonationapp.Activities.WebViewActivity;
 import com.example.blooddonationapp.ModelClasses.Feed;
 import com.example.blooddonationapp.ModelClasses.User;
 import com.example.blooddonationapp.R;
@@ -43,6 +44,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
+    private boolean centerCrop = true;
+
 
     public FeedAdapter(Context context, List<Feed> feedArrayList, RvClickListener listener) {
         this.context = context;
@@ -65,6 +68,24 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
         Feed feed = feedArrayList.get(position);
+        holder.feedImg.setScaleType(ImageView.ScaleType.CENTER_INSIDE); // idk why but this line needs to be there
+        // for dynamic scaleType setting to work properly
+
+        // change image view type on click
+        holder.feedImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(centerCrop) {
+                    holder.feedImg.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    centerCrop = false;
+                }
+                else{
+                    holder.feedImg.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    centerCrop = true;
+                }
+
+            }
+        });
 
         Glide.with(context).load(feed.getImage()).into(holder.feedImg);
         holder.feedText.setText(feed.getText());
@@ -220,8 +241,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             shareBtn = itemView.findViewById(R.id.shareBtn);
             saveBtn = itemView.findViewById(R.id.saveBtn);
 
-            feedImg.setOnClickListener(this);
-            likeBtn.setOnClickListener(this);
+            itemView.setOnClickListener(this);  // open WebView on item click
+            // the clicks on other view of the item will be override with their specific click responses
+            // Thus, this method responds to clicks on the empty spaces of the RV, or on the views
+            // whose click listeners haven't been set
         }
 
         @Override
