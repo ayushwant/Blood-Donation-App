@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -34,10 +35,13 @@ public class ProfileActivity extends AppCompatActivity {
     ActivityProfileBinding binding;
     private static final int PICK_IMAGE_REQUEST=1;
     private Uri imageUri;
+    private ImageView drop_up;
+    private EditText blood_group;
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
+    private View bloodList;
 
 
     @Override
@@ -45,6 +49,11 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding =ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        blood_group=findViewById(R.id.blood_group);
+        bloodList=findViewById(R.id.blood_list);
+        drop_up=findViewById(R.id.drop_up);
 
         // getting current user from firebase authentication
         auth=FirebaseAuth.getInstance();
@@ -58,6 +67,106 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i=new Intent(ProfileActivity.this,DonorRegistrationFormActivity.class);
                 startActivity(i);
+            }
+        });
+
+
+        blood_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                bloodList.setVisibility(View.VISIBLE);
+                drop_up.setVisibility(View.VISIBLE);
+                drop_up.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+
+                TextView op,on,ap,an,bp,bn,abp,abn;
+                op=findViewById(R.id.O_pos);
+                on=findViewById(R.id.O_neg);
+                ap=findViewById(R.id.A_pos);
+                an=findViewById(R.id.A_neg);
+                bp=findViewById(R.id.B_pos);
+                bn=findViewById(R.id.B_neg);
+                abp=findViewById(R.id.AB_pos);
+                abn=findViewById(R.id.AB_neg);
+
+                op.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(op.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                on.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(on.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                ap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(ap.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                an.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(an.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                ap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(ap.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                bp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(bp.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                bn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(bn.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                abp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(abp.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
+                abn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        blood_group.setText(abn.getText().toString());
+                        bloodList.setVisibility(View.GONE);
+                        drop_up.setVisibility(View.GONE);
+                    }
+                });
             }
         });
 
@@ -85,6 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
                             binding.donorRegistration.setVisibility(View.VISIBLE);
                             binding.donorRegistration1.setVisibility(View.GONE);
                             binding.donorRegistration.setText("Verified Donor");
+                            binding.donorRegistration.setTextColor(Color.GREEN);
                         }
                     }
                 });

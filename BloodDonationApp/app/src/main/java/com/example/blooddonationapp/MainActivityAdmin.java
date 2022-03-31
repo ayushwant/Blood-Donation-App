@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.blooddonationapp.Activities.Chats;
 import com.example.blooddonationapp.Activities.LoginActivity;
@@ -41,6 +43,8 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
     private FirebaseUser currentUser;
     private TextView position,name,switchUser;
     private FirebaseFirestore db;
+    private ImageView profileImage;
+    private ImageView headerProfileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +65,31 @@ public class MainActivityAdmin extends AppCompatActivity implements NavigationVi
         position=hView.findViewById(R.id.edit_profile);
         name=hView.findViewById(R.id.user_name);
         switchUser=hView.findViewById(R.id.switch_to_user);
+        headerProfileImage=hView.findViewById(R.id.profilePicture);
+        profileImage=findViewById(R.id.profile_img);
 
         db.collection("Admin").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 String sname=task.getResult().getString("name");
                 String sposition=task.getResult().getString("position");
+                String imgUri=task.getResult().getString("imgUri");
                 name.setText(sname);
                 position.setText(sposition);
+
+            }
+        });
+        db.collection("Users").document(currentUser.getPhoneNumber()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                String imgUri=task.getResult().getString("imgUri");
+                if(imgUri!="")
+                {
+                    Glide.with(MainActivityAdmin.this).load(imgUri)
+                            .placeholder(R.drawable.ic_baseline_account_circle_24).into(profileImage);
+                    Glide.with(MainActivityAdmin.this).load(imgUri)
+                            .placeholder(R.drawable.ic_baseline_account_circle_24).into(headerProfileImage);
+                }
             }
         });
 

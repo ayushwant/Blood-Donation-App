@@ -3,7 +3,6 @@ package com.example.blooddonationapp.Adapters;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Dialog;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,9 +24,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.blooddonationapp.Activities.DonorRegistrationFormActivity;
 import com.example.blooddonationapp.Activities.RegisteredMsg;
+import com.example.blooddonationapp.MainActivityAdmin;
 import com.example.blooddonationapp.ModelClasses.Donor;
+import com.example.blooddonationapp.ModelClasses.Notification;
 import com.example.blooddonationapp.ModelClasses.Patient;
 import com.example.blooddonationapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +38,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,6 +57,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     private Boolean isValid=false;
     private Boolean isPublic=false;
     public String isAdmin="false";
+    private DatabaseReference mDatabase;
 
     Context context;
     ArrayList<Patient> patientArrayList;
@@ -170,11 +175,50 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                     m.put("Patient Number",patient.getUserPhone());
                                     //Request Send
                                     Toast.makeText(holder.itemView.getContext(), "Request Sent",Toast.LENGTH_LONG).show();
+
+                                    db.collection("Users").document(patient.getUserName()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            String seekerEmail=task.getResult().getString("email");
+                                            //Email
+                                            //To seeker i.e. on seekerEmail that a donor has asked for blood donation
+                                            //and donor's contact details
+
+
+                                            //Get donor's detail from here
+                                            db.collection("Registered Donors").document(patient.getUserPhone()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    //example
+                                                    String name=task.getResult().getString("name");
+                                                    String contact=task.getResult().getString("phone");;
+                                                    String location=task.getResult().getString("location");;
+                                                    String email=task.getResult().getString("email");
+
+                                                    //Notifying
+                                                    mDatabase = FirebaseDatabase.getInstance().getReference();
+                                                    //Notifying
+                                                    com.example.blooddonationapp.ModelClasses.Notification notification=new Notification();
+                                                    notification.setLine1("Donor Found!!");
+                                                    notification.setLine2(name+" has asked to donate");
+                                                    notification.setLine3("Contact details"+contact+" "+email+" "+location);
+                                                    notification.setSeen(false);
+
+                                                    mDatabase.child("Notifications")
+                                                            .child(patient.getUserPhone()).push().setValue(notification);
+                                                    //Email
+
+
+                                                }
+                                            });
+
+
+                                        }
+                                    });
+
                                     db3.collection("Blood Donation Request").
                                             document(currentUser.getPhoneNumber()+"-"+patient.getUserPhone())
                                             .set(m);
-
-                                    //Notify both donor and seeker
 
 
                                 }
@@ -188,6 +232,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
                                                 Toast.makeText(holder.itemView.getContext(),
                                                         "Your request has been registered, we will contact you soon " +
                                                                 "after manual verification of documents", Toast.LENGTH_LONG).show();
+
                                             } else {
                                                 //Directly Register
                                                 dialog.cancel();

@@ -104,8 +104,8 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                 builder.setMessage("Mark as verified donor?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         donor.setName(binding.donorName.getText().toString());
                         donor.setPhone(binding.donorContact.getText().toString());
                         donor.setAge(binding.drAge.getText().toString());
@@ -122,15 +122,15 @@ public class DonorRegistrationDetail extends AppCompatActivity {
                                 .set(donor).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-
                                 Notification notification=new Notification();
                                 notification.setLine1("Donor Registration");
                                 notification.setLine2("Your request has been verified");
                                 notification.setLine3("");
                                 notification.setSeen(false);
-
                                 mDatabase.child("Notifications")
                                         .child(number).push().setValue(notification);
+
+                                //Email
 
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -197,6 +197,8 @@ public class DonorRegistrationDetail extends AppCompatActivity {
 
                                         mDatabase.child("Notifications")
                                                 .child(number).push().setValue(notification);
+
+                                        //Email
 
 
                                     }

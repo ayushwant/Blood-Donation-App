@@ -133,6 +133,8 @@ public class RequestDetailAdmin extends AppCompatActivity {
                                 mDatabase.child("Notifications")
                                         .child(number).push().setValue(notification);
 
+                                //Email
+
                                 Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
                                 startActivity(intent);
 
@@ -186,6 +188,8 @@ public class RequestDetailAdmin extends AppCompatActivity {
 
                                         mDatabase.child("Notifications")
                                                 .child(number).push().setValue(notification);
+
+                                        //Email
 
                                         Intent intent= new Intent(RequestDetailAdmin.this, MainActivityAdmin.class);
                                         startActivity(intent);

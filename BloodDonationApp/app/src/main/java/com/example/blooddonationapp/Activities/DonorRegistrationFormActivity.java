@@ -318,7 +318,8 @@ public class DonorRegistrationFormActivity extends AppCompatActivity {
                     while (!uriTask.isComplete()) ;
                     Uri uri1 = uriTask.getResult();
                     donor.setPdfUri(uri1.toString());
-                    donorPdfUri.setText(data.getDataString());
+                   // donorPdfUri.setText(data.getDataString());
+                    donorPdfUri.setText("Uploaded");
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }

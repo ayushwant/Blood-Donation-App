@@ -338,7 +338,11 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     complete=false;
                     idProof.setError("Required");
                 }
-
+                if(Integer.parseInt(required_units.getText().toString())>=10)
+                {
+                    complete=false;
+                    required_units.setError("Units must be less than 10");
+                }
 
                 if(complete==true)
                 {
@@ -591,7 +595,8 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     while (!uriTask.isComplete()) ;
                     Uri uri1 = uriTask.getResult();
                     patient.setPdfUri(uri1.toString());
-                    documents.setText(data.getDataString());
+                    //documents.setText(data.getDataString());
+                    documents.setText("Uploaded");
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
@@ -608,7 +613,8 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     while (!uriTask.isComplete()) ;
                     Uri uri2 = uriTask.getResult();
                     patient.setIdProof(uri2.toString());
-                    idProof.setText(data.getDataString());
+                    //idProof.setText(data.getDataString());
+                    idProof.setText("Uploaded");
                     if(progressDialog.isShowing())
                         progressDialog.dismiss();
                 }
@@ -639,9 +645,6 @@ public class PostBloodRequestFormActivity extends AppCompatActivity {
                     })
                     .setNegativeButton(R.string.Cancel,null)
                     .show();
-
-
-
         }
         else
             getDeviceLocation();
