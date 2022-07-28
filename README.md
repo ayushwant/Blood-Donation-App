@@ -18,4 +18,11 @@ A system didn't exist that could connect the available blood donors and seekers 
 7. The feed provides the latest updates regarding blood donation facts and nearby camps.
 
 ## Screenshots
-<img src="Screenshots/Splash Screen.jpg" height=400>
+<img src="Screenshots/Splash Screen.jpg" height=400>  <img src="Screenshots/Feed.jpg" height=400> <img src="Screenshots/Blood Requests.jpg" height=400> 
+
+<img src="Screenshots/Blood Donors.jpg" height=400> <img src="Screenshots/Map.jpg" height=400>  <img src="Screenshots/Navigation.jpg" height=400>
+
+<img src="Screenshots/chat.jpg" height=400> <img src="Screenshots/Seekers details form.jpg" height=400> <img src="Screenshots/Menu bar.jpg" height=400>
+
+<img src="Screenshots/Pending verified requests.jpg" height=400>  <img src="Screenshots/Registered Blood Donors.jpg" height=400>
+
