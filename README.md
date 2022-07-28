@@ -17,3 +17,5 @@ A system didn't exist that could connect the available blood donors and seekers 
 6. We have a chat feature to help registered users chat amongst themselves. 
 7. The feed provides the latest updates regarding blood donation facts and nearby camps.
 
+## Screenshots
+<img src="Screenshots/Splash Screen.jpg" height=400>
