@@ -262,7 +262,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMarker
 
                         StringBuilder addressInfo = new StringBuilder("");
                         if(fetchedAddress.getSubLocality()!=null)
-                        addressInfo.append( fetchedAddress.getSubLocality() +", " +fetchedAddress.getSubAdminArea() );
+                            addressInfo.append( fetchedAddress.getSubLocality() +", " +fetchedAddress.getSubAdminArea() );
 
                         dropMarker.setTitle(String.valueOf(addressInfo));
                     }

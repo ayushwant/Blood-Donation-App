@@ -89,7 +89,8 @@
             android:exported="false" />
         <activity
             android:name=".Activities.MapActivity"
-            android:exported="false" />
+            android:hardwareAccelerated="true"
+            android:exported="true" />
         <activity
             android:name=".Activities.AdminLogin"
             android:exported="true" />

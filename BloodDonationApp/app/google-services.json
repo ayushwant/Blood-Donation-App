@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "5324236952",
+    "firebase_url": "https://rotaract-blood-donation-app-default-rtdb.firebaseio.com",
     "project_id": "rotaract-blood-donation-app",
     "storage_bucket": "rotaract-blood-donation-app.appspot.com"
   },
@@ -19,6 +20,30 @@
           "android_info": {
             "package_name": "com.example.blooddonationapp",
             "certificate_hash": "4db0515c135f5aafadbeddbb0d64fd2a23d79f1a"
+          }
+        },
+        {
+          "client_id": "5324236952-jak6aauo2hrgbrs0r0i64327ljtphsqh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blooddonationapp",
+            "certificate_hash": "64b35d4ed732ee1f3c92e6cd08cda458b92c9208"
+          }
+        },
+        {
+          "client_id": "5324236952-jpmjks2jig832ootd7o5tn754vvrd9d6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blooddonationapp",
+            "certificate_hash": "4f7b9ca6e82164279ec7f2482a9d02bd2a57a649"
+          }
+        },
+        {
+          "client_id": "5324236952-nc22olbbf50fd1ulvvrefk98fldfnp7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blooddonationapp",
+            "certificate_hash": "bb3207352a7ab9109e4e2286ea47cfdead204a1d"
           }
         },
         {

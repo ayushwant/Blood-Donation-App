@@ -160,9 +160,9 @@ public class LoginActivity extends AppCompatActivity
                                 Intent otpIntent=new Intent(LoginActivity.this, OTPActivity.class);
                                 otpIntent.putExtra("Authcredentials",s);
                                 if(isAdmin)
-                                otpIntent.putExtra("activity","Admin");
+                                    otpIntent.putExtra("activity","Admin");
                                 else
-                                otpIntent.putExtra("activity","Login");
+                                    otpIntent.putExtra("activity","Login");
                                 otpIntent.putExtra("phone",phone);
                                 startActivity(otpIntent);
                                 finish();

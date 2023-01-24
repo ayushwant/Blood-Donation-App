@@ -26,3 +26,9 @@ A system didn't exist that could connect the available blood donors and seekers 
 
 <img src="Screenshots/Pending verified requests.jpg" height=400>        <img src="Screenshots/Registered blood donors.jpg" height=400>
 
+## How to get started
+1. Put the MAPS_API_KEY in local.properties (which is not uploaded to github)
+2. Download google-services.json file from firebase and paste in the 'app' directory
+3. Upload your android studio's SHA-1 key on firebase if not already there
+4. Connect your android studio to firebase if not already connected
+5. RUN the app
